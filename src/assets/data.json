@@ -1,0 +1,97 @@
+{
+  "nodes": [
+    {
+      "id": "FireWall",
+      "label": "FireWall",
+      "name": "FireWall",
+      "shape": "image",
+      "image": "https://cdn.shortpixel.ai/client/q_glossy,ret_img,w_1024,h_1024/https://www.openreality.co.uk/wp-content/uploads/2019/03/Firewall-Icon.png",
+      "size": 20,
+      "color": "#ff0000",
+      "cost": "$1000"
+    },
+    {
+      "id": "Iot",
+      "label": "IOT",
+      "name": "IOT",
+      "shape": "image",
+      "image": "https://media.istockphoto.com/id/1058712430/vector/simple-icon-to-represent-the-internet-of-things-concept-gear-settings-and-network-iot.jpg?s=612x612&w=0&k=20&c=FHm6JFVDYBAx62wBOP60EQUVhepsBjzpaRARLAxvsOM=",
+      "size": 20,
+      "color": "#00ff00",
+      "cost": "$1000"
+    },
+    {
+      "id": "Lambda",
+      "label": "Lambda",
+      "name": "Lambda",
+      "shape": "image",
+      "image": "https://steamcommunity-a.akamaihd.net/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXQ9Q1LO5kNoBhSQl-fROuh28rQR1R2KQFoprOrFAZsyuv3IWx94N2kk4XFlvT1NeKDkDkIsMN30rDCrd-h0FHtrRVkMmCiJNLEclM5aA7RrAK9xfCv28GOH3Q4lA/360fx360f",
+      "size": 15,
+      "color": "#0000ff",
+      "cost": "$1000"
+    },
+    {
+      "id": "AutoScaling",
+      "label": "AutoScaling",
+      "name": "AutoScaling",
+      "shape": "image",
+      "image": "https://www.pinpng.com/pngs/m/73-732279_amazon-web-services-autoscaling-logo-aws-auto-scaling.png",
+      "size": 15,
+      "color": "#0000ff",
+      "cost": "$1000"
+    },
+    {
+      "id": "EC2",
+      "label": "EC2",
+      "name": "EC2",
+      "shape": "image",
+      "image": " https://res.cloudinary.com/hy4kyit2a/f_auto,fl_lossy,q_70/learn/modules/core-aws-services/explore-cloud-compute-with-aws/images/a5e3449a391958b596f22761913e5c59_5-e-0-ae-8-c-9-1-f-6-c-42-da-9-a-10-68-a-176505-eaf.png ",
+      "size": 15,
+      "color": "#0000ff",
+      "cost": "$1000"
+    },
+    {
+      "id": "Appsync",
+      "label": "Appsync",
+      "name": "Appsync",
+      "shape": "image",
+      "image": "https://i.gyazo.com/d7ed08df341eebb280654d09d1e4ce41.png ",
+      "size": 15,
+      "color": "#0000ff",
+      "cost": "$1000"
+    },
+    {
+      "id": "Backup",
+      "label": "Backup",
+      "name": "Backup",
+      "shape": "Backup",
+      "image": "https://th.bing.com/th/id/R.b173ce74afbe28081292046519578c5f?rik=pDPwPb7GgzHgvQ&riu=http%3a%2f%2fwww.pngall.com%2fwp-content%2fuploads%2f2%2fBackup-PNG-HD-Image.png&ehk=V7JJUgrdTXSNmATXP5KWzSu4%2bdXJfksRuVQ8kkCPJ30%3d&risl=&pid=ImgRaw&r=0 ",
+      "size": 15,
+      "color": "#0000ff",
+      "cost": "$1000"
+    },
+    {
+      "id": "LoadBalancer",
+      "label": "LoadBalancer",
+      "name": "LoadBalancer",
+      "shape": "LoadBalancer",
+      "image": "https://th.bing.com/th/id/R.911fcb7d1a4f3c2718d0e4d872f0336e?rik=OHdwSKV5EdjTKw&riu=http%3a%2f%2fwww.freeiconspng.com%2fuploads%2fload-balancer-icon-3.png&ehk=2GvT4dPwSaXof3TgGWXSknzRH0aUG%2bLD2LYjT9fZRvU%3d&risl=&pid=ImgRaw&r=0",
+      "size": 15,
+      "color": "#0000ff",
+      "cost": "$1000"
+    },
+    {
+      "id": "Postman",
+      "label": "Postman",
+      "name": "Postman",
+      "shape": "Postman",
+      "image": "https://www.dlatesterow.pl/wp-content/uploads/2017/07/postman.jpg",
+      "size": 20,
+      "color": "#0000ff",
+      "cost": "$1000"
+    }
+  ],
+  "edges": [
+    
+  ]
+}
