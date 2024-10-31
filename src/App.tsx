@@ -26,7 +26,7 @@ const App: React.FC = () => {
 
   //uso del hook
   // Pass getData correctly to useGraphFunctions
-  const { editNode, editEdge, addNode, findNodeDetails } = useGraphFunctions(setData, getData);
+  const { editNode, editEdge, addNode } = useGraphFunctions(setData, getData);
 
   const { contextMenu, handleContextMenu, handleAddData, closeContextMenu, handleSearchExtended } = useContextMenu(data, setData, getData);
   const { searchData } = useSearchEntity();
@@ -52,7 +52,7 @@ const App: React.FC = () => {
   }
   , [data]);
 
-  const options = {
+  /*const options = {
     interaction: { selectable: true, hover: true },
     manipulation: {
       enabled: true,
@@ -63,6 +63,64 @@ const App: React.FC = () => {
       editEdge: editEdge,
       deleteNode: true,
       deleteEdge: true,
+    },
+  };
+  
+   physics: {
+      enabled: true, // Habilitar la física para permitir el movimiento de nodos
+      solver: 'forceAtlas2Based',
+      forceAtlas2Based: {
+        gravitationalConstant: -50,
+        centralGravity: 0.01,
+        springLength: 100,
+        springConstant: 0.08,
+        damping: 0.99, // Aumentar el damping para reducir el rebote
+        avoidOverlap: 1,
+      },
+
+  */
+
+  const options = {
+    locale: 'es',
+    interaction: { selectable: true, hover: true, dragNodes: true }, // Permitir mover nodos
+    manipulation: {
+      enabled: true,
+      initiallyActive: true,
+      addNode: addNode,
+      addEdge: true,
+      editNode: editNode,
+      editEdge: editEdge,
+      deleteNode: true,
+      deleteEdge: true,
+    },
+    physics: {
+      enabled: true, // Habilitar la física para permitir el movimiento de nodos
+      solver: 'hierarchicalRepulsion',
+      hierarchicalRepulsion: {
+        centralGravity: 0.0,
+        springLength: 150, // Aumentar la longitud de los resortes para más espacio entre nodos
+        springConstant: 0.01,
+        nodeDistance: 200, // Aumentar la distancia entre nodos
+        damping: 0.09, // Aumentar el damping para reducir el rebote
+        avoidOverlap: 1, // Evitar la superposición de nodos
+      },
+      stabilization: {
+        enabled: true,
+        iterations: 1000,
+        updateInterval: 25,
+        onlyDynamicEdges: false,
+        fit: true,
+      },
+    },
+    layout: {
+      hierarchical: {
+        enabled: true,
+        direction: 'UD', // 'UD' for Up-Down
+        sortMethod: 'directed', // 'directed' or 'hubsize'
+        nodeSpacing: 500, // Aumentar el espaciado entre nodos
+        levelSeparation: 150, // Aumentar la separación entre niveles
+        shakeTowards: 'roots', // 'roots' or 'leaves'
+      },
     },
   };
 

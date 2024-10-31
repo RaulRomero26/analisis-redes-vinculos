@@ -31,8 +31,8 @@ export const useGraphFunctions = (
         nodeData.shape = "image",
         nodeData.size || 15,
         nodeData.color || "blue",
-        nodeData.type,
-        nodeData.cost
+        nodeData.type = nodeData.type || "persona",
+        nodeData.data = nodeData.data || {},
       );
       console.log("New node:", newNode);
       return {

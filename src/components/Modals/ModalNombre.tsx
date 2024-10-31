@@ -32,7 +32,7 @@ const ModalNombre: React.FC<ModalNombreProps> = ({ isModalOpen, toggleModal, set
       type: 'persona',
     };
     addNode(nodeData, (newNode) => {
-      console.log('Node added:', newNode);
+      console.log('Node added desde el form:', newNode);
     });
     
     toggleModal();
