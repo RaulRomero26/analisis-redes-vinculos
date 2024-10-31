@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useGraphFunctions } from "../hooks/useGraphFunctions";
+import { NodeData } from "../interfaces/NodeData";
 
 interface ContextMenuProps {
     x: number;
@@ -9,10 +10,11 @@ interface ContextMenuProps {
     setData: React.Dispatch<React.SetStateAction<any>>;
     onAddData: () => void;
     onClose: () => void;
+    onShowDetails: (node:NodeData) => void;
     onSearchExtended: (query: string) => void;
 }
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId,getData,setData,onSearchExtended, onClose }) => {
+const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId,getData,setData,onShowDetails,onSearchExtended, onClose }) => {
 
     const [nodeDetails, setNodeDetails] = useState<any>(null);
 
@@ -50,6 +52,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId,getData,setData,
                         <li onClick={() => onSearchExtended('Extraer Contactos')}>Extraer Contactos</li>
                     )
                 }
+
+                <li onClick={()=>onShowDetails(nodeDetails)}>Mostrar Detalles</li>
                 
                 <li onClick={onClose}>Cerrar</li>
             </ul>

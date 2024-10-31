@@ -13,6 +13,7 @@ import { useSearchEntity } from "./hooks/useSearchEntity";
 import { ModalSwitch, ModalNombre } from "./components/Modals";
 import { NodeData } from "./interfaces/NodeData";
 import SaveNetwork from "./components/SaveNetwork";
+import { useShowDetails } from "./hooks/useShowDetails";
 
 const App: React.FC = () => {
   const [data, setData] = useState<GraphData>({
@@ -31,6 +32,8 @@ const App: React.FC = () => {
 
   const { contextMenu, handleContextMenu, handleAddData, closeContextMenu, handleSearchExtended } = useContextMenu(data, setData, getData);
   const { searchData } = useSearchEntity();
+  const { showDetails } = useShowDetails();
+
 
   const handleNodeClick = (event: any) => {
     console.log("Node clicked:", event);
@@ -48,38 +51,14 @@ const App: React.FC = () => {
     searchData({ entidad, payload: {} }); 
   };
 
+  const handleShowDetails = (node: NodeData) => {
+    showDetails(node);
+  };
+
   useEffect(() => {
     console.log("Data CAMBIO:", data);
   }
   , [data]);
-
-  /*const options = {
-    interaction: { selectable: true, hover: true },
-    manipulation: {
-      enabled: true,
-      initiallyActive: true,
-      addNode: addNode,
-      addEdge: true,
-      editNode: editNode,
-      editEdge: editEdge,
-      deleteNode: true,
-      deleteEdge: true,
-    },
-  };
-  
-   physics: {
-      enabled: true, // Habilitar la física para permitir el movimiento de nodos
-      solver: 'forceAtlas2Based',
-      forceAtlas2Based: {
-        gravitationalConstant: -50,
-        centralGravity: 0.01,
-        springLength: 100,
-        springConstant: 0.08,
-        damping: 0.99, // Aumentar el damping para reducir el rebote
-        avoidOverlap: 1,
-      },
-
-  */
 
   const options = {
     locale: 'es',
@@ -142,6 +121,7 @@ const App: React.FC = () => {
             onAddData={handleAddData}
             onSearchExtended={handleSearchExtended}
             onClose={closeContextMenu}
+            onShowDetails={handleShowDetails}
           />
         )}
       </div>
