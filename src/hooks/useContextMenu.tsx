@@ -157,6 +157,21 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 addEdge({ from: node.id, to: newNode.id, label: 'Contacto de detenido' }, (data: any) => {
                     console.log('Edge added:', data);
                 });
+
+                if(newNode.data.Telefono !== '' || newNode.data.Telefono !== '0') {
+                    const newNodePhone = createNodeData(uuidv4(), newNode.data.Telefono, newNode.data.Telefono, "image", 15, "blue", "telefono",newNode.data);
+
+                    addNode(newNodePhone , (data: any) => {
+                        console.warn('Node added:', data);
+                    });
+
+                    addEdge({ from: newNode.id, to: newNodePhone.id, label:'Telefono de contacto' }, (data: any) => {
+                        console.log('Edge added:', data);
+                    });
+
+                }
+
+                addNode
             });
         }
     };

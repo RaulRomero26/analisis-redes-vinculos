@@ -74,7 +74,7 @@ const App: React.FC = () => {
       deleteEdge: true,
     },
     physics: {
-      enabled: true, // Habilitar la física para permitir el movimiento de nodos
+      enabled: false, // Habilitar la física para permitir el movimiento de nodos
       solver: 'hierarchicalRepulsion',
       hierarchicalRepulsion: {
         centralGravity: 0.0,
