@@ -12,6 +12,7 @@ import DropdownMenu from "./ui/DropDownMenu";
 import { useSearchEntity } from "./hooks/useSearchEntity";
 import { ModalSwitch, ModalNombre } from "./components/Modals";
 import { NodeData } from "./interfaces/NodeData";
+import SaveNetwork from "./components/SaveNetwork";
 
 const App: React.FC = () => {
   const [data, setData] = useState<GraphData>({
@@ -129,7 +130,7 @@ const App: React.FC = () => {
       <div className="grid grid-cols-1 gap-4">
         <DropdownMenu handleMenuClick={handleMenuClick} />
       </div>
-      <div className="" style={{ height: '80vh' }}>
+      <div className="" style={{ height: '85vh' }}>
         <NetworkGraph data={data} options={options} onClick={handleNodeClick} onContext={handleContextMenu} />
         {(contextMenu.edgeId || contextMenu.nodeId) && (
           <ContextMenu
@@ -146,6 +147,7 @@ const App: React.FC = () => {
       </div>
       <ModalSwitch entidad={entidad} isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData}/>
       <ModalNombre isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData} />
+      <SaveNetwork data={data} setData={setData} />
     </div>
   );
 };
