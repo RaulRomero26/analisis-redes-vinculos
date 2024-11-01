@@ -30,6 +30,12 @@ const ModalNombre: React.FC<ModalNombreProps> = ({ isModalOpen, toggleModal, set
       size: 15,
       color: 'blue',
       type: 'persona',
+      entidad: 'persona',
+      data: {
+        Nombre: data.nombre,
+        Ap_Paterno: data.apPaterno,
+        Ap_Materno: data.apMaterno,
+      },
     };
     addNode(nodeData, (newNode) => {
       console.log('Node added desde el form:', newNode);

@@ -107,7 +107,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             respuesta.data.remisiones.map((item: any) => {
                 console.log('item:',item);
                 
-                const newNode = createNodeData(uuidv4(), item.No_Remision, item.No_Remision, "image", 15, "blue", "remision",item);
+                const newNode = createNodeData(uuidv4(), item.No_Remision, item.No_Remision, "image", 15, "blue", "remision", 'persona', item);
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode , (data: any) => {
                     console.warn('Node added:', data);
@@ -128,7 +128,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             respuesta.data.remisiones.map((item: any) => {
                 console.log('item:',item);
                 if(item.Telefono === '') return;
-                const newNode = createNodeData(uuidv4(), item.Telefono, item.Telefono, "image", 15, "blue", "telefono",item);
+                const newNode = createNodeData(uuidv4(), item.Telefono, item.Telefono, "image", 15, "blue", "telefono",'telefono',item);
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode , (data: any) => {
                     console.warn('Node added:', data);
@@ -149,7 +149,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             respuesta.data.remisiones.map((item: any) => {
                 console.log('item:',item);
                 
-                const newNode = createNodeData(uuidv4(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, item.Telefono, "image", 15, "blue", "persona",item);
+                const newNode = createNodeData(uuidv4(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, item.Telefono, "image", 15, "blue", "persona", 'persona',item);
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode , (data: any) => {
                     console.warn('Node added:', data);
@@ -160,7 +160,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 });
 
                 if(newNode.data.Telefono !== '' || newNode.data.Telefono !== '0') {
-                    const newNodePhone = createNodeData(uuidv4(), newNode.data.Telefono, newNode.data.Telefono, "image", 15, "blue", "telefono",newNode.data);
+                    const newNodePhone = createNodeData(uuidv4(), newNode.data.Telefono, newNode.data.Telefono, "image", 15, "blue", "telefono",'telefono',newNode.data);
 
                     addNode(newNodePhone , (data: any) => {
                         console.warn('Node added:', data);
@@ -185,7 +185,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             respuesta.data.historico.map((item: any) => {
                 console.log('item HISTORICO:',item);
                 
-                const newNode = createNodeData(uuidv4(), item.Folio, item.Folio, "image", 15, "blue", "remision-historica",item);
+                const newNode = createNodeData(uuidv4(), item.Folio, item.Folio, "image", 15, "blue", "remision-historica",'persona',item);
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode , (data: any) => {
                     console.warn('Node added:', data);
@@ -206,7 +206,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             respuesta.data.inspeccion.map((item: any) => {
                 console.log('item:',item);
                 
-                const newNode = createNodeData(uuidv4(), item.Id_Inspeccion, item.Id_Inspeccion, "image", 15, "blue", "inspeccion",item);
+                const newNode = createNodeData(uuidv4(), item.Id_Inspeccion, item.Id_Inspeccion, "image", 15, "blue", "inspeccion",'persona',item);
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode , (data: any) => {
                     console.warn('Node added:', data);
@@ -227,7 +227,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             respuesta.data.remisiones.map((item: any) => {
                 console.log('item:',item);
                 
-                const newNode = createNodeData(uuidv4(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, "image", 15, "blue", "persona",item);
+                const newNode = createNodeData(uuidv4(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, "image", 15, "blue", "persona",'persona',item);
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode , (data: any) => {
                     console.warn('Node added:', data);

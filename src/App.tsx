@@ -65,7 +65,9 @@ const App: React.FC = () => {
       hover: true, 
       dragNodes: true,
       zoomSpeed: 1,
-      zoomView: true 
+      zoomView: true ,
+      navigationButtons: true,
+      keyboard: true,
     }, // Permitir mover nodos
     manipulation: {
       enabled: true,
@@ -78,14 +80,14 @@ const App: React.FC = () => {
       deleteEdge: true,
     },
     physics: {
-      enabled: false, // Habilitar la física para permitir el movimiento de nodos
+      enabled: true, // Habilitar la física para permitir el movimiento de nodos
       solver: 'hierarchicalRepulsion',
       hierarchicalRepulsion: {
         centralGravity: 0.0,
         springLength: 150, // Aumentar la longitud de los resortes para más espacio entre nodos
         springConstant: 0.01,
-        nodeDistance: 150, // Aumentar la distancia entre nodos
-        damping: 0.09, // Aumentar el damping para reducir el rebote
+        nodeDistance: 250, // Aumentar la distancia entre nodos
+        damping: 1, // Aumentar el damping para reducir el rebote
         avoidOverlap: 1, // Evitar la superposición de nodos
       },
       stabilization: {
