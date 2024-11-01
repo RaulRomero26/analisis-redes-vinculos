@@ -115,6 +115,26 @@ const searchInspeccion = async ({ entidad, payload }: { entidad: string; payload
   }
 };
 
+const searchDetenidoCon = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
+
+  console.log('Buscando Detenido Con', payload);
+  try {
+    const response = await fetch('http://localhost:8087/api/search/detenidoCon', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    setData(data.data.detenidoCon);
+    console.log( 'RESPUESTA:',data.data.detenidoCon);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 
   return {
     searchData,
@@ -122,6 +142,7 @@ const searchInspeccion = async ({ entidad, payload }: { entidad: string; payload
     searchContacts,
     searchHistorico,
     searchInspeccion,
+    searchDetenidoCon,
     data,
   };
 };

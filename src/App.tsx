@@ -25,8 +25,6 @@ const App: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [entidad, setEntidad] = useState('');
-
-  //uso del hook
   // Pass getData correctly to useGraphFunctions
   const { editNode, editEdge, addNode } = useGraphFunctions(setData, getData);
 
@@ -62,7 +60,13 @@ const App: React.FC = () => {
 
   const options = {
     locale: 'es',
-    interaction: { selectable: true, hover: true, dragNodes: true }, // Permitir mover nodos
+    interaction: { 
+      selectable: true, 
+      hover: true, 
+      dragNodes: true,
+      zoomSpeed: 1,
+      zoomView: true 
+    }, // Permitir mover nodos
     manipulation: {
       enabled: true,
       initiallyActive: true,
@@ -80,7 +84,7 @@ const App: React.FC = () => {
         centralGravity: 0.0,
         springLength: 150, // Aumentar la longitud de los resortes para más espacio entre nodos
         springConstant: 0.01,
-        nodeDistance: 200, // Aumentar la distancia entre nodos
+        nodeDistance: 150, // Aumentar la distancia entre nodos
         damping: 0.09, // Aumentar el damping para reducir el rebote
         avoidOverlap: 1, // Evitar la superposición de nodos
       },
@@ -128,6 +132,7 @@ const App: React.FC = () => {
       <ModalSwitch entidad={entidad} isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData}/>
       <ModalNombre isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData} />
       <SaveNetwork data={data} setData={setData} />
+      
     </div>
   );
 };

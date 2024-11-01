@@ -22,7 +22,8 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         searchPhone,
         searchContacts,
         searchHistorico,
-        searchInspeccion
+        searchInspeccion,
+        searchDetenidoCon
     } = useSearchEntity();
 
     const { addNode,addEdge } = useGraphFunctions(setData,getData);
@@ -76,7 +77,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     case 'remision':
                         if(opcion === 'Telefono') handleSearchTelefono(node);
                         if(opcion ==='Extraer Contactos') handleSearchContactos(node);
-                        
+                        if(opcion ==='Detenido Con') handleSearchDetenidoCon(node);
                         break;
                     
                     case 'telefono':
@@ -212,6 +213,27 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 });
 
                 addEdge({ from: node.id, to: newNode.id, label: `Inspeccionado ${new Date(newNode.data.Fecha_Hora_Inspeccion).toLocaleDateString()}`} , (data: any) => {
+                    console.log('Edge added:', data);
+                });
+            });
+        }
+    };
+
+    const handleSearchDetenidoCon = async(node:NodeData) => {
+        const respuesta =await  searchDetenidoCon({ entidad: node.type || '', payload: { Ficha: node.data.Ficha, RemisionPrimaria: node.data.No_Remision} });
+        console.log('RESPUESTA:',respuesta.data.remisiones);
+        if(respuesta.data.remisiones.length){
+            console.log('SI HAY DETENIDOS CON');
+            respuesta.data.remisiones.map((item: any) => {
+                console.log('item:',item);
+                
+                const newNode = createNodeData(uuidv4(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, "image", 15, "blue", "persona",item);
+                console.warn('NEW NODE TO EDGE:',newNode);
+                addNode(newNode , (data: any) => {
+                    console.warn('Node added:', data);
+                });
+
+                addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
                     console.log('Edge added:', data);
                 });
             });

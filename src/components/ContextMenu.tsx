@@ -49,7 +49,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId,getData,setData,
                 }
                 {
                     nodeDetails && nodeDetails.type === 'remision' && (
+                        <>
                         <li onClick={() => onSearchExtended('Extraer Contactos')}>Extraer Contactos</li>
+                        <li onClick={() => onSearchExtended('Detenido Con')}>Detenido Con</li>
+                        </>
                     )
                 }
 
