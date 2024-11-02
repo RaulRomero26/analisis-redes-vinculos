@@ -37,6 +37,14 @@ const App: React.FC = () => {
     console.log("Node clicked:", event);
   };
 
+  const handleNodeHover = (event: any) => {
+    console.log("Node hovered:", event);
+  }
+
+  const handleEdgeHover = (event: any) => {
+    console.log("Edge hovered:", event);
+  }
+  
   const toggleModal = (entidad?: string) => {
     setIsModalOpen(!isModalOpen);
     if (entidad) {
@@ -116,7 +124,14 @@ const App: React.FC = () => {
         <DropdownMenu handleMenuClick={handleMenuClick} />
       </div>
       <div className="" style={{ height: '85vh' }}>
-        <NetworkGraph data={data} options={options} onClick={handleNodeClick} onContext={handleContextMenu} />
+        <NetworkGraph 
+          data={data} 
+          options={options} 
+          onClick={handleNodeClick} 
+          onNodeHover={handleNodeHover} 
+          onEdgeHover={handleEdgeHover}
+          onContext={handleContextMenu}
+          />
         {(contextMenu.edgeId || contextMenu.nodeId) && (
           <ContextMenu
             x={contextMenu.x}
