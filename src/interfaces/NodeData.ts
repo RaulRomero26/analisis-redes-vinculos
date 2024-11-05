@@ -10,6 +10,7 @@ import detencion from '../assets/detencion.png';
 import detencionHistorico from '../assets/detenicion-historico.png';
 
 export interface NodeData {
+  //obligatorios de la libreria
   id: string;
   label: string;
   name: string;
@@ -17,9 +18,13 @@ export interface NodeData {
   image: string;
   size: number;
   color: string;
+  //obligatorios para mi programa
   type: string;
   entidad: string;
   data: any;
+  //opcionales para mi programa 
+  atributos?: any;
+  font?: any;
 }
 
 export function getImageForType(type?: string): string {
@@ -43,7 +48,7 @@ export function getImageForType(type?: string): string {
   }
 }
 
-export function createNodeData(id: string, label: string, name: string, shape: string, size: number, color: string, type: string, entidad: string, data:any ,): NodeData {
+export function createNodeData(id: string, label: string, name: string, shape: string, size: number, color: string, type: string, entidad: string, data:any , atributos: any): NodeData {
   return {
     id,
     label,
@@ -54,6 +59,7 @@ export function createNodeData(id: string, label: string, name: string, shape: s
     color,
     type,
     entidad,
-    data
+    data,
+    atributos
   };
 }

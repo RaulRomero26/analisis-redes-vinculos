@@ -6,13 +6,7 @@ export const useSearchEntity = () => {
   type Payload = { [key: string]: any };
 
   const searchData = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
-    switch (entidad) {
-      // case 'persona':
-      //   console.log('Buscando persona', payload);
-      //   break;
-      case 'persona':
-      case 'remision':
-        console.log('Buscando remision', payload);
+    console.log('Buscando Remisiones', payload);
         try {
           const response = await fetch('http://localhost:8087/api/search/remisiones', {
             method: 'POST',
@@ -28,10 +22,7 @@ export const useSearchEntity = () => {
         } catch (error) {
           console.error(error);
         }
-        break;
-      default:
-        break;
-    }
+      
   };
 
   const searchPhone = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {

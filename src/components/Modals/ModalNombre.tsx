@@ -23,23 +23,18 @@ const ModalNombre: React.FC<ModalNombreProps> = ({ isModalOpen, toggleModal, set
 
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const nodeData = {
-      id: `${data.nombre}-${Date.now()}`,
+      id: `${data.nombre} ${data.apPaterno} ${data.apMaterno}`,
       label: `${data.nombre} ${data.apPaterno} ${data.apMaterno}`,
       name: data.nombre,
       shape: 'circle',
       size: 15,
       color: 'blue',
-      type: 'persona',
+      type: 'entrda-persona',
       entidad: 'persona',
-      data: {
-        Nombre: data.nombre,
-        Ap_Paterno: data.apPaterno,
-        Ap_Materno: data.apMaterno,
-      },
+      data: {},
+      atributos: {}
     };
-    addNode(nodeData, (newNode) => {
-      console.log('Node added desde el form:', newNode);
-    });
+    addNode(nodeData);
     
     toggleModal();
   };

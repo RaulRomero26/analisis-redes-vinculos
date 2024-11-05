@@ -10,7 +10,7 @@ import useContextMenu from "./hooks/useContextMenu";
 import { EdgeData } from "./interfaces/EdgeData";
 import DropdownMenu from "./ui/DropDownMenu";
 import { useSearchEntity } from "./hooks/useSearchEntity";
-import { ModalSwitch, ModalNombre } from "./components/Modals";
+import { ModalSwitch, ModalNombre, ModalFichas } from "./components/Modals";
 import { NodeData } from "./interfaces/NodeData";
 import SaveNetwork from "./components/SaveNetwork";
 import { useShowDetails } from "./hooks/useShowDetails";
@@ -26,9 +26,9 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [entidad, setEntidad] = useState('');
   // Pass getData correctly to useGraphFunctions
-  const { editNode, editEdge, addNode } = useGraphFunctions(setData, getData);
+  const { editNode, editEdge, addEdgeControl, addNode, deleteNode, deleteEdge } = useGraphFunctions(setData, getData);
 
-  const { contextMenu, handleContextMenu, handleAddData, closeContextMenu, handleSearchExtended } = useContextMenu(data, setData, getData);
+  const { contextMenu, handleContextMenu, handleAddData, closeContextMenu, handleSearchExtended, handleDetenidoConModal, isModalFichasOpen, selectedNode, setIsModalFichasOpen } = useContextMenu(data, setData, getData);
   const { searchData } = useSearchEntity();
   const { showDetails } = useShowDetails();
 
@@ -81,11 +81,11 @@ const App: React.FC = () => {
       enabled: true,
       initiallyActive: true,
       addNode: addNode,
-      addEdge: true,
+      addEdge: addEdgeControl,
       editNode: editNode,
       editEdge: editEdge,
-      deleteNode: true,
-      deleteEdge: true,
+      deleteNode: deleteNode,
+      deleteEdge: deleteEdge,
     },
     physics: {
       enabled: true, // Habilitar la física para permitir el movimiento de nodos
@@ -144,7 +144,17 @@ const App: React.FC = () => {
             onClose={closeContextMenu}
             onShowDetails={handleShowDetails}
           />
+          
         )}
+
+                {/* Modal que se muestra cuando isModalOpen es true */}
+                {isModalFichasOpen && (
+                <ModalFichas
+                    node={selectedNode}   // Pasa el nodo seleccionado al modal
+                    isOpen={isModalOpen}  // Controla la visibilidad
+                    onClose={() => setIsModalOpen(false)} // Función para cerrar el modal
+                />
+            )}
       </div>
       <ModalSwitch entidad={entidad} isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData}/>
       <ModalNombre isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData} />
