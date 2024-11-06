@@ -10,7 +10,7 @@ import useContextMenu from "./hooks/useContextMenu";
 import { EdgeData } from "./interfaces/EdgeData";
 import DropdownMenu from "./ui/DropDownMenu";
 import { useSearchEntity } from "./hooks/useSearchEntity";
-import { ModalSwitch, ModalNombre, ModalFichas } from "./components/Modals";
+import { ModalSwitch, ModalNombre, ModalFichas, ModalContactos } from "./components/Modals";
 import { NodeData } from "./interfaces/NodeData";
 import SaveNetwork from "./components/SaveNetwork";
 import { useShowDetails } from "./hooks/useShowDetails";
@@ -28,7 +28,9 @@ const App: React.FC = () => {
   // Pass getData correctly to useGraphFunctions
   const { editNode, editEdge, addEdgeControl, addNode, deleteNode, deleteEdge } = useGraphFunctions(setData, getData);
 
-  const { contextMenu, handleContextMenu, handleAddData, closeContextMenu, handleSearchExtended, handleDetenidoConModal, isModalFichasOpen, selectedNode, setIsModalFichasOpen } = useContextMenu(data, setData, getData);
+  const { contextMenu, handleContextMenu, handleAddData, closeContextMenu, handleSearchExtended, 
+          isModalFichasOpen, selectedNode, setIsModalFichasOpen, isModalContactosOpen, setIsModalContactosOpen 
+  } = useContextMenu(data, setData, getData);
   const { searchData } = useSearchEntity();
   const { showDetails } = useShowDetails();
 
@@ -94,7 +96,7 @@ const App: React.FC = () => {
         centralGravity: 0.0,
         springLength: 250, // Aumentar la longitud de los resortes para más espacio entre nodos
         springConstant: 0.01,
-        nodeDistance: 350, // Aumentar la distancia entre nodos
+        nodeDistance: 450, // Aumentar la distancia entre nodos
         damping: 1, // Aumentar el damping para reducir el rebote
         avoidOverlap: 1, // Evitar la superposición de nodos
       },
@@ -103,7 +105,6 @@ const App: React.FC = () => {
         iterations: 1000,
         updateInterval: 25,
         onlyDynamicEdges: false,
-        fit: true,
       },
     },
     layout: {
@@ -111,7 +112,7 @@ const App: React.FC = () => {
         enabled: true,
         direction: 'UD', // 'UD' for Up-Down
         sortMethod: 'hubsize', // 'directed' or 'hubsize'
-        nodeSpacing: 600, // Aumentar el espaciado entre nodos
+        nodeSpacing: 800, // Aumentar el espaciado entre nodos
         levelSeparation: 250, // Aumentar la separación entre niveles
         shakeTowards: 'roots', // 'roots' or 'leaves'
       },
@@ -158,7 +159,20 @@ const App: React.FC = () => {
                     getData={getData}
                      // Función para cerrar el modal
                 />
-            )}
+              )}
+
+                              {/* Modal que se muestra cuando isModalOpen es true */}
+                {isModalContactosOpen && (
+                <ModalContactos
+                    node={selectedNode}   // Pasa el nodo seleccionado al modal
+                    isOpen={isModalOpen}  // Controla la visibilidad
+                    onClose={() => setIsModalContactosOpen(false)}
+                    data={data}
+                    setData={setData}
+                    getData={getData}
+                     // Función para cerrar el modal
+                />
+              )}
       </div>
       <ModalSwitch entidad={entidad} isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData}/>
       <ModalNombre isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData} />

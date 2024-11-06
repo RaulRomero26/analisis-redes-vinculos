@@ -6,7 +6,6 @@ import { useSearchEntity } from './useSearchEntity';
 import { useGraphFunctions } from './useGraphFunctions';
 import { createNodeData, NodeData } from '../interfaces/NodeData';
 import { v4 as uuidv4 } from 'uuid';
-import { ModalFichas } from '../components/Modals';
 
 interface ContextMenuState {
     x: number;
@@ -19,14 +18,14 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     const [contextMenu, setContextMenu] = useState<ContextMenuState>({ x: 0, y: 0, edgeId: null, nodeId: null });
     const [isModalFichasOpen, setIsModalFichasOpen] = useState(false);  // Añade estado para el modal
     const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
+    const [isModalContactosOpen, setIsModalContactosOpen] = useState(false);  // Añade estado para el modal
 
     const {
         searchData,
         searchPhone,
-        searchContacts,
         searchHistorico,
         searchInspeccion,
-        searchDetenidoCon
+        searchVehiculoInspeccion,
     } = useSearchEntity();
 
     const { addNode,addEdge } = useGraphFunctions(setData,getData);
@@ -75,15 +74,19 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 switch (node.type) {
                     case 'persona':
                     case 'entrda-persona':
+                    case 'contacto':
+                    
                         if(opcion === 'Buscar Remisiones')handleSearchRemisiones(node);
                         if(opcion === 'Buscar Maestro')handleSearchMaestroPersona(node);
                         if(opcion === 'Telefono') handleSearchTelefono(node);
-                        if(opcion ==='Extraer Contactos') handleSearchContactos(node);
+                        if(opcion === 'Consultas') handleSearchInspeccion(node);
+                        if(opcion ==='Extraer Contactos') handleContactosModal(node);
                         if(opcion ==='Detenido Con') handleDetenidoConModal(node);
+                        
                         break;
                     
-                    case 'telefono':
-
+                    case 'inspeccion':
+                        if(opcion === 'Vehiculos') handleSearchVehiculosInspeccion(node);
                         break;
 
                 
@@ -127,45 +130,10 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         }
     };
 
-    const handleSearchContactos = async(node:NodeData) => {
-        const respuesta =await  searchContacts({ entidad: node.type || '', payload: { label: node.label,data: node.data } });
-        console.log('RESPUESTA:',respuesta.data.remisiones);
-        if(respuesta.data.remisiones.length){
-            console.log('SI HAY CONTACTOS');
-            respuesta.data.remisiones.map((item: any) => {
-                console.log('item:',item);
-                
-                const newNode = createNodeData(uuidv4(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, item.Telefono, "image", 15, "blue", "persona", 'persona',item,{});
-                console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
-                        console.error('Error adding node');
-                    }
-                });
-
-                addEdge({ from: node.id, to: newNode.id, label: 'Contacto de detenido' }, (data: any) => {
-                    console.log('Edge added:', data);
-                });
-
-                if(newNode.data.Telefono !== '' || newNode.data.Telefono !== '0') {
-                    const newNodePhone = createNodeData(uuidv4(), newNode.data.Telefono, newNode.data.Telefono, "image", 15, "blue", "telefono",'telefono',newNode.data,{});
-
-                    addNode(newNodePhone , (success: boolean) => {
-                        console.log('Node added:', success);
-                        if (!success) {
-                            console.error('Error adding node');
-                        }
-                    });
-                    addEdge({ from: newNode.id, to: newNodePhone.id, label:'Telefono de contacto' }, (data: any) => {
-                        console.log('Edge added:', data);
-                    });
-
-                }
-
-                addNode
-            });
-        }
+    const handleContactosModal = (node: NodeData) => {
+        console.log('Disparando el modal con el nodo:', node);
+        setSelectedNode(node);  // Guarda el nodo seleccionado
+        setIsModalContactosOpen(true);    // Abre el modal
     };
 
     const handleDetenidoConModal = (node: NodeData) => {
@@ -174,31 +142,6 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         setIsModalFichasOpen(true);    // Abre el modal
     };
 
-
-    const handleSearchDetenidoCon = async(node:NodeData) => {
-        
-        const respuesta =await  searchDetenidoCon({ entidad: node.type || '', payload: { Ficha: node.data.Ficha, RemisionPrimaria: node.data.No_Remision} });
-        console.log('RESPUESTA:',respuesta.data.remisiones);
-        if(respuesta.data.remisiones.length){
-            console.log('SI HAY DETENIDOS CON');
-            respuesta.data.remisiones.map((item: any) => {
-                console.log('item:',item);
-                
-                const newNode = createNodeData(uuidv4(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, "image", 15, "blue", "persona",'persona',item,{});
-                console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode , (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
-                        console.error('Error adding node');
-                    }
-                });
-
-                addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
-                    console.log('Edge added:', data);
-                });
-            });
-        }
-    };
 
     /* FUNCIONES DE AGREGACION DE PROPIEDADES */
 
@@ -295,33 +238,77 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     };
 
     const handleSearchInspeccion = async(node:NodeData) => {
-        const respuesta =await  searchInspeccion({ entidad: node.type || '', payload: { label: node.label } });
+        const respuesta =await  searchInspeccion({ entidad: node.type || '', payload: { label: node.id } });
         console.log('RESPUESTA:',respuesta.data.inspeccion);
         if(respuesta.data.inspeccion.length > 0){
-            const updatedNodes = data.nodes.map(n => {
-                if (n.id === node.id) {
-                    let nodoModificado = n;
-                    console.log('NODO MODIFICADO:',nodoModificado);
-                    nodoModificado.data.inspeccion = respuesta.data.inspeccion;
-                    nodoModificado.atributos = {
-                        ...nodoModificado.atributos,
-                        inspecciones:
-                            respuesta.data.inspeccion.map((item: any) => ({
-                                Id_Inspeccion: item.Id_Inspeccion,
-                                Resultado_Inspeccion: item.Resultado_Inspeccion,
-                                Fecha_Inspeccion: item.Fecha_Hora_Inspeccion,
-                                Nombre: item.Nombre,
-                                Ap_Paterno: item.Ap_Paterno,
-                                Ap_Materno: item.Ap_Materno,
-                                Alias: item.Alias,
-                            }))
-                    };
-                    return nodoModificado;
-                }
-                return n;
+            respuesta.data.inspeccion.map((item: any) => {
+                console.log('item:',item);
+                if(item.Telefono === '') return;
+                const newNode = createNodeData(`${item.Coordenada_X}, ${item.Coordenada_Y}`,`${item.Coordenada_X}, ${item.Coordenada_Y}`,`${item.Coordenada_X}, ${item.Coordenada_Y}`, "image", 15, "blue", "inspeccion",'persona',item,{
+                    Alias: item.Alias,
+                    Fecha: new Date(item.Fecha_Hora_Inspeccion).toLocaleDateString(),
+                    Colonia: item.Colonia,
+                    Calle_1: item.Calle_1,
+                    Calle_2: item.Calle_2,
+                    No_Exterior: item.No_Ext,
+                    Coordenada_X: item.Coordenada_X,
+                    Coordenada_Y: item.Coordenada_Y,
                 });
-            setData({ ...data, nodes: updatedNodes });
+
+
+                console.warn('NEW NODE TO EDGE:',newNode);
+                addNode(newNode, (success: boolean) => {
+                    console.log('Node added:', success);
+                    if (!success) {
+                        console.error('Error adding node');
+                        addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
+                            console.log('Edge added:', data);
+                        });
+                    }
+                    else{
+                        addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
+                            console.log('Edge added:', data);
+                        });
+                    }
+                });
+            });
         }
+    };
+
+    const handleSearchVehiculosInspeccion = async(node:NodeData) => {
+    
+        const respuesta =await  searchVehiculoInspeccion({ entidad: node.type || '', payload: { inspeccion: node.data.Id_Inspeccion } });
+        console.log('RESPUESTA:',respuesta.data.vehiculos);
+        if(respuesta.data.vehiculos.length > 0){
+            respuesta.data.vehiculos.map((item: any) => {
+                console.log('item:',item);
+                if(item.Placas === '') return;
+                const newNode = createNodeData(`${item.Placas_Vehiculo}/${item.NIV}`,`${item.Placas_Vehiculo}/${item.NIV}`,`${item.Placas_Vehiculo}/${item.NIV}`, "image", 15, "blue", "vehiculo",'vehiculo',item,{
+                    Marca: item.Marca,
+                    Modelo: item.Modelo,
+                    Tipo: item.Tipo,
+                    Placas: item.Placas_Vehiculo,
+                    Color: item.Color,
+                    NIV: item.NIV,
+                    Submarca: item.Submarca,
+                    Colocacion_Placas: item.Colocacion_Placa,
+                });
+                console.warn('NEW NODE TO EDGE:',newNode);
+                addNode(newNode, (success: boolean) => {
+                    console.log('Node added:', success);
+                    if (!success) {
+                        console.error('Error adding node');
+                    }
+                    else{
+                        addEdge({ from: node.id, to: newNode.id, label: 'Vehiculo' }, (data: any) => {
+                            console.log('Edge added:', data);
+                        });
+                    }
+                });
+            });
+        }
+
+    
     };
 
 
@@ -340,10 +327,11 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         handleAddData,
         handleSearchExtended,
         handleDetenidoConModal,    // Exporta esta función para usarla
-        handleSearchDetenidoCon,
         isModalFichasOpen,
         selectedNode,
         setIsModalFichasOpen,
+        isModalContactosOpen,
+        setIsModalContactosOpen,
         closeContextMenu: () => setContextMenu({ x: 0, y: 0, edgeId: null, nodeId: null }),
     };
 };

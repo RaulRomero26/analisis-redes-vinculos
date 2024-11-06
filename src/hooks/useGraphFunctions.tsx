@@ -58,45 +58,61 @@ export const useGraphFunctions = (
   };
 
   const addNode = (nodeData: any, callback: (success: boolean) => void) => {
-    setData((prevData) => {
-      // Check if node with same id exists
-      const nodeExists = prevData.nodes.find(node => node.id === nodeData.id);
-      console.log('Node exists:', nodeExists);
-      if (nodeExists) {
-        console.error("Node with same ID already exists");
-        Swal.fire({
-          title: 'Error',
-          text: `Ya existe una entidad identificada ${nodeData.label}`,
-          icon: 'error',
-          confirmButtonText: 'Ok'
-        });
-        callback(false); // Indicate that the node was not added
-        return prevData; // Return previous data without modifying it
-      }else {
+    console.warn('ENTRE A AGREGAR NODO');
+      try {
+        setData((prevData) => {
+          // Check if node with same id exists
+          const nodeExists = prevData.nodes.find(node => node.id === nodeData.id);
+        console.log('DESDE ADD NODE :', nodeExists);
+        if (nodeExists !== undefined) {
+          console.error("Node with same ID already exists");
+          Swal.fire({
+            title: 'Error',
+            text: `Ya existe una entidad identificada ${nodeData.label}`,
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          });
+          callback(false); // Indicate that the node was not added
+          return prevData; // Return previous data without modifying it
+        }else {
+          console.warn('Me esta llegando:', nodeData);
+          const newNode: NodeData = createNodeData(
+            nodeData.id.toString().toUpperCase(), // Generate a unique ID
+            nodeData.label.toString().toUpperCase() || "Nuevo Nodo",
+            nodeData.name || "Nuevo Nodo",
+            "image", // nodeData.shape is always "image"
+            nodeData.size || 15,
+            nodeData.color || "blue",
+            nodeData.type || "persona",
+            nodeData.entidad, // No default value needed
+            nodeData.data || {},
+            nodeData.atributos || {}
+          );
+          newNode.font = {multi: 'html', size: 12};
+    
+          //validaciones especiales de acuerdo al type diferente a entidad
+          if(newNode.type === 'contacto'){
+            newNode.label = `${newNode.label} \n <b>Telefono: </b> ${newNode.atributos.telefono}`;
+          }
 
-        console.warn('Me esta llegando:', nodeData);
-        const newNode: NodeData = createNodeData(
-          nodeData.id.toString().toUpperCase(), // Generate a unique ID
-          nodeData.label.toString().toUpperCase() || "Nuevo Nodo",
-          nodeData.name || "Nuevo Nodo",
-          "image", // nodeData.shape is always "image"
-          nodeData.size || 15,
-          nodeData.color || "blue",
-          nodeData.type || "persona",
-          nodeData.entidad, // No default value needed
-          nodeData.data || {},
-          nodeData.atributos || {}
-        );
-        newNode.font = {multi: 'html', size: 12};
-  
-        console.log("New node:", newNode);
-        callback(true); // Indicate that the node was added successfully
-        return {
-          ...prevData,
-          nodes: [...prevData.nodes, newNode],
-        };
+          if(newNode.type === 'inspeccion'){
+            newNode.label = `${newNode.label} \n <b>Fecha: </b> ${newNode.atributos.Fecha} \n <b>Ubicación: </b> ${newNode.atributos.Colonia}, ${newNode.atributos.Calle_1},\n ${newNode.atributos.Calle_2}, ${newNode.atributos.No_Ext}`;
+          }
+
+          if(newNode.type === 'vehiculo'){
+            newNode.label = `<b>Placas: </b> ${newNode.atributos.Placas} <b>NIV: </b> ${newNode.atributos.NIV} \n <b>Marca: </b> ${newNode.atributos.Marca} \n <b>Modelo: </b> ${newNode.atributos.Modelo} \n <b>Color: </b> ${newNode.atributos.Color}`;
+          }
+          console.log("New node:", newNode);
+          callback(true); // Indicate that the node was added successfully
+          return {
+            ...prevData,
+            nodes: [...prevData.nodes, newNode],
+          };
+        }
+      });      
+      } catch (error) {
+        console.log('ERROR DESDE EL ADD:', error);
       }
-    });
   };
   
     //callback(newNode);

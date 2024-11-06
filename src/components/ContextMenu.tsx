@@ -34,23 +34,34 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setDat
         <div style={{ position: 'absolute', top: y, left: x, backgroundColor: 'white', border: '1px solid black', zIndex: 1000 }}>
             <ul>
                 {
-                    nodeDetails && (nodeDetails.type === 'persona' || nodeDetails.type === 'entrda-persona') && (
+                    nodeDetails && (nodeDetails.type === 'persona' || nodeDetails.type === 'entrda-persona'|| nodeDetails.type === 'contacto') && (
                         <>  
                             <li><b>Expandir Nodo</b></li>
                             <li onClick={() => onSearchExtended('Buscar Maestro')}>Consultar Nodo</li>
+                            <li onClick={() => onSearchExtended('Consultas')}>Consultas</li>
+                            
                         </>
                     )
 
                 }
                 <hr></hr>
                     {
-                        nodeDetails && (nodeDetails.atributos.detenciones) ? (
+                        nodeDetails && (nodeDetails.atributos.detenciones ) ? (
                             <>
-                                 <li><b>Expandir Red</b></li>
-                                <li onClick={() => onSearchExtended('Telefono')}>Telefono</li>
+                                <li><b>Expandir Red</b></li>
+                                <li onClick={() => onSearchExtended('Telefono')}>Consultar Telefono</li>
                                 <li onClick={() => onSearchExtended('Extraer Contactos')}>Extraer Contactos</li>
                                 <li onClick={() => onSearchExtended('Detenido Con')}>Detenido Con</li>
+                               
                             </>
+                        ):
+                        (
+                            <></>
+                        )
+                    }
+                    {
+                        nodeDetails && (nodeDetails.type === 'inspeccion') ? (
+                            <li onClick={() => onSearchExtended('Vehiculos')}>Consultar Vehiculo</li>
                         ):
                         (
                             <></>

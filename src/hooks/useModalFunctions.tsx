@@ -12,7 +12,7 @@ interface ModalFunctionsProps {
 
 export const useModalFunctions = ({data,setData,getData}:ModalFunctionsProps) => {
 
-    const { searchDetenidoCon } = useSearchEntity();
+    const { searchDetenidoCon, searchContacts } = useSearchEntity();
     const { addNode,addEdge } = useGraphFunctions(setData,getData);
 
 
@@ -46,8 +46,36 @@ export const useModalFunctions = ({data,setData,getData}:ModalFunctionsProps) =>
         }
     }
 
+    const handleSearchContactos = async(node:NodeData,ficha: any,remision_primaria: any) => {
+        
+        const respuesta = await searchContacts({ entidad: 'persona', payload: { ficha: ficha, remision_primaria: remision_primaria} });
+        console.log('RESPUESTA:',respuesta.data.contactos);
+        if(respuesta.data.contactos.length){
+            console.log('SI HAY CONTACTOS');
+            respuesta.data.contactos.map((item: any) => {
+                console.log('item:',item);
+                
+                const newNode = createNodeData(`${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), "image", 15, "blue", "contacto",'persona',item,{"telefono":item.Telefono});
+                console.warn('NEW NODE TO EDGE:',newNode);
+                addNode(newNode, (success: boolean) => {
+                    console.log('SE PUEDE AGREGAR? :', success);
+                    if (!success) {
+                        console.error('Error adding node');
+                       //ACA tocaria agregar peso al enlace por que significa que ya existe o verificar si es la forma correcta en arbol
+                    }else{
+
+                        addEdge({ from: node.id, to: newNode.id, label: 'Contacto' }, (data: any) => {
+                            console.log('Edge added:', data);
+                        });
+                    }
+                });
+            }
+            );}
+    }
+
 
   return {
-    handleSearchDetenidoCon
+    handleSearchDetenidoCon,
+    handleSearchContactos
   }
 }

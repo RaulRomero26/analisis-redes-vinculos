@@ -126,6 +126,26 @@ const searchDetenidoCon = async ({ entidad, payload }: { entidad: string; payloa
   }
 }
 
+const searchVehiculoInspeccion = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
+
+  console.log('Buscando Vehiculo Inspeccion', payload);
+  try {
+    const response = await fetch('http://localhost:8087/api/search/vehiculoInspeccion', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    setData(data.data.vehiculos);
+    console.log( 'RESPUESTA:',data.data.vehiculos);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 
   return {
     searchData,
@@ -134,6 +154,7 @@ const searchDetenidoCon = async ({ entidad, payload }: { entidad: string; payloa
     searchHistorico,
     searchInspeccion,
     searchDetenidoCon,
+    searchVehiculoInspeccion,
     data,
   };
 };
