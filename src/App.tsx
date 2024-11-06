@@ -111,8 +111,8 @@ const App: React.FC = () => {
         enabled: true,
         direction: 'UD', // 'UD' for Up-Down
         sortMethod: 'hubsize', // 'directed' or 'hubsize'
-        nodeSpacing: 500, // Aumentar el espaciado entre nodos
-        levelSeparation: 150, // Aumentar la separación entre niveles
+        nodeSpacing: 600, // Aumentar el espaciado entre nodos
+        levelSeparation: 250, // Aumentar la separación entre niveles
         shakeTowards: 'roots', // 'roots' or 'leaves'
       },
     },
