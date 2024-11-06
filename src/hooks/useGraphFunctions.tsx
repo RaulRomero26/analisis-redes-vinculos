@@ -57,7 +57,7 @@ export const useGraphFunctions = (
     });
   };
 
-  const addNode = (nodeData: any) => {
+  const addNode = (nodeData: any, callback: (success: boolean) => void) => {
     setData((prevData) => {
       // Check if node with same id exists
       const nodeExists = prevData.nodes.find(node => node.id === nodeData.id);
@@ -69,29 +69,33 @@ export const useGraphFunctions = (
           text: `Ya existe una entidad identificada ${nodeData.label}`,
           icon: 'error',
           confirmButtonText: 'Ok'
-          }).then(() => {});
-          return prevData;
-        }
-      console.warn('Me esta llegando:', nodeData);
-      const newNode: NodeData = createNodeData(
-        nodeData.id, // Generate a unique ID
-        nodeData.label.toString().toUpperCase() || "Nuevo Nodo",
-        nodeData.name || "Nuevo Nodo",
-        "image", // nodeData.shape is always "image"
-        nodeData.size || 15,
-        nodeData.color || "blue",
-        nodeData.type || "persona",
-        nodeData.entidad, // No default value needed
-        nodeData.data || {},
-        nodeData.atributos || {}
-      );
-      newNode.font = {multi: 'html', size: 12};
+        });
+        callback(false); // Indicate that the node was not added
+        return prevData; // Return previous data without modifying it
+      }else {
 
-      console.log("New node:", newNode);
-      return {
-        ...prevData,
-        nodes: [...prevData.nodes, newNode],
-      };
+        console.warn('Me esta llegando:', nodeData);
+        const newNode: NodeData = createNodeData(
+          nodeData.id.toString().toUpperCase(), // Generate a unique ID
+          nodeData.label.toString().toUpperCase() || "Nuevo Nodo",
+          nodeData.name || "Nuevo Nodo",
+          "image", // nodeData.shape is always "image"
+          nodeData.size || 15,
+          nodeData.color || "blue",
+          nodeData.type || "persona",
+          nodeData.entidad, // No default value needed
+          nodeData.data || {},
+          nodeData.atributos || {}
+        );
+        newNode.font = {multi: 'html', size: 12};
+  
+        console.log("New node:", newNode);
+        callback(true); // Indicate that the node was added successfully
+        return {
+          ...prevData,
+          nodes: [...prevData.nodes, newNode],
+        };
+      }
     });
   };
   

@@ -92,9 +92,9 @@ const App: React.FC = () => {
       solver: 'hierarchicalRepulsion',
       hierarchicalRepulsion: {
         centralGravity: 0.0,
-        springLength: 150, // Aumentar la longitud de los resortes para más espacio entre nodos
+        springLength: 250, // Aumentar la longitud de los resortes para más espacio entre nodos
         springConstant: 0.01,
-        nodeDistance: 250, // Aumentar la distancia entre nodos
+        nodeDistance: 350, // Aumentar la distancia entre nodos
         damping: 1, // Aumentar el damping para reducir el rebote
         avoidOverlap: 1, // Evitar la superposición de nodos
       },
@@ -110,7 +110,7 @@ const App: React.FC = () => {
       hierarchical: {
         enabled: true,
         direction: 'UD', // 'UD' for Up-Down
-        sortMethod: 'directed', // 'directed' or 'hubsize'
+        sortMethod: 'hubsize', // 'directed' or 'hubsize'
         nodeSpacing: 500, // Aumentar el espaciado entre nodos
         levelSeparation: 150, // Aumentar la separación entre niveles
         shakeTowards: 'roots', // 'roots' or 'leaves'
@@ -152,7 +152,11 @@ const App: React.FC = () => {
                 <ModalFichas
                     node={selectedNode}   // Pasa el nodo seleccionado al modal
                     isOpen={isModalOpen}  // Controla la visibilidad
-                    onClose={() => setIsModalOpen(false)} // Función para cerrar el modal
+                    onClose={() => setIsModalFichasOpen(false)}
+                    data={data}
+                    setData={setData}
+                    getData={getData}
+                     // Función para cerrar el modal
                 />
             )}
       </div>

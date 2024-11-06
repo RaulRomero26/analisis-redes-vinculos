@@ -34,7 +34,12 @@ const ModalNombre: React.FC<ModalNombreProps> = ({ isModalOpen, toggleModal, set
       data: {},
       atributos: {}
     };
-    addNode(nodeData);
+    addNode(nodeData, (success: boolean) => {
+      console.log('Node added:', success);
+      if (!success) {
+        console.error('Error adding node');
+      }
+    });
     
     toggleModal();
   };

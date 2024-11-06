@@ -113,7 +113,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 if(item.Telefono === '') return;
                 const newNode = createNodeData(uuidv4(), item.Telefono, item.Telefono, "image", 15, "blue", "telefono",'telefono',item,{});
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode);
+                addNode(newNode, (success: boolean) => {
+                    console.log('Node added:', success);
+                    if (!success) {
+                        console.error('Error adding node');
+                    }
+                });
 
                 addEdge({ from: node.id, to: newNode.id, label:'Telefono de detenido' }, (data: any) => {
                     console.log('Edge added:', data);
@@ -132,7 +137,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 
                 const newNode = createNodeData(uuidv4(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, item.Telefono, "image", 15, "blue", "persona", 'persona',item,{});
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode );
+                addNode(newNode, (success: boolean) => {
+                    console.log('Node added:', success);
+                    if (!success) {
+                        console.error('Error adding node');
+                    }
+                });
 
                 addEdge({ from: node.id, to: newNode.id, label: 'Contacto de detenido' }, (data: any) => {
                     console.log('Edge added:', data);
@@ -141,8 +151,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 if(newNode.data.Telefono !== '' || newNode.data.Telefono !== '0') {
                     const newNodePhone = createNodeData(uuidv4(), newNode.data.Telefono, newNode.data.Telefono, "image", 15, "blue", "telefono",'telefono',newNode.data,{});
 
-                    addNode(newNodePhone );
-
+                    addNode(newNodePhone , (success: boolean) => {
+                        console.log('Node added:', success);
+                        if (!success) {
+                            console.error('Error adding node');
+                        }
+                    });
                     addEdge({ from: newNode.id, to: newNodePhone.id, label:'Telefono de contacto' }, (data: any) => {
                         console.log('Edge added:', data);
                     });
@@ -172,7 +186,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 
                 const newNode = createNodeData(uuidv4(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, "image", 15, "blue", "persona",'persona',item,{});
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode );
+                addNode(newNode , (success: boolean) => {
+                    console.log('Node added:', success);
+                    if (!success) {
+                        console.error('Error adding node');
+                    }
+                });
 
                 addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
                     console.log('Edge added:', data);
@@ -213,11 +232,13 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 };
                 nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
                 let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin;
-                aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).join(', ');
-                fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).join(', ');
-                noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).join(', ');
-                curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).join(', ');
-                fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).join(', ');
+                
+                aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                
                 nodoModificado.label = `${nodoModificado.label} \n <b>Alias: </b>${aliasjoin} <b>Fecha Detencion: </b>${fechadetencionjoin} <b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} <b>Fecha Nacimiento: </b> ${fechanacimientojoin}
                 `;
                 
@@ -319,6 +340,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         handleAddData,
         handleSearchExtended,
         handleDetenidoConModal,    // Exporta esta función para usarla
+        handleSearchDetenidoCon,
         isModalFichasOpen,
         selectedNode,
         setIsModalFichasOpen,
