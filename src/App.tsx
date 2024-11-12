@@ -5,7 +5,7 @@ import NetworkGraph from "./components/NetworkGraph";
 import ContextMenu from "./components/ContextMenu";
 
 import { GraphData } from "./interfaces/GraphData";
-import { useGraphFunctions } from "./hooks/useGraphFunctions";
+// import { useGraphFunctions } from "./hooks/useGraphFunctions";
 import useContextMenu from "./hooks/useContextMenu";
 import { EdgeData } from "./interfaces/EdgeData";
 import DropdownMenu from "./ui/DropDownMenu";

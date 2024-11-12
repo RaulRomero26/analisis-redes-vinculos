@@ -27,6 +27,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         searchInspeccion,
         searchVehiculoInspeccion,
         searchRemisionesTelefono,
+        searchVehiculoRemision,
     } = useSearchEntity();
 
     const { addNode,addEdge } = useGraphFunctions(setData,getData);
@@ -79,7 +80,6 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 if(opcion === 'Consultas') handleSearchInspeccion(node); // Buscar inspecciones por nombre
                 if(opcion === 'Telefono Remisiones') handleSearchRemisionesTelefono(node); //Busca Remisiones a partir de un telefono
                 if(opcion === 'Vehiculos') handleSearchVehiculosInspeccion(node); //Busca Vehiculos a partir de una inspeccion
-
                 /* --------- ESTAS FUNCIONES ME DISPARAN UN MODAL ----------- */
                 if(opcion === 'Extraer Contactos') handleContactosModal(node); // Buscar Contactos si hay remision
                 if(opcion === 'Detenido Con') handleDetenidoConModal(node); // Buscar Detenido Con si hay remision
@@ -92,31 +92,6 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     };
 
     /* FUNCIONES DE EXPANSION DE LA RED  */
-/*
-    const handleSearchTelefono = async(node:NodeData) => {
-        const respuesta =await  searchPhone({ entidad: node.type || '', payload: { label: node.label } });
-        console.log('RESPUESTA:',respuesta.data.remisiones);
-        if(respuesta.data.remisiones.length){
-            console.log('SI HAY TELEFONOS');
-            respuesta.data.remisiones.map((item: any) => {
-                console.log('item:',item);
-                if(item.Telefono === '') return;
-                const newNode = createNodeData(uuidv4(), item.Telefono, item.Telefono, "image", 15, "blue", "telefono",'telefono',item,{});
-                console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
-                        console.error('Error adding node');
-                    }
-                });
-
-                addEdge({ from: node.id, to: newNode.id, label:'Telefono de detenido' }, (data: any) => {
-                    console.log('Edge added:', data);
-                });
-            });
-        }
-    };
-*/
     const handleContactosModal = (node: NodeData) => {
         console.log('Disparando el modal con el nodo:', node);
         setSelectedNode(node);  // Guarda el nodo seleccionado
@@ -460,13 +435,96 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         }
     }
 
+    const handleSearchVehiculoRemision = async(node:NodeData) => {
+        const respuesta = await searchVehiculoRemision({ entidad: node.type || '', payload: { placa: node.atributos.Placa, niv: node.atributos.Niv } });
+        console.log('RESPUESTA:',respuesta.data.vehiculos);
+        if(respuesta.data.vehiculos.length > 0){
+            console.warn('SI HAY VEHICULOS');
+            const updatedNodes = data.nodes.map(n => {
+                if (n.id === node.id) {
+                    let nodoModificado = n;
+                    console.log('NODO MODIFICADO:',nodoModificado);
+                    nodoModificado.data.vehiculos = respuesta.data.vehiculos;
+                    nodoModificado.atributos = {
+                        ...nodoModificado.atributos,
+                        detenciones: {
+                            sarai: respuesta.data.vehiculos.map((item: any) => ({
+                                Placa: item.Placa_Vehiculo,
+                                Marca: item.Marca,
+                                Submarca: item.Submarca,
+                                Tipo: item.Tipo_Vehiculo,
+                                Modelo: item.Modelo,
+                                Color: item.Color,
+                                Sena_Particular: item.Sena_Particular,
+                                Observaciones: item.Observacion_Vehiculo,
+                                NIV: item.No_Serie,
+                                No_Remision: item.No_Remision,
+                                Nombre: item.Nombre,
+                                Ap_Paterno: item.Ap_Paterno,
+                                Ap_Materno: item.Ap_Materno,	
+                                Fecha_Remision: item.Fecha_Hora
+                            }))
+                        }
+                    };
+                    nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.vehiculos.length})</b>`;
+                    let placasjoin, nivjoin, nombresjoin, fechasjoin;
+                    placasjoin = respuesta.data.vehiculos.map((item: any) => item.Placa_Vehiculo).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                    nivjoin = respuesta.data.vehiculos.map((item: any) => item.No_Serie).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                    nombresjoin = respuesta.data.vehiculos.map((item: any) => `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                    fechasjoin = respuesta.data.vehiculos.map((item: any) => new Date(item.Fecha_Hora).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+
+                    nodoModificado.label = `${nodoModificado.label} \n <b>Nombre: </b>${nombresjoin}\n<b>Placas: </b>${placasjoin} <b>Niv: </b>${nivjoin} <b>No Remision: </b>${fechasjoin} `;
+
+                    return nodoModificado;
+                }
+                return n;
+                });
+                console.log('ANTES DEL SET:', data.edges);
+                setData({ ...data, nodes: updatedNodes, edges: data.edges });
+                //Agregamos a las personas de los vehiculos
+                respuesta.data.vehiculos.map((item: any) => {
+                    const newNode = createNodeData(
+                        `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
+                        `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                        `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                        "image", 
+                        15, 
+                        "blue", 
+                        "persona",
+                        'persona',
+                        item,
+                        {
+                            "Nombre":item.Nombre,
+                            "Ap_Paterno":item.Ap_Paterno,
+                            "Ap_Materno":item.Ap_Materno,
+                            "Telefono":item.Telefono
+                        }
+                    );
+                    console.warn('NEW NODE TO EDGE:',newNode);
+                    addNode(newNode, (success: boolean) => {
+                        console.log('Node added:', success);
+                        if (!success) {
+                            console.error('Error adding node');
+                        }
+                        else{
+                            addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
+                    });
+                });
+
+        }
+    }
 
 
     const handleSearchMaestroPersona = async(node:NodeData) => {
-        
+        if(node.type === 'entrada-vehiculo'){
+            handleSearchVehiculoRemision(node);
+            return;
+        }
         handleSearchRemisiones(node);
         handleSearchHistorico(node);
-
     };
 
 

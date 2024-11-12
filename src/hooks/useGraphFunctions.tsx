@@ -118,26 +118,34 @@ export const useGraphFunctions = (
     //callback(newNode);
 
   const addEdge = (edgeData: any, callback: (data: any) => void) => {
-    setData!((prevData) => {
-      // Check if edge with same id exists and filter it out
-      const filteredEdges = prevData.edges.filter(edge => edge.id !== edgeData.id);
-      console.log('Me esta llegando:', edgeData);
-      const newEdge = {
-        id: uuidv4(), // Generate a unique ID
-        from: edgeData.from,
-        to: edgeData.to,
-        label: edgeData.label || "Nueva Arista",
-        color: edgeData.color || "black",
-        width: edgeData.width || 1,
-      };
-      console.log("New edge:", newEdge);
-      return {
-        ...prevData,
-        edges: [...filteredEdges, newEdge],
-      };
-    });
-
-    callback(edgeData);
+    try {
+      setData!((prevData) => {
+        // Check if edge with same id exists and filter it out
+        console.log('DATA:', prevData);
+        const filteredEdges = prevData.edges.filter(edge => edge.id !== edgeData.id);
+        console.log('Me esta llegando:', edgeData);
+        const newEdge = {
+          id: uuidv4(), // Generate a unique ID
+          from: edgeData.from,
+          to: edgeData.to,
+          label: edgeData.label || "Nueva Arista",
+          color: edgeData.color || "black",
+          width: edgeData.width || 1,
+        };
+        console.warn("New edge DESDE GRAPH FUNCRIONS:", newEdge);
+        console.log([...filteredEdges, newEdge])
+        return {
+          ...prevData,
+          edges: [...filteredEdges, newEdge],
+        };
+      });
+  
+      callback(true);
+    } catch (error) {
+      console.error("Error adding edge:", error);
+      callback(false);
+    }
+    
   };
 
   const findNodeDetails = (nodeId: string) => {

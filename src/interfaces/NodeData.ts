@@ -32,6 +32,7 @@ export function getImageForType(type?: string): string {
     case 'persona':
       return persona;
     case 'vehiculo':
+    case 'entrada-vehiculo':
       return vehiculo;
     case 'telefono':
     case 'entrada-telefono':

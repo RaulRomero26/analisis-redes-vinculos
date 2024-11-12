@@ -1,4 +1,5 @@
 import { ModalNombre, ModalTelefono} from './';
+import ModalVehiculo from './ModalVehiculo';
 
 interface ModalSwitchProps {
   entidad: string;
@@ -14,6 +15,8 @@ export const ModalSwitch = ({ entidad, isModalOpen, toggleModal, setData, getDat
       return <ModalNombre isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData}/>;
     case 'telefono':
      return <ModalTelefono isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData}/>;
+    case 'vehiculo':
+      return <ModalVehiculo isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData}/>;
     default:
       return null;
   }

@@ -15,7 +15,7 @@ interface ContextMenuProps {
 }
 
 const puedenExpandir = ['entrada-persona','entrada-telefono','entrada-vehiculo','persona','telefono','vehiculo','contacto'];
-const puedenTenerConsultas = ['entrada-persona','entrada-vehiculo','persona','vehiculo'];
+const puedenTenerConsultas = ['entrada-persona','persona'];
 const puedenConsultarTelefono = ['entrada-persona','persona','telefono','contacto'];
 const puedeConsultarVehiculo = ['entrada-vehiculo','vehiculo','inspeccion'];
 
@@ -57,7 +57,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setDat
                     )
                 }
                 {
-                    nodeDetails && (nodeDetails.atributos.detenciones ) && (
+                    nodeDetails && (nodeDetails.atributos.detenciones && nodeDetails.type != 'entrada-vehiculo' && nodeDetails.type != 'vehiculo' ) && (
                         <>  
                             <hr></hr>
                             <li><b>Expandir Red</b></li>
@@ -79,7 +79,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setDat
                 }
                 {
                     nodeDetails && ( puedeConsultarVehiculo.find( type => type == nodeDetails.type)) && (
-                        <li onClick={() => onSearchExtended('Vehiculos')}>Buscar Vehiculo</li>
+                        <li onClick={() => onSearchExtended('Vehiculos')}>Buscar Vehiculo Consultas</li>
                     )
                 }
                
