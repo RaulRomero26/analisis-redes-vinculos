@@ -92,7 +92,7 @@ export const useGraphFunctions = (
     
           //validaciones especiales de acuerdo al type diferente a entidad
           if(newNode.type === 'contacto'){
-            newNode.label = `${newNode.label} \n <b>Telefono: </b> ${newNode.atributos.telefono}`;
+            newNode.label = `${newNode.label} \n <b>Telefono: </b> ${newNode.atributos.Telefono}`;
           }
 
           if(newNode.type === 'inspeccion'){

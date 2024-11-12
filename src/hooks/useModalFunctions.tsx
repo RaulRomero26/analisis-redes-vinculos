@@ -27,13 +27,30 @@ export const useModalFunctions = ({data,setData,getData}:ModalFunctionsProps) =>
             respuesta.data.remisiones.map((item: any) => {
                 console.log('item:',item);
                 
-                const newNode = createNodeData(`${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, "image", 15, "blue", "persona",'persona',item,{});
+                const newNode = createNodeData(
+                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
+                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                    "image", 
+                    15, 
+                    "blue", 
+                    "persona",
+                    'persona',
+                    item,
+                    {
+                        "Nombre":item.Nombre,
+                        "Ap_Paterno":item.Ap_Paterno,
+                        "Ap_Materno":item.Ap_Materno,
+                        "Telefono":item.Telefono
+                    }
+                );
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (success: boolean) => {
                     console.log('Node added:', success);
                     if (!success) {
                         console.error('Error adding node');
                        //ACA tocaria agregar peso al enlace por que significa que ya existe o verificar si es la forma correcta en arbol
+                       addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {  console.log('Edge added:', data); });
                     }else{
 
                         addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
@@ -55,13 +72,30 @@ export const useModalFunctions = ({data,setData,getData}:ModalFunctionsProps) =>
             respuesta.data.contactos.map((item: any) => {
                 console.log('item:',item);
                 
-                const newNode = createNodeData(`${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), "image", 15, "blue", "contacto",'persona',item,{"telefono":item.Telefono});
+                const newNode = createNodeData(
+                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), 
+                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), 
+                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), 
+                    "image",
+                    15,
+                    "blue",
+                    "contacto",
+                    'persona',
+                    item,
+                    {
+                        "Nombre":item.Nombre,
+                        "Ap_Paterno":item.Ap_Paterno,
+                        "Ap_Materno":item.Ap_Materno,
+                        "Telefono":item.Telefono
+                    }
+                );
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (success: boolean) => {
                     console.log('SE PUEDE AGREGAR? :', success);
                     if (!success) {
                         console.error('Error adding node');
                        //ACA tocaria agregar peso al enlace por que significa que ya existe o verificar si es la forma correcta en arbol
+                          addEdge({ from: node.id, to: newNode.id, label: 'Contacto' }, (data: any) => {  console.log('Edge added:', data); });
                     }else{
 
                         addEdge({ from: node.id, to: newNode.id, label: 'Contacto' }, (data: any) => {

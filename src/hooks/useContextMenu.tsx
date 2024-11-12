@@ -26,6 +26,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         searchHistorico,
         searchInspeccion,
         searchVehiculoInspeccion,
+        searchRemisionesTelefono,
     } = useSearchEntity();
 
     const { addNode,addEdge } = useGraphFunctions(setData,getData);
@@ -71,41 +72,27 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             const node = data.nodes.find(node => node.id === contextMenu.nodeId);
             if (node) {
                 console.warn('Buscando entidad', node);
-                switch (node.type) {
-                    case 'persona':
-                    case 'entrda-persona':
-                    case 'contacto':
-                    
-                        if(opcion === 'Buscar Remisiones')handleSearchRemisiones(node);
-                        if(opcion === 'Buscar Maestro')handleSearchMaestroPersona(node);
-                        if(opcion === 'Telefono') handleSearchTelefono(node);
-                        if(opcion === 'Consultas') handleSearchInspeccion(node);
-                        if(opcion ==='Extraer Contactos') handleContactosModal(node);
-                        if(opcion ==='Detenido Con') handleDetenidoConModal(node);
-                        
-                        break;
-                    
-                    case 'inspeccion':
-                        if(opcion === 'Vehiculos') handleSearchVehiculosInspeccion(node);
-                        break;
+               
+                if(opcion === 'Buscar Maestro')handleSearchMaestroPersona(node); //Buscar Remisiones e inspecciones por Nombre
+                if(opcion === 'Buscar Remisiones')handleSearchRemisiones(node); //Buscar Remisiones por Nombre
+                if(opcion === 'Telefono') handleSearchTelefono(node); // Buscar un telefono que se encuentra en atributos (911)
+                if(opcion === 'Consultas') handleSearchInspeccion(node); // Buscar inspecciones por nombre
+                if(opcion === 'Telefono Remisiones') handleSearchRemisionesTelefono(node); //Busca Remisiones a partir de un telefono
+                if(opcion === 'Vehiculos') handleSearchVehiculosInspeccion(node); //Busca Vehiculos a partir de una inspeccion
 
-                
-                    default:
-                        break;
-                }
-                
-              
-                
-            } else {
-            console.log('Node not found');
+                /* --------- ESTAS FUNCIONES ME DISPARAN UN MODAL ----------- */
+                if(opcion === 'Extraer Contactos') handleContactosModal(node); // Buscar Contactos si hay remision
+                if(opcion === 'Detenido Con') handleDetenidoConModal(node); // Buscar Detenido Con si hay remision
             }
+                
+        } else {
+            console.log('Node not found');
         }
-
         setContextMenu({ x: 0, y: 0, edgeId: null, nodeId: null });
     };
 
     /* FUNCIONES DE EXPANSION DE LA RED  */
-
+/*
     const handleSearchTelefono = async(node:NodeData) => {
         const respuesta =await  searchPhone({ entidad: node.type || '', payload: { label: node.label } });
         console.log('RESPUESTA:',respuesta.data.remisiones);
@@ -129,7 +116,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             });
         }
     };
-
+*/
     const handleContactosModal = (node: NodeData) => {
         console.log('Disparando el modal con el nodo:', node);
         setSelectedNode(node);  // Guarda el nodo seleccionado
@@ -147,57 +134,110 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
 
     
     const handleSearchRemisiones = async(node:NodeData) => {
-        const respuesta =await  searchData({ entidad: node.type || '', payload: { label: node.label } });
-        console.log('RESPUESTA:',respuesta);
-        if (respuesta.data.remisiones.length > 0) {
-            const updatedNodes = data.nodes.map(n => {
-            if (n.id === node.id) {
-                let nodoModificado = n;
-                console.log('NODO MODIFICADO:',nodoModificado);
-                nodoModificado.data.remisiones = respuesta.data.remisiones;
-                nodoModificado.atributos = {
-                    ...nodoModificado.atributos,
-                    detenciones: {
-                        sarai: respuesta.data.remisiones.map((item: any) => ({
-                            Ficha: item.Ficha,
-                            No_Remision: item.No_Remision,
-                            CURP: item.CURP,
-                            Fec_Nac: item.Fecha_Nacimiento,
-                            Correo_Electronico: item.Correo_Electronico,
-                            Alias: item.Alias_Detenido,
-                            Fecha_Detencion: item.Fecha_Registro_Detenido,
-                            Genero: item.Genero,
-                            Nombre: item.Nombre,
-                            Ap_Paterno: item.Ap_Paterno,
-                            Ap_Materno: item.Ap_Materno,
-                        }))
-                    }
-                };
-                nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
-                let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin;
-                
-                aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                
-                nodoModificado.label = `${nodoModificado.label} \n <b>Alias: </b>${aliasjoin} <b>Fecha Detencion: </b>${fechadetencionjoin} <b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} <b>Fecha Nacimiento: </b> ${fechanacimientojoin}
-                `;
-                
-                
-                return nodoModificado;
-            }
-            return n;
+        let respuesta:any;
+        if(node.type === 'entrada-telefono'){
+            respuesta =await  searchRemisionesTelefono({ entidad: node.type || '', 
+                payload: { 
+                    label: node.atributos.Telefono, 
+                    tipo: node.type 
+                } 
             });
-            console.log('ANTES DEL SET:', data.edges);
-            setData({ ...data, nodes: updatedNodes, edges: data.edges });
+            if(respuesta.data.remisiones.length > 0){
+                respuesta.data.remisiones.map((item: any) => {
+                    const newNode = createNodeData(
+                        `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
+                        `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                        `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                        "image", 
+                        15, 
+                        "blue", 
+                        "persona",
+                        'persona',
+                        item,
+                        {
+                            "Nombre":item.Nombre,
+                            "Ap_Paterno":item.Ap_Paterno,
+                            "Ap_Materno":item.Ap_Materno,
+                            "Telefono":item.Telefono
+                        }
+                    );
+                    console.warn('NEW NODE TO EDGE:',newNode);
+                    addNode(newNode, (success: boolean) => {
+                        console.log('Node added:', success);
+                        if (!success) {
+                            console.error('Error adding node');
+                        }
+                        else{
+                            addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
+                    });
+                });
+            
+            }
         }
+        if(node.type === 'entrada-persona' || node.type === 'persona'){
+            respuesta = await searchData({ entidad: node.type || '', 
+                payload: { 
+                    label: `${node.atributos.Nombre} ${node.atributos.Ap_Paterno} ${node.atributos.Ap_Materno}`, 
+                    tipo: node.type 
+                } 
+            });
+            console.log('RESPUESTA:',respuesta);
+            if (respuesta.data.remisiones.length > 0) {
+                const updatedNodes = data.nodes.map(n => {
+                if (n.id === node.id) {
+                    let nodoModificado = n;
+                    console.log('NODO MODIFICADO:',nodoModificado);
+                    nodoModificado.data.remisiones = respuesta.data.remisiones;
+                    nodoModificado.atributos = {
+                        ...nodoModificado.atributos,
+                        detenciones: {
+                            sarai: respuesta.data.remisiones.map((item: any) => ({
+                                Ficha: item.Ficha,
+                                No_Remision: item.No_Remision,
+                                CURP: item.CURP,
+                                Fec_Nac: item.Fecha_Nacimiento,
+                                Correo_Electronico: item.Correo_Electronico,
+                                Alias: item.Alias_Detenido,
+                                Fecha_Detencion: item.Fecha_Registro_Detenido,
+                                Genero: item.Genero,
+                                Nombre: item.Nombre,
+                                Ap_Paterno: item.Ap_Paterno,
+                                Ap_Materno: item.Ap_Materno,
+                                Telefono: item.Telefono,
+                            }))
+                        }
+                    };
+                    nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
+                    let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin;
+                    
+                    aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                    noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                    curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                    fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                    fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                    
+                    nodoModificado.label = `${nodoModificado.label} \n <b>Alias: </b>${aliasjoin} <b>Fecha Detencion: </b>${fechadetencionjoin} <b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} <b>Fecha Nacimiento: </b> ${fechanacimientojoin}
+                    `;
+                    
+                    
+                    return nodoModificado;
+                }
+                return n;
+                });
+                console.log('ANTES DEL SET:', data.edges);
+                setData({ ...data, nodes: updatedNodes, edges: data.edges });
+            }
+        }
+        
+
     };
 
 
     const handleSearchHistorico = async(node:NodeData) => {
-        const respuesta =await  searchHistorico({ entidad: node.type || '', payload: { label: node.label } });
+        const respuesta =await  searchHistorico({ entidad: node.type || '', payload: { label: node.id, tipo: node.type } });
         console.log('RESPUESTA:',respuesta.data.historico);
         if(respuesta.data.historico.length > 0){
 
@@ -244,16 +284,27 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             respuesta.data.inspeccion.map((item: any) => {
                 console.log('item:',item);
                 if(item.Telefono === '') return;
-                const newNode = createNodeData(`${item.Coordenada_X}, ${item.Coordenada_Y}`,`${item.Coordenada_X}, ${item.Coordenada_Y}`,`${item.Coordenada_X}, ${item.Coordenada_Y}`, "image", 15, "blue", "inspeccion",'persona',item,{
-                    Alias: item.Alias,
-                    Fecha: new Date(item.Fecha_Hora_Inspeccion).toLocaleDateString(),
-                    Colonia: item.Colonia,
-                    Calle_1: item.Calle_1,
-                    Calle_2: item.Calle_2,
-                    No_Exterior: item.No_Ext,
-                    Coordenada_X: item.Coordenada_X,
-                    Coordenada_Y: item.Coordenada_Y,
-                });
+                const newNode = createNodeData(
+                    `${item.Coordenada_X}, ${item.Coordenada_Y}`,
+                    `${item.Coordenada_X}, ${item.Coordenada_Y}`,
+                    `${item.Coordenada_X}, ${item.Coordenada_Y}`,
+                    "image",
+                    15,
+                    "blue",
+                    "inspeccion",
+                    'persona',
+                    item,
+                    {
+                        Alias: item.Alias,
+                        Fecha: new Date(item.Fecha_Hora_Inspeccion).toLocaleDateString(),
+                        Colonia: item.Colonia,
+                        Calle_1: item.Calle_1,
+                        Calle_2: item.Calle_2,
+                        No_Exterior: item.No_Ext,
+                        Coordenada_X: item.Coordenada_X,
+                        Coordenada_Y: item.Coordenada_Y,
+                    }
+                );
 
 
                 console.warn('NEW NODE TO EDGE:',newNode);
@@ -283,16 +334,27 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             respuesta.data.vehiculos.map((item: any) => {
                 console.log('item:',item);
                 if(item.Placas === '') return;
-                const newNode = createNodeData(`${item.Placas_Vehiculo}/${item.NIV}`,`${item.Placas_Vehiculo}/${item.NIV}`,`${item.Placas_Vehiculo}/${item.NIV}`, "image", 15, "blue", "vehiculo",'vehiculo',item,{
-                    Marca: item.Marca,
-                    Modelo: item.Modelo,
-                    Tipo: item.Tipo,
-                    Placas: item.Placas_Vehiculo,
-                    Color: item.Color,
-                    NIV: item.NIV,
-                    Submarca: item.Submarca,
-                    Colocacion_Placas: item.Colocacion_Placa,
-                });
+                const newNode = createNodeData(
+                    `${item.Placas_Vehiculo}/${item.NIV}`,
+                    `${item.Placas_Vehiculo}/${item.NIV}`,
+                    `${item.Placas_Vehiculo}/${item.NIV}`,
+                    "image",
+                    15,
+                    "blue",
+                    "vehiculo",
+                    'vehiculo',
+                    item,
+                    {
+                        Marca: item.Marca,
+                        Modelo: item.Modelo,
+                        Tipo: item.Tipo,
+                        Placas: item.Placas_Vehiculo,
+                        Color: item.Color,
+                        NIV: item.NIV,
+                        Submarca: item.Submarca,
+                        Colocacion_Placas: item.Colocacion_Placa,
+                    }
+                );
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (success: boolean) => {
                     console.log('Node added:', success);
@@ -307,9 +369,96 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 });
             });
         }
-
-    
     };
+
+    const handleSearchTelefono = async(node:NodeData) => {
+        
+        const respuesta = await searchPhone({ entidad: node.type || '', payload: { label: node.atributos.Telefono } });
+        console.log('RESPUESTA:',respuesta.data.telefonos);
+        if(respuesta.data.telefonos.length){
+            console.log('SI HAY TELEFONOS');
+            respuesta.data.telefonos.map((item: any) => {
+                console.log('item:',item);
+                if(item.Telefono === '') return;
+                const newNode = createNodeData(
+                    `${item.Telefono}`, 
+                    item.Telefono, 
+                    item.Telefono, 
+                    "image", 
+                    15, 
+                    "blue", 
+                    "telefono",
+                    'telefono',
+                    item,
+                    {
+                        "Telefono":item.Telefono
+                    }
+                );
+                console.warn('NEW NODE TO EDGE:',newNode);
+                addNode(newNode, (success: boolean) => {
+                    console.log('Node added:', success);
+                    if (!success) {
+                        console.error('Error adding node');
+                    }
+                });
+
+                addEdge({ from: node.id, to: newNode.id, label:'Telefono de detenido' }, (data: any) => {
+                    console.log('Edge added:', data);
+                });
+            });
+        }
+    };
+    
+    const handleSearchRemisionesTelefono = async(node:NodeData) => { 
+
+        const respuesta = await searchRemisionesTelefono({ entidad: node.type || '', payload: { label: node.atributos.Telefono } });
+        console.log('RESPUESTA:',respuesta.data.remisiones);
+        if (respuesta.data.remisiones.length > 0) {
+            const updatedNodes = data.nodes.map(n => {
+            if (n.id === node.id) {
+                let nodoModificado = n;
+                console.log('NODO MODIFICADO:',nodoModificado);
+                nodoModificado.data.remisiones = respuesta.data.remisiones;
+                nodoModificado.atributos = {
+                    ...nodoModificado.atributos,
+                    detenciones: {
+                        sarai: respuesta.data.remisiones.map((item: any) => ({
+                            Ficha: item.Ficha,
+                            No_Remision: item.No_Remision,
+                            CURP: item.CURP,
+                            Fec_Nac: item.Fecha_Nacimiento,
+                            Correo_Electronico: item.Correo_Electronico,
+                            Alias: item.Alias_Detenido,
+                            Fecha_Detencion: item.Fecha_Registro_Detenido,
+                            Genero: item.Genero,
+                            Nombre: item.Nombre,
+                            Ap_Paterno: item.Ap_Paterno,
+                            Ap_Materno: item.Ap_Materno,
+                            Telefono: item.Telefono,
+                        }))
+                    }
+                };
+                nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
+                let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin, nombresjoin;
+                
+                aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                nombresjoin = respuesta.data.remisiones.map((item: any) => `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                nodoModificado.label = `${nodoModificado.label} \n <b>Nombre: </b>${nombresjoin}\n<b>Alias: </b>${aliasjoin} <b>Fecha Detencion: </b>${fechadetencionjoin} <b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} <b>Fecha Nacimiento: </b> ${fechanacimientojoin}
+                `;
+                
+                
+                return nodoModificado;
+            }
+            return n;
+            });
+            console.log('ANTES DEL SET:', data.edges);
+            setData({ ...data, nodes: updatedNodes, edges: data.edges });
+        }
+    }
 
 
 

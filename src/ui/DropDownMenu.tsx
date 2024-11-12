@@ -37,24 +37,18 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ handleMenuClick }) => {
               <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200"  onClick={() => handleMenuClick('persona')}>
                 <FaUser className="mr-2" /> Persona
               </a>
-              <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200"  onClick={() => handleMenuClick('remision')}>
-                <GiPoliceOfficerHead className="mr-2" /> Remision
-              </a>
-              <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200">
-                <FaMagnifyingGlass  className="mr-2" /> Inspeccion
-              </a>
-              <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200">
-                <MdFollowTheSigns  className="mr-2" /> Seguimiento
-              </a>
-              <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200">
+              <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200" onClick={() => handleMenuClick('telefono')}>
                 <FaPhone  className="mr-2" /> Telefono
               </a>
-              <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200">
-                <FaLocationDot className="mr-2" /> Direccion
-              </a>
-              <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200">
+              <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200" onClick={() => handleMenuClick('vehiculo')}>
                 <FaCarAlt  className="mr-2" /> Vehiculo
               </a>
+              {/* <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200" onClick={() => handleMenuClick('ubicacion')}>
+                <FaLocationDot className="mr-2" /> Ubicacion
+              </a>
+              <a href="#" className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-200" onClick={() => handleMenuClick('seguimiento')}>
+                <MdFollowTheSigns  className="mr-2" /> Seguimiento
+              </a> */}
             </div>
           )}
         </div>

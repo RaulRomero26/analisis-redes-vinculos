@@ -29,7 +29,7 @@ export const useSearchEntity = () => {
    
         console.log('Buscando Telefono', payload);
         try {
-          const response = await fetch('http://localhost:8087/api/search/telefono', {
+          const response = await fetch('http://localhost:8087/api/search/telefono-contacto', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -37,8 +37,8 @@ export const useSearchEntity = () => {
             body: JSON.stringify(payload),
           });
           const data = await response.json();
-          setData(data.data.remisiones);
-          console.log( 'RESPUESTA:',data.data.remisiones);
+          setData(data.data.telefono);
+          console.log( 'RESPUESTA:',data.data.telefono);
           return data;
         } catch (error) {
           console.error(error);
@@ -146,6 +146,26 @@ const searchVehiculoInspeccion = async ({ entidad, payload }: { entidad: string;
   }
 }
 
+const  searchRemisionesTelefono = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
+  
+    console.log('Buscando Remisiones Telefono', payload);
+    try {
+      const response = await fetch('http://localhost:8087/api/search/remisionesTelefono', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      setData(data.data.remisiones);
+      console.log( 'RESPUESTA:',data.data.remisiones);
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+}
+
 
   return {
     searchData,
@@ -155,6 +175,7 @@ const searchVehiculoInspeccion = async ({ entidad, payload }: { entidad: string;
     searchInspeccion,
     searchDetenidoCon,
     searchVehiculoInspeccion,
+    searchRemisionesTelefono,
     data,
   };
 };

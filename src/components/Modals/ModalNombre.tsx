@@ -29,10 +29,14 @@ const ModalNombre: React.FC<ModalNombreProps> = ({ isModalOpen, toggleModal, set
       shape: 'circle',
       size: 15,
       color: 'blue',
-      type: 'entrda-persona',
+      type: 'entrada-persona',
       entidad: 'persona',
       data: {},
-      atributos: {}
+      atributos: {
+        Nombre: data.nombre,
+        Ap_Paterno: data.apPaterno,
+        Ap_Materno: data.apMaterno
+      }
     };
     addNode(nodeData, (success: boolean) => {
       console.log('Node added:', success);
