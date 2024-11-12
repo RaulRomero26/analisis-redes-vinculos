@@ -12,7 +12,7 @@ interface ModalContactosProps {
 }
 
 const ModalContactos: React.FC<ModalContactosProps> = ({ node, isOpen, onClose,data,setData,getData }) => {
-    console.log('MODAL CONTACTOS', node);
+    console.log('MODAL CONTACTOS', node,isOpen);
     const handleClose = () => {
         onClose();
     };

@@ -5,7 +5,6 @@ import { EdgeData } from '../interfaces/EdgeData';
 import { useSearchEntity } from './useSearchEntity';
 import { useGraphFunctions } from './useGraphFunctions';
 import { createNodeData, NodeData } from '../interfaces/NodeData';
-import { v4 as uuidv4 } from 'uuid';
 
 interface ContextMenuState {
     x: number;

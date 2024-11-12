@@ -19,7 +19,7 @@ const puedenTenerConsultas = ['entrada-persona','persona'];
 const puedenConsultarTelefono = ['entrada-persona','persona','telefono','contacto'];
 const puedeConsultarVehiculo = ['entrada-vehiculo','vehiculo','inspeccion'];
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setData, onShowDetails, onSearchExtended, onClose }) => {
+const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setData, onSearchExtended, onClose }) => {
 
     const [nodeDetails, setNodeDetails] = useState<any>(null);
 

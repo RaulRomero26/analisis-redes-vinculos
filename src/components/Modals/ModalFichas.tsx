@@ -12,7 +12,7 @@ interface ModalFichasProps {
 }
 
 const ModalFichas: React.FC<ModalFichasProps> = ({ node, isOpen, onClose,data,setData,getData }) => {
-    console.log('MODAL FICHAS MODAL FICHAS', node);
+    console.log('MODAL FICHAS MODAL FICHAS', node,isOpen);
     const handleClose = () => {
         onClose();
     };

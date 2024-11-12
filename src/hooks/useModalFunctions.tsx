@@ -4,13 +4,13 @@ import { createNodeData, NodeData } from '../interfaces/NodeData';
 import { useGraphFunctions } from './useGraphFunctions';
 
 interface ModalFunctionsProps {
-    data: any;
+    data?: any;
     setData: React.Dispatch<React.SetStateAction<any>>;
     getData: () => any;
 }
 
 
-export const useModalFunctions = ({data,setData,getData}:ModalFunctionsProps) => {
+export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
 
     const { searchDetenidoCon, searchContacts } = useSearchEntity();
     const { addNode,addEdge } = useGraphFunctions(setData,getData);

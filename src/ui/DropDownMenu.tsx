@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { FaUser,FaPhone, FaCarAlt   } from 'react-icons/fa'; // Instalación: yarn add react-icons
 import { SiSmartthings } from "react-icons/si";
-import { FaLocationDot, FaMagnifyingGlass  } from "react-icons/fa6";
-import { MdFollowTheSigns } from "react-icons/md";
-import { GiPoliceOfficerHead } from "react-icons/gi";
+// import { FaLocationDot, FaMagnifyingGlass  } from "react-icons/fa6";
+// import { MdFollowTheSigns } from "react-icons/md";
+// import { GiPoliceOfficerHead } from "react-icons/gi";
 
 interface DropdownMenuProps {
   handleMenuClick: (entidad: string) => void;
