@@ -35,7 +35,7 @@ const ModalNombre: React.FC<ModalNombreProps> = ({ isModalOpen, toggleModal, set
       atributos: {
         Nombre: data.nombre,
         Ap_Paterno: data.apPaterno,
-        Ap_Materno: data.apMaterno
+        Ap_Materno: data.apMaterno,
       }
     };
     addNode(nodeData, (success: boolean) => {

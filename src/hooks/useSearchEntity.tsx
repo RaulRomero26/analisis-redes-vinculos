@@ -8,7 +8,7 @@ export const useSearchEntity = () => {
   const searchData = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
     console.log('Buscando Remisiones', entidad,payload);
         try {
-          const response = await fetch('http://172.18.110.90:8087/api/search/remisiones', {
+          const response = await fetch('http://localhost:8087/api/search/remisiones', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ export const useSearchEntity = () => {
    
         console.log('Buscando Telefono',  entidad,payload);
         try {
-          const response = await fetch('http://172.18.110.90:8087/api/search/telefono-contacto', {
+          const response = await fetch('http://localhost:8087/api/search/telefono-contacto', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export const useSearchEntity = () => {
    
     console.log('Buscando Contactos',  entidad,payload);
     try {
-      const response = await fetch('http://172.18.110.90:8087/api/search/contactos', {
+      const response = await fetch('http://localhost:8087/api/search/contactos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ const searchHistorico = async ({ entidad, payload }: { entidad: string; payload:
    
   console.log('Buscando Historico',  entidad,payload);
   try {
-    const response = await fetch('http://172.18.110.90:8087/api/search/historico', {
+    const response = await fetch('http://localhost:8087/api/search/historico', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ const searchInspeccion = async ({ entidad, payload }: { entidad: string; payload
    
   console.log('Buscando Inspeccion', entidad, payload);
   try {
-    const response = await fetch('http://172.18.110.90:8087/api/search/inspeccion', {
+    const response = await fetch('http://localhost:8087/api/search/inspeccion', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ const searchDetenidoCon = async ({ entidad, payload }: { entidad: string; payloa
 
   console.log('Buscando Detenido Con',  entidad,payload);
   try {
-    const response = await fetch('http://172.18.110.90:8087/api/search/detenidoCon', {
+    const response = await fetch('http://localhost:8087/api/search/detenidoCon', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ const searchVehiculoInspeccion = async ({ entidad, payload }: { entidad: string;
 
   console.log('Buscando Vehiculo Inspeccion', entidad, payload);
   try {
-    const response = await fetch('http://172.18.110.90:8087/api/search/vehiculoInspeccion', {
+    const response = await fetch('http://localhost:8087/api/search/vehiculoInspeccion', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ const  searchRemisionesTelefono = async ({ entidad, payload }: { entidad: string
   
     console.log('Buscando Remisiones Telefono', entidad, payload);
     try {
-      const response = await fetch('http://172.18.110.90:8087/api/search/remisionesTelefono', {
+      const response = await fetch('http://localhost:8087/api/search/remisionesTelefono', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -170,7 +170,7 @@ const searchVehiculoRemision = async ({ entidad, payload }: { entidad: string; p
 
   console.log('Buscando Vehiculo Remision', entidad, payload);
   try {
-    const response = await fetch('http://172.18.110.90:8087/api/search/vehiculoRemision', {
+    const response = await fetch('http://localhost:8087/api/search/vehiculoRemision', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -165,36 +165,44 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     let nodoModificado = n;
                     console.log('NODO MODIFICADO:',nodoModificado);
                     nodoModificado.data.remisiones = respuesta.data.remisiones;
+                    let viejosAtributos = nodoModificado.atributos;
                     nodoModificado.atributos = {
                         ...nodoModificado.atributos,
                         detenciones: {
-                            sarai: respuesta.data.remisiones.map((item: any) => ({
-                                Ficha: item.Ficha,
-                                No_Remision: item.No_Remision,
-                                CURP: item.CURP,
-                                Fec_Nac: item.Fecha_Nacimiento,
-                                Correo_Electronico: item.Correo_Electronico,
-                                Alias: item.Alias_Detenido,
-                                Fecha_Detencion: item.Fecha_Registro_Detenido,
-                                Genero: item.Genero,
-                                Nombre: item.Nombre,
-                                Ap_Paterno: item.Ap_Paterno,
-                                Ap_Materno: item.Ap_Materno,
-                                Telefono: item.Telefono,
-                            }))
-                        }
+                            sarai: respuesta.data.remisiones.map((item: any) => {
+                                if (viejosAtributos.detenciones && viejosAtributos.detenciones.sarai) {
+                                    if (viejosAtributos.detenciones.sarai.find((element:any) => element.No_Remision === item.No_Remision)) return null;
+                                }
+                                return {
+                                    Ficha: item.Ficha,
+                                    No_Remision: item.No_Remision,
+                                    CURP: item.CURP,
+                                    Fec_Nac: item.Fecha_Nacimiento,
+                                    Correo_Electronico: item.Correo_Electronico,
+                                    Alias: item.Alias_Detenido,
+                                    Fecha_Detencion: item.Fecha_Registro_Detenido,
+                                    Genero: item.Genero,
+                                    Nombre: item.Nombre,
+                                    Ap_Paterno: item.Ap_Paterno,
+                                    Ap_Materno: item.Ap_Materno,
+                                    Telefono: item.Telefono,
+                                };
+                            })
+                        },
+                        
                     };
-                    nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
-                    let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin;
-                    
-                    aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                    noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                    curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                    fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                    fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                    
-                    nodoModificado.label = `${nodoModificado.label} \n <b>Alias: </b>${aliasjoin} <b>Fecha Detencion: </b>${fechadetencionjoin} <b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} <b>Fecha Nacimiento: </b> ${fechanacimientojoin}
-                    `;
+                        nodoModificado.label = ``;
+                        nodoModificado.label = `${nodoModificado.id} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
+                        let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin;
+                        
+                        aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        
+                        nodoModificado.label = `${nodoModificado.label} \n <b>Alias: </b>${aliasjoin} \n<b>Fecha Detencion: </b>${fechadetencionjoin} \n<b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} \n<b>Fecha Nacimiento: </b> ${fechanacimientojoin}
+                        `;
                     
                     
                     return nodoModificado;
@@ -220,29 +228,39 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     let nodoModificado = n;
                     console.log('NODO MODIFICADO:',nodoModificado);
                     nodoModificado.data.historico = respuesta.data.historico;
+                    let viejosAtributos = nodoModificado.atributos;
                     nodoModificado.atributos = {
                         ...nodoModificado.atributos,
                         detenciones_historicas: {
-                            historico: respuesta.data.historico.map((item: any) => ({
-                                Folio: item.Folio,
-                                No_Remision: '',
-                                CURP: '',
-                                Fec_Nac: '',
-                                Correo_Electronico: '',
-                                Alias: '',
-                                Fecha_Detencion: item.Fecha_Rem,
-                                Genero: item.Sexo_d,
-                                Nombre: item.Nombre_d,
-                                Ap_Paterno: item.Ap_paterno_d,
-                                Ap_Materno: item.Ap_materno_d,
-                            }))
+                            historico: respuesta.data.historico.map((item: any) => {
+                                if (viejosAtributos.detenciones_historicas && viejosAtributos.detenciones_historicas.historico) {
+                                    if (viejosAtributos.detenciones_historicas.historico.find((element: any) => element.Folio === item.Folio)) return null;
+                                }
+                                return {
+                                    Folio: item.Folio,
+                                    No_Remision: '',
+                                    CURP: '',
+                                    Fec_Nac: '',
+                                    Correo_Electronico: '',
+                                    Alias: '',
+                                    Fecha_Detencion: item.Fecha_Rem,
+                                    Genero: item.Sexo_d,
+                                    Nombre: item.Nombre_d,
+                                    Ap_Paterno: item.Ap_paterno_d,
+                                    Ap_Materno: item.Ap_materno_d,
+                                };
+                            })
                         }
                     };
+                    if(node.atributos.consultado < 2){
                     nodoModificado.label = `${nodoModificado.label} \n <b>Historico: (${respuesta.data.historico.length})</b>`;
                     let foliojoin, fecharemjoin;
                     foliojoin = respuesta.data.historico.map((item: any) => item.Folio).join(', ');
                     fecharemjoin = respuesta.data.historico.map((item: any) => new Date(item.Fecha_Rem).toLocaleDateString()).join(', ');
-                    nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${foliojoin} <b>Fecha Remision: </b>${fecharemjoin}`;
+                    nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${foliojoin} \n<b>Fecha Remision: </b>${fecharemjoin}`;
+
+                    nodoModificado.atributos.consultado += 1;
+                    }
                     return nodoModificado;
                 }
                 return n;
@@ -277,6 +295,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         No_Exterior: item.No_Ext,
                         Coordenada_X: item.Coordenada_X,
                         Coordenada_Y: item.Coordenada_Y,
+                        Id_Inspeccion: item.Id_Inspeccion,
                     }
                 );
 
@@ -302,7 +321,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
 
     const handleSearchVehiculosInspeccion = async(node:NodeData) => {
     
-        const respuesta =await  searchVehiculoInspeccion({ entidad: node.type || '', payload: { inspeccion: node.data.Id_Inspeccion } });
+        const respuesta =await  searchVehiculoInspeccion({ entidad: node.type || '', payload: { inspeccion: node.atributos.Id_Inspeccion } });
         console.log('RESPUESTA:',respuesta.data.vehiculos);
         if(respuesta.data.vehiculos.length > 0){
             respuesta.data.vehiculos.map((item: any) => {
@@ -393,25 +412,32 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 let nodoModificado = n;
                 console.log('NODO MODIFICADO:',nodoModificado);
                 nodoModificado.data.remisiones = respuesta.data.remisiones;
+                let viejosAtributos = nodoModificado.atributos;
                 nodoModificado.atributos = {
                     ...nodoModificado.atributos,
                     detenciones: {
-                        sarai: respuesta.data.remisiones.map((item: any) => ({
-                            Ficha: item.Ficha,
-                            No_Remision: item.No_Remision,
-                            CURP: item.CURP,
-                            Fec_Nac: item.Fecha_Nacimiento,
-                            Correo_Electronico: item.Correo_Electronico,
-                            Alias: item.Alias_Detenido,
-                            Fecha_Detencion: item.Fecha_Registro_Detenido,
-                            Genero: item.Genero,
-                            Nombre: item.Nombre,
-                            Ap_Paterno: item.Ap_Paterno,
-                            Ap_Materno: item.Ap_Materno,
-                            Telefono: item.Telefono,
-                        }))
+                        sarai: respuesta.data.remisiones.map((item: any) => {
+                            if(viejosAtributos.detenciones && viejosAtributos.detenciones.sarai){
+                                if(viejosAtributos.detenciones.sarai.find((element:any) => element.No_Remision === item.No_Remision)) return null;
+                            }
+                            return {
+                                Ficha: item.Ficha,
+                                No_Remision: item.No_Remision,
+                                CURP: item.CURP,
+                                Fec_Nac: item.Fecha_Nacimiento,
+                                Correo_Electronico: item.Correo_Electronico,
+                                Alias: item.Alias_Detenido,
+                                Fecha_Detencion: item.Fecha_Registro_Detenido,
+                                Genero: item.Genero,
+                                Nombre: item.Nombre,
+                                Ap_Paterno: item.Ap_Paterno,
+                                Ap_Materno: item.Ap_Materno,
+                                Telefono: item.Telefono,
+                                };
+                        })
                     }
                 };
+                nodoModificado.label = ``;
                 nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
                 let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin, nombresjoin;
                 
@@ -421,7 +447,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                 fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                 nombresjoin = respuesta.data.remisiones.map((item: any) => `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                nodoModificado.label = `${nodoModificado.label} \n <b>Nombre: </b>${nombresjoin}\n<b>Alias: </b>${aliasjoin} <b>Fecha Detencion: </b>${fechadetencionjoin} <b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} <b>Fecha Nacimiento: </b> ${fechanacimientojoin}
+                nodoModificado.label = `${nodoModificado.label} \n <b>Nombre: </b>${nombresjoin}\n<b>Alias: </b>${aliasjoin} \n<b>Fecha Detencion: </b>${fechadetencionjoin} \n<b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} \n<b>Fecha Nacimiento: </b> ${fechanacimientojoin}
                 `;
                 
                 
@@ -472,7 +498,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     nombresjoin = respuesta.data.vehiculos.map((item: any) => `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                     fechasjoin = respuesta.data.vehiculos.map((item: any) => new Date(item.Fecha_Hora).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
 
-                    nodoModificado.label = `${nodoModificado.label} \n <b>Nombre: </b>${nombresjoin}\n<b>Placas: </b>${placasjoin} <b>Niv: </b>${nivjoin} <b>No Remision: </b>${fechasjoin} `;
+                    nodoModificado.label = `${nodoModificado.label} \n <b>Nombre: </b>${nombresjoin}\n<b>Placas: </b>${placasjoin} \n<b>Niv: </b>${nivjoin} \n<b>No Remision: </b>${fechasjoin} `;
 
                     return nodoModificado;
                 }

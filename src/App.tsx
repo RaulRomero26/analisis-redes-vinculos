@@ -5,7 +5,7 @@ import NetworkGraph from "./components/NetworkGraph";
 import ContextMenu from "./components/ContextMenu";
 
 import { GraphData } from "./interfaces/GraphData";
-// import { useGraphFunctions } from "./hooks/useGraphFunctions";
+import { useGraphFunctions } from "./hooks/useGraphFunctions";
 import useContextMenu from "./hooks/useContextMenu";
 import { EdgeData } from "./interfaces/EdgeData";
 import DropdownMenu from "./ui/DropDownMenu";
@@ -15,7 +15,7 @@ import { NodeData } from "./interfaces/NodeData";
 import SaveNetwork from "./components/SaveNetwork";
 import { useShowDetails } from "./hooks/useShowDetails";
 
-import { Options } from "./interfaces/Options";
+//import { Options } from "./interfaces/Options";
 
 const App: React.FC = () => {
 	const [data, setData] = useState<GraphData>({
@@ -27,13 +27,13 @@ const App: React.FC = () => {
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [entidad, setEntidad] = useState('');
-	const {options} = Options();
+	//const {options} = Options();
 
 	useEffect(() => {	
 		console.log(options);
 	}, []);
 	// Pass getData correctly to useGraphFunctions
-	//const { editNode, editEdge, addEdgeControl, addNode, deleteNode, deleteEdge } = useGraphFunctions(setData, getData);
+	const { editNode, editEdge, addEdgeControl, addNode, deleteNode, deleteEdge } = useGraphFunctions(setData, getData);
 
 	const { contextMenu, handleContextMenu, handleAddData, closeContextMenu, handleSearchExtended,
 		isModalFichasOpen, selectedNode, setIsModalFichasOpen, isModalContactosOpen, setIsModalContactosOpen
@@ -98,26 +98,26 @@ const App: React.FC = () => {
 		deleteNode: deleteNode,
 		deleteEdge: deleteEdge,
 	  },
-	  edges: {
-		smooth:{
-		  enabled: true,
-		  type: 'curvedCW',
-		  roundness: 0.5
-		}
-	  },
+	//   edges: {
+	// 	smooth:{
+	// 	  enabled: true,
+	// 	  type: 'curvedCW',
+	// 	  roundness: 0.5
+	// 	}
+	//   },
 	  physics: {
 		enabled: true, // Habilitar la física para permitir el movimiento de nodos
 		solver: 'hierarchicalRepulsion',
 		hierarchicalRepulsion: {
 		  centralGravity: 0.0,
 		  springLength: 250, // Aumentar la longitud de los resortes para más espacio entre nodos
-		  springConstant: 0.01,
+		  springConstant: 0,
 		  nodeDistance: 450, // Aumentar la distancia entre nodos
 		  damping: 1, // Aumentar el damping para reducir el rebote
 		  avoidOverlap: 1, // Evitar la superposición de nodos
 		},
 		stabilization: {
-		  enabled: true,
+		  enabled: false,
 		  iterations: 1000,
 		  updateInterval: 25,
 		  onlyDynamicEdges: false,
@@ -134,8 +134,52 @@ const App: React.FC = () => {
 		},
 	  },
 	};
-  */
+	*/
 
+	const options = {
+		locale: 'es',
+		interaction: { 
+		  selectable: true, 
+		  hover: true, 
+		  dragNodes: true,
+		  zoomSpeed: 1,
+		  zoomView: true ,
+		  navigationButtons: true,
+		  keyboard: true,
+		}, // Permitir mover nodos
+		manipulation: {
+		  enabled: true,
+		  initiallyActive: true,
+		  addNode: addNode,
+		  addEdge: addEdgeControl,
+		  editNode: editNode,
+		  editEdge: editEdge,
+		  deleteNode: deleteNode,
+		  deleteEdge: deleteEdge,
+		},
+		layout: {
+			hierarchical: {
+				enabled: true,
+				direction: 'UD', // 'UD' for Up-Down
+				sortMethod: 'directed', // 'directed' or 'hubsize'
+				nodeSpacing: 300, // Aumentar el espaciado entre nodos
+				levelSeparation: 250, // Aumentar la separación entre niveles
+				shakeTowards: 'roots', // 'roots' or 'leaves'
+			},
+		},
+		physics: {
+			enabled: true, // Habilitar la física para permitir el movimiento de nodos
+			solver: 'hierarchicalRepulsion',
+			hierarchicalRepulsion: {
+				centralGravity: 0.0,
+				springLength: 150, // Aumentar la longitud de los resortes para más espacio entre nodos
+				springConstant: 0,
+				nodeDistance: 150, // Aumentar la distancia entre nodos
+				damping: 1, // Aumentar el damping para reducir el rebote
+				avoidOverlap: 1, // Evitar la superposición de nodos
+			},
+		},
+	  };
 
 	return (
 		<div className="" onContextMenu={(e) => e.preventDefault()}>

@@ -35,24 +35,24 @@ export const Options = () => {
       deleteNode: deleteNode,
       deleteEdge: deleteEdge,
     },
-    edges: {
-      smooth:{
-        enabled: true,
-        type: 'curvedCW',
-        roundness: 0.5
-      }
-    },
+    // edges: {
+    //   smooth:{
+    //     enabled: true,
+    //     type: 'dinamyc',
+    //     roundness: 0.2
+    //   }
+    // },
     physics: {
       enabled: true, // Habilitar la física para permitir el movimiento de nodos
-      solver: 'hierarchicalRepulsion',
-      hierarchicalRepulsion: {
-        centralGravity: 0.0,
-        springLength: 250, // Aumentar la longitud de los resortes para más espacio entre nodos
-        springConstant: 0.01,
-        nodeDistance: 450, // Aumentar la distancia entre nodos
-        damping: 1, // Aumentar el damping para reducir el rebote
-        avoidOverlap: 1, // Evitar la superposición de nodos
-      },
+      // solver: 'hierarchicalRepulsion',
+      // hierarchicalRepulsion: {
+      //   centralGravity: 0.0,
+      //   springLength: 250, // Aumentar la longitud de los resortes para más espacio entre nodos
+      //   springConstant: 0.01,
+      //   nodeDistance: 450, // Aumentar la distancia entre nodos
+      //   damping: 1, // Aumentar el damping para reducir el rebote
+      //   avoidOverlap: 1, // Evitar la superposición de nodos
+      // },
       stabilization: {
         enabled: true,
         iterations: 1000,
