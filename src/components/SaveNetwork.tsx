@@ -29,7 +29,27 @@ const SaveNetwork: React.FC<SaveNetworkProps> = ({ data, setData }) => {
             reader.onload = (e) => {
                 const json = e.target?.result as string;
                 const graphData = JSON.parse(json);
-                setData(graphData);
+                //setData(graphData);
+                // Merge the loaded graph with the existing graph
+                const mergedNodes = [...data.nodes];
+                const mergedEdges = [...data.edges];
+
+                // Add nodes from the loaded graph if they don't exist in the current graph
+                graphData.nodes.forEach((node: any) => {
+                    if (!mergedNodes.some((n: any) => n.id === node.id)) {
+                        mergedNodes.push(node);
+                    }
+                });
+
+                // Add edges from the loaded graph if they don't exist in the current graph
+                graphData.edges.forEach((edge: any) => {
+                    if (!mergedEdges.some((e: any) => e.id === edge.id)) {
+                        mergedEdges.push(edge);
+                    }
+                });
+
+                // Update the data with the merged graph
+                setData({ nodes: mergedNodes, edges: mergedEdges });
             };
             reader.readAsText(file);
         }

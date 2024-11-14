@@ -48,7 +48,7 @@ const ModalVehiculo: React.FC<ModalVehiculoProps> = ({ isModalOpen, toggleModal,
             entidad: 'vehiculo',
             data: {},
             atributos: {
-                Placa: data.placa,
+                Placas: data.placa,
                 NIV: data.niv
             }
         };

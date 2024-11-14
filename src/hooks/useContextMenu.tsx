@@ -252,15 +252,13 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             })
                         }
                     };
-                    if(node.atributos.consultado < 2){
+                    
                     nodoModificado.label = `${nodoModificado.label} \n <b>Historico: (${respuesta.data.historico.length})</b>`;
                     let foliojoin, fecharemjoin;
                     foliojoin = respuesta.data.historico.map((item: any) => item.Folio).join(', ');
                     fecharemjoin = respuesta.data.historico.map((item: any) => new Date(item.Fecha_Rem).toLocaleDateString()).join(', ');
                     nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${foliojoin} \n<b>Fecha Remision: </b>${fecharemjoin}`;
 
-                    nodoModificado.atributos.consultado += 1;
-                    }
                     return nodoModificado;
                 }
                 return n;
@@ -321,7 +319,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
 
     const handleSearchVehiculosInspeccion = async(node:NodeData) => {
     
-        const respuesta =await  searchVehiculoInspeccion({ entidad: node.type || '', payload: { inspeccion: node.atributos.Id_Inspeccion } });
+        const respuesta =await  searchVehiculoInspeccion({ entidad: node.type || '', payload: { inspeccion: node.atributos.Id_Inspeccion, placas: node.atributos.Placas_Vehiculo, NIV: node.atributos.NIV } });
         console.log('RESPUESTA:',respuesta.data.vehiculos);
         if(respuesta.data.vehiculos.length > 0){
             respuesta.data.vehiculos.map((item: any) => {
@@ -461,7 +459,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     }
 
     const handleSearchVehiculoRemision = async(node:NodeData) => {
-        const respuesta = await searchVehiculoRemision({ entidad: node.type || '', payload: { placa: node.atributos.Placa, niv: node.atributos.Niv } });
+        const respuesta = await searchVehiculoRemision({ entidad: node.type || '', payload: { placa: node.atributos.Placas, niv: node.atributos.NIV } });
         console.log('RESPUESTA:',respuesta.data.vehiculos);
         if(respuesta.data.vehiculos.length > 0){
             console.warn('SI HAY VEHICULOS');
@@ -544,12 +542,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
 
 
     const handleSearchMaestroPersona = async(node:NodeData) => {
-        if(node.type === 'entrada-vehiculo'){
+        if(node.type === 'entrada-vehiculo' || node.type === 'vehiculo'){
             handleSearchVehiculoRemision(node);
             return;
         }
-        handleSearchRemisiones(node);
-        handleSearchHistorico(node);
+        await handleSearchRemisiones(node); //Recuerda con el await lo hacemos secuencial para no repetir informacion en el label del nodo
+        await handleSearchHistorico(node);
     };
 
 
