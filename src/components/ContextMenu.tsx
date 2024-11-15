@@ -15,14 +15,10 @@ interface ContextMenuProps {
     onSearchExtended: (query: string) => void;
 }
 
-const puedenExpandir = ['entrada-persona', 'entrada-telefono', 'entrada-vehiculo', 'persona', 'telefono', 'vehiculo', 'contacto'];
-const puedenTenerConsultas = ['entrada-persona', 'persona'];
-const puedenConsultarTelefono = ['entrada-persona', 'persona', 'telefono', 'contacto'];
-const puedeConsultarVehiculo = ['entrada-vehiculo', 'vehiculo', 'inspeccion'];
 
 const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setData, onSearchExtended, onClose }) => {
 
-    const [nodeDetails, setNodeDetails] = useState<any>(null);
+    const [_nodeDetails, setNodeDetails] = useState<any>(null);
 
     const { findNodeDetails } = useGraphFunctions(setData, getData);
 
