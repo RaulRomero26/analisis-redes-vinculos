@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGraphFunctions } from "../hooks/useGraphFunctions";
 import { NodeData } from "../interfaces/NodeData";
+import { FaArrowRight } from "react-icons/fa";
 
 interface ContextMenuProps {
     x: number;
@@ -14,10 +15,10 @@ interface ContextMenuProps {
     onSearchExtended: (query: string) => void;
 }
 
-const puedenExpandir = ['entrada-persona','entrada-telefono','entrada-vehiculo','persona','telefono','vehiculo','contacto'];
-const puedenTenerConsultas = ['entrada-persona','persona'];
-const puedenConsultarTelefono = ['entrada-persona','persona','telefono','contacto'];
-const puedeConsultarVehiculo = ['entrada-vehiculo','vehiculo','inspeccion'];
+const puedenExpandir = ['entrada-persona', 'entrada-telefono', 'entrada-vehiculo', 'persona', 'telefono', 'vehiculo', 'contacto'];
+const puedenTenerConsultas = ['entrada-persona', 'persona'];
+const puedenConsultarTelefono = ['entrada-persona', 'persona', 'telefono', 'contacto'];
+const puedeConsultarVehiculo = ['entrada-vehiculo', 'vehiculo', 'inspeccion'];
 
 const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setData, onSearchExtended, onClose }) => {
 
@@ -36,60 +37,41 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setDat
     }, [nodeId, findNodeDetails]);
 
     return (
-        <div style={{ position: 'absolute', top: y, left: x, backgroundColor: 'white', border: '1px solid black', zIndex: 1000 }}>
-            <ul>
-                {
-                    nodeDetails && ( puedenExpandir.find(type => type == nodeDetails.type)) && (
-                        <>  
-                            <li><b>Expandir Nodo</b></li>
-                            <li onClick={() => onSearchExtended('Buscar Maestro')}>Buscar Atributos</li>
-                            
-                        </>
-                    )
-                }
-                {
-                    nodeDetails && ( puedenTenerConsultas.find(type => type == nodeDetails.type)) && (
-                        <>
-                        <hr></hr>
-                        <li><b>Expandir Por Consulta</b></li>
-                        <li onClick={() => onSearchExtended('Consultas')}>Consultas</li>
-                        </>
-                    )
-                }
-                {
-                    nodeDetails && (nodeDetails.atributos.detenciones && nodeDetails.type != 'entrada-vehiculo' && nodeDetails.type != 'vehiculo' ) && (
-                        <>  
-                            <hr></hr>
-                            <li><b>Expandir Red</b></li>
-                            <li onClick={() => onSearchExtended('Extraer Contactos')}>Extraer Contactos</li>
-                            <li onClick={() => onSearchExtended('Detenido Con')}>Detenido Con</li>
-                            
-                        </>
-                    )
-                }
-                {
-                    nodeDetails && ( puedenConsultarTelefono.find( type => type == nodeDetails.type) ) && (
-                        <>
-                            <hr></hr>
-                            <li><b>Expandir Telefono</b></li>
-                            <li onClick={() => onSearchExtended('Telefono')}>Consultar Telefono 911</li> 
-                            <li onClick={() => onSearchExtended('Telefono Remisiones')}>Buscar Telefono En Remisiones</li>
-                        </>
-                    )
-                }
-                {
-                    nodeDetails && ( puedeConsultarVehiculo.find( type => type == nodeDetails.type)) && (
-                        <li onClick={() => onSearchExtended('Vehiculos')}>Buscar Vehiculo Consultas</li>
-                    )
-                }
-               
-
-                {/* <li onClick={() => onShowDetails(nodeDetails)}>Mostrar Detalles</li> */}
-                <hr></hr>
-                <li><b>Funciones Generales</b></li>
-                <li onClick={onClose}>Cerrar</li>
-            </ul>
-        </div>
+        <>        
+            <div style={{ position: 'absolute', top: y, left: x, zIndex: 1000 }} className="shadow-lg ring-1 w-50 ring-[#1f283a] ring-opacity-5 bg-white">
+                <ul className=" ">
+                    <li className="font-bold p-1">AÑADIR ATRIBUTOS</li>
+                    <li className="cursor-pointer hover:bg-gray-200 p-1 px-4" onClick={() => onSearchExtended('Buscar Maestro')} >CONSULTAR<span>&#8250;</span></li>
+                    <li className="cursor-pointer hover:bg-gray-200 p-1 px-4">
+                        <button className="flex w-full items-center justify-between space-x-3">
+                            <span>INSERTAR MANUAL</span>
+                            <FaArrowRight />
+                        </button>
+                    </li>
+                    <li className="font-bold">EXPANDIR NODOS</li>
+                    <li className="group relative px-4 hover:bg-gray-200" >
+                        <button className="flex w-full items-center justify-between space-x-3 ">
+                            <span>AGREGAR</span>
+                            <FaArrowRight />
+                        </button>
+                        <div className="invisible absolute top-0 left-full w-60 transform opacity-0 transition-all duration-300 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 z-50">
+                            <ul className="mt-1 shadow-lg ring-1 ring-[#1f283a] ring-opacity-5 bg-white">
+                                <li className="font-bold">NO TELEFONICO</li>
+                                <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Telefono Remisiones')}>BUSCAR EN DETENIDOS</li>
+                                <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Telefono Contactos')}>BUSCAR EN CONTACTOS</li>
+                                <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Telefono 911')}>BUSCAR EN 911</li>
+                                <li className="font-bold">INSPECCIONES</li>
+                                <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Consultas')} >CONSULTAR</li>
+                                <li className="font-bold">REMISIONES</li>
+                                <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Detenido Con')}>DETENIDO CON</li>
+                                <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Extraer Contactos')} >CONTACTOS REF</li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li  className="cursor-pointer hover:bg-gray-200 p-1 px-4"onClick={onClose}>CERRAR</li>
+                </ul>
+            </div>
+        </>
     );
 };
 

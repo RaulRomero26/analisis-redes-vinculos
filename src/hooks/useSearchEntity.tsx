@@ -166,6 +166,26 @@ const  searchRemisionesTelefono = async ({ entidad, payload }: { entidad: string
     }
 }
 
+const buscarContactosPorTelefono = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
+  
+    console.log('Buscando Contactos Telefono', entidad, payload);
+    try {
+      const response = await fetch('http://localhost:8087/api/search/contactosTelefono', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      setData(data.data.contactos);
+      console.log( 'RESPUESTA:',data.data.contactos);
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
 const searchVehiculoRemision = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
 
   console.log('Buscando Vehiculo Remision', entidad, payload);
@@ -197,6 +217,7 @@ const searchVehiculoRemision = async ({ entidad, payload }: { entidad: string; p
     searchVehiculoInspeccion,
     searchRemisionesTelefono,
     searchVehiculoRemision,
+    buscarContactosPorTelefono,
     data,
   };
 };

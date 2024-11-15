@@ -27,6 +27,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         searchVehiculoInspeccion,
         searchRemisionesTelefono,
         searchVehiculoRemision,
+        buscarContactosPorTelefono,
     } = useSearchEntity();
 
     const { addNode,addEdge } = useGraphFunctions(setData,getData);
@@ -75,9 +76,10 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                
                 if(opcion === 'Buscar Maestro')handleSearchMaestroPersona(node); //Buscar Remisiones e inspecciones por Nombre
                 if(opcion === 'Buscar Remisiones')handleSearchRemisiones(node); //Buscar Remisiones por Nombre
-                if(opcion === 'Telefono') handleSearchTelefono(node); // Buscar un telefono que se encuentra en atributos (911)
                 if(opcion === 'Consultas') handleSearchInspeccion(node); // Buscar inspecciones por nombre
                 if(opcion === 'Telefono Remisiones') handleSearchRemisionesTelefono(node); //Busca Remisiones a partir de un telefono
+                if(opcion === 'Telefono 911') handleSearchTelefono(node); // Buscar un telefono que se encuentra en atributos (911)
+                if(opcion === 'Telefono Contactos') handleSearchContactosTelefono(node); // Buscar un telefono que se encuentra en atributos (Contactos)
                 if(opcion === 'Vehiculos') handleSearchVehiculosInspeccion(node); //Busca Vehiculos a partir de una inspeccion
                 /* --------- ESTAS FUNCIONES ME DISPARAN UN MODAL ----------- */
                 if(opcion === 'Extraer Contactos') handleContactosModal(node); // Buscar Contactos si hay remision
@@ -112,7 +114,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         if(node.type === 'entrada-telefono'){
             respuesta =await  searchRemisionesTelefono({ entidad: node.type || '', 
                 payload: { 
-                    label: node.atributos.Telefono, 
+                    telefono: node.atributos.Telefono, 
                     tipo: node.type 
                 } 
             });
@@ -165,6 +167,11 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     let nodoModificado = n;
                     console.log('NODO MODIFICADO:',nodoModificado);
                     nodoModificado.data.remisiones = respuesta.data.remisiones;
+                    nodoModificado.atributos.Telefono = respuesta.data.remisiones
+                        .map((item: any) => item.Telefono)
+                        .filter((telefono: string) => !["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"].includes(telefono))
+                        .join(', ');
+                    nodoModificado.image = `http://172.18.110.25/sarai/files/Remisiones/${respuesta.data.remisiones[0].Ficha}/FotosHuellas/${respuesta.data.remisiones[0].No_Remision}/rostro_frente.jpeg`
                     let viejosAtributos = nodoModificado.atributos;
                     nodoModificado.atributos = {
                         ...nodoModificado.atributos,
@@ -393,7 +400,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     }
                 });
 
-                addEdge({ from: node.id, to: newNode.id, label:'Telefono de detenido' }, (data: any) => {
+                addEdge({ from: node.id, to: newNode.id, label:'Llamada al 911' }, (data: any) => {
                     console.log('Edge added:', data);
                 });
             });
@@ -402,61 +409,79 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     
     const handleSearchRemisionesTelefono = async(node:NodeData) => { 
 
-        const respuesta = await searchRemisionesTelefono({ entidad: node.type || '', payload: { label: node.atributos.Telefono } });
+        const respuesta = await searchRemisionesTelefono({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
         console.log('RESPUESTA:',respuesta.data.remisiones);
         if (respuesta.data.remisiones.length > 0) {
-            const updatedNodes = data.nodes.map(n => {
-            if (n.id === node.id) {
-                let nodoModificado = n;
-                console.log('NODO MODIFICADO:',nodoModificado);
-                nodoModificado.data.remisiones = respuesta.data.remisiones;
-                let viejosAtributos = nodoModificado.atributos;
-                nodoModificado.atributos = {
-                    ...nodoModificado.atributos,
-                    detenciones: {
-                        sarai: respuesta.data.remisiones.map((item: any) => {
-                            if(viejosAtributos.detenciones && viejosAtributos.detenciones.sarai){
-                                if(viejosAtributos.detenciones.sarai.find((element:any) => element.No_Remision === item.No_Remision)) return null;
-                            }
-                            return {
-                                Ficha: item.Ficha,
-                                No_Remision: item.No_Remision,
-                                CURP: item.CURP,
-                                Fec_Nac: item.Fecha_Nacimiento,
-                                Correo_Electronico: item.Correo_Electronico,
-                                Alias: item.Alias_Detenido,
-                                Fecha_Detencion: item.Fecha_Registro_Detenido,
-                                Genero: item.Genero,
-                                Nombre: item.Nombre,
-                                Ap_Paterno: item.Ap_Paterno,
-                                Ap_Materno: item.Ap_Materno,
-                                Telefono: item.Telefono,
-                                };
-                        })
+            respuesta.data.remisiones.map((item: any) => {
+                const newNode = createNodeData(
+                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
+                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                    `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
+                    "image", 
+                    15, 
+                    "blue", 
+                    "persona",
+                    'persona',
+                    item,
+                    {
+                        "Nombre":item.Nombre,
+                        "Ap_Paterno":item.Ap_Paterno,
+                        "Ap_Materno":item.Ap_Materno,
+                        "Telefono":item.Telefono
                     }
-                };
-                nodoModificado.label = ``;
-                nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
-                let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin, nombresjoin;
-                
-                aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                nombresjoin = respuesta.data.remisiones.map((item: any) => `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
-                nodoModificado.label = `${nodoModificado.label} \n <b>Nombre: </b>${nombresjoin}\n<b>Alias: </b>${aliasjoin} \n<b>Fecha Detencion: </b>${fechadetencionjoin} \n<b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} \n<b>Fecha Nacimiento: </b> ${fechanacimientojoin}
-                `;
-                
-                
-                return nodoModificado;
-            }
-            return n;
+                );
+                console.warn('NEW NODE TO EDGE:',newNode);
+                addNode(newNode, (success: boolean) => {
+                    console.log('Node added:', success);
+                    if (!success) {
+                        console.error('Error adding node');
+                    }
+                    else{
+                        addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
+                            console.log('Edge added:', data);
+                        });
+                    }
+                });
             });
-            console.log('ANTES DEL SET:', data.edges);
-            setData({ ...data, nodes: updatedNodes, edges: data.edges });
         }
-    }
+    };
+// Buscar Contactos referidos a partir del telefono
+    const handleSearchContactosTelefono = async(node:NodeData) => {
+        const respuesta = await buscarContactosPorTelefono({ entidad: node.type || '', payload: { label: node.atributos.Telefono } });
+        console.log('RESPUESTA:',respuesta.data.telefonos);
+        if(respuesta.data.telefonos.length){
+            console.log('SI HAY TELEFONOS');
+            respuesta.data.telefonos.map((item: any) => {
+                console.log('item:',item);
+                if(item.Telefono === '') return;
+                const newNode = createNodeData(
+                    `${item.Telefono}`, 
+                    item.Telefono, 
+                    item.Telefono, 
+                    "image", 
+                    15, 
+                    "blue", 
+                    "persona", 
+                    'persona',
+                    item,
+                    {
+                        "Telefono":item.Telefono
+                    }
+                );
+                console.warn('NEW NODE TO EDGE:',newNode);
+                addNode(newNode, (success: boolean) => {
+                    console.log('Node added:', success);
+                    if (!success) {
+                        console.error('Error adding node');
+                    }
+                });
+
+                addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
+                    console.log('Edge added:', data);
+                });
+            });
+        }
+    };
 
     const handleSearchVehiculoRemision = async(node:NodeData) => {
         const respuesta = await searchVehiculoRemision({ entidad: node.type || '', payload: { placa: node.atributos.Placas, niv: node.atributos.NIV } });
