@@ -435,9 +435,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     console.log('Node added:', success);
                     if (!success) {
                         console.error('Error adding node');
+                        addEdge({ from: node.id, to: newNode.id, label: 'Telefono dado por' }, (data: any) => {
+                            console.log('Edge added:', data);
+                        });
                     }
                     else{
-                        addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
+                        addEdge({ from: node.id, to: newNode.id, label: `Dio el Telefono ${item.Telefono}` }, (data: any) => {
                             console.log('Edge added:', data);
                         });
                     }
@@ -447,11 +450,11 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     };
 // Buscar Contactos referidos a partir del telefono
     const handleSearchContactosTelefono = async(node:NodeData) => {
-        const respuesta = await buscarContactosPorTelefono({ entidad: node.type || '', payload: { label: node.atributos.Telefono } });
-        console.log('RESPUESTA:',respuesta.data.telefonos);
-        if(respuesta.data.telefonos.length){
+        const respuesta = await buscarContactosPorTelefono({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
+        console.log('RESPUESTA:',respuesta.data.contactos);
+        if(respuesta.data.contactos.length){
             console.log('SI HAY TELEFONOS');
-            respuesta.data.telefonos.map((item: any) => {
+            respuesta.data.contactos.map((item: any) => {
                 console.log('item:',item);
                 if(item.Telefono === '') return;
                 const newNode = createNodeData(
