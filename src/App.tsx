@@ -161,11 +161,18 @@ const App: React.FC = () => {
 			hierarchical: {
 				enabled: true,
 				direction: 'UD', // 'UD' for Up-Down
-				sortMethod: 'directed', // 'directed' or 'hubsize'
+				sortMethod: 'hubsize', // 'directed' or 'hubsize'
 				nodeSpacing: 300, // Aumentar el espaciado entre nodos
 				levelSeparation: 250, // Aumentar la separación entre niveles
 				shakeTowards: 'roots', // 'roots' or 'leaves'
 			},
+		},
+		edges: {
+			smooth: {
+				enabled: true,
+				type: 'curvedCW',
+				roundness: 0.1
+			}
 		},
 		physics: {
 			enabled: true, // Habilitar la física para permitir el movimiento de nodos

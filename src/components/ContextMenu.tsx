@@ -53,6 +53,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setDat
                         <div className="invisible absolute top-0 left-full w-60 transform opacity-0 transition-all duration-300 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100 z-50">
                             <ul className="mt-1 shadow-lg ring-1 ring-[#1f283a] ring-opacity-5 bg-white">
                                 <li className="font-bold">NO TELEFONICO</li>
+                                <li className="curosr-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Extraer Telefonos')}>EXTRAER TELEFONO(S)</li>
                                 <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Telefono Remisiones')}>BUSCAR EN DETENIDOS</li>
                                 <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Telefono Contactos')}>BUSCAR EN CONTACTOS</li>
                                 <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Telefono 911')}>BUSCAR EN 911</li>

@@ -81,6 +81,8 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 if(opcion === 'Telefono 911') handleSearchTelefono(node); // Buscar un telefono que se encuentra en atributos (911)
                 if(opcion === 'Telefono Contactos') handleSearchContactosTelefono(node); // Buscar un telefono que se encuentra en atributos (Contactos)
                 if(opcion === 'Vehiculos') handleSearchVehiculosInspeccion(node); //Busca Vehiculos a partir de una inspeccion
+                /* --------- FUNCIONES QUE ME EXTRAEN DIRECTAMENTE SIN NECESIDAD DE MODAL ----------- */
+                if(opcion === 'Extraer Telefonos') handleExtraerTelefonos(node); // Buscar Telefonos si hay remision
                 /* --------- ESTAS FUNCIONES ME DISPARAN UN MODAL ----------- */
                 if(opcion === 'Extraer Contactos') handleContactosModal(node); // Buscar Contactos si hay remision
                 if(opcion === 'Detenido Con') handleDetenidoConModal(node); // Buscar Detenido Con si hay remision
@@ -568,6 +570,39 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         }
     }
 
+    const handleExtraerTelefonos = async(node:NodeData) => { 
+        const respuesta = node.data.remisiones;
+        respuesta.map((item: any) => {
+            console.log('item:',item);
+            let invalidPhones = ["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"];
+            if(invalidPhones.find(valor => valor === item.Telefono) ) return;
+            const newNode = createNodeData(
+                `${item.Telefono}`, 
+                item.Telefono, 
+                item.Telefono, 
+                "image", 
+                15, 
+                "blue", 
+                "telefono", 
+                'telefono',
+                item,
+                {
+                    "Telefono":item.Telefono
+                }
+            );
+            console.warn('NEW NODE TO EDGE:',newNode);
+            addNode(newNode, (success: boolean) => {
+                console.log('Node added:', success);
+                if (!success) {
+                    console.error('Error adding node');
+                }
+            });
+
+            addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
+                console.log('Edge added:', data);
+            });
+        });
+    }
 
     const handleSearchMaestroPersona = async(node:NodeData) => {
         if(node.type === 'entrada-vehiculo' || node.type === 'vehiculo'){
