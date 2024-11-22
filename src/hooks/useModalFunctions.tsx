@@ -45,9 +45,9 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
                     }
                 );
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
+                addNode(newNode, (data: any) => {
+                    console.log('Node added:', data.status);
+                    if (!data.status) {
                         console.error('Error adding node');
                        //ACA tocaria agregar peso al enlace por que significa que ya existe o verificar si es la forma correcta en arbol
                        addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {  console.log('Edge added:', data); });
@@ -90,9 +90,9 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
                     }
                 );
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('SE PUEDE AGREGAR? :', success);
-                    if (!success) {
+                addNode(newNode, (data: any) => {
+                    console.log('SE PUEDE AGREGAR? :', data.status);
+                    if (!data.status){
                         console.error('Error adding node');
                        //ACA tocaria agregar peso al enlace por que significa que ya existe o verificar si es la forma correcta en arbol
                           addEdge({ from: node.id, to: newNode.id, label: 'Contacto' }, (data: any) => {  console.log('Edge added:', data); });

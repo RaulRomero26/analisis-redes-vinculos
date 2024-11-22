@@ -7,6 +7,20 @@ export default defineConfig({
   plugins: [
     react(),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          // Verificar que assetInfo.name no sea undefined
+          if (assetInfo.name && /\.(gif|jpe?g|png|svg)$/.test(assetInfo.name)) {
+            return 'assets/[name][extname]';
+          }
+          // Para otros tipos de archivos, puedes usar la configuración predeterminada
+          return 'assets/[name]-[hash][extname]';
+        },
+      },
+    },
+  },
   optimizeDeps: {
     esbuildOptions: {
       define: {

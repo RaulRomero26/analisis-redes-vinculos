@@ -57,22 +57,32 @@ export const useGraphFunctions = (
     });
   };
 
-  const addNode = (nodeData: any, callback: (success: boolean) => void) => {
+  const addNode = (nodeData: any, callback: (data: any) => void) => {
     console.warn('ENTRE A AGREGAR NODO');
       try {
         setData((prevData) => {
           // Check if node with same id exists
-          const nodeExists = prevData.nodes.find(node => node.id === nodeData.id);
-        console.log('DESDE ADD NODE :', nodeExists);
+          let nodeExists = prevData.nodes.find(node => node.id === nodeData.id);
+
+        if(nodeData.entidad === 'vehiculo'){
+            nodeExists = prevData.nodes.find(node => 
+            (node.atributos.NIV !== 'sd' && node.atributos.NIV !== 'SD' && node.atributos.NIV !== 's/d' && node.atributos.NIV !== 'S/D' && node.atributos.NIV === nodeData.atributos.NIV) || 
+            (node.atributos.Placas !== 'sd' && node.atributos.Placas !== 'SD' && node.atributos.Placas !== 's/d' && node.atributos.Placas !== 'S/D' && node.atributos.Placas === nodeData.atributos.Placas)
+            );
+        }  
+
+        console.warn('DESDE ADD NODE :', nodeExists);
         if (nodeExists !== undefined) {
           console.error("Node with same ID already exists");
+          console.warn('Node exists:', nodeExists);
+         
           Swal.fire({
             title: 'Error',
             text: `Ya existe una entidad identificada ${nodeData.label}`,
             icon: 'error',
             confirmButtonText: 'Ok'
           });
-          callback(false); // Indicate that the node was not added
+          callback({status: false,encontro:nodeData}); // Indicate that the node was not added
           return prevData; // Return previous data without modifying it
         }else {
           console.warn('Me esta llegando:', nodeData);
@@ -103,7 +113,7 @@ export const useGraphFunctions = (
             newNode.label = `<b>Placas: </b> ${newNode.atributos.Placas} <b>NIV: </b> ${newNode.atributos.NIV} \n <b>Marca: </b> ${newNode.atributos.Marca} \n <b>Modelo: </b> ${newNode.atributos.Modelo} \n <b>Color: </b> ${newNode.atributos.Color}`;
           }
           console.log("New node:", newNode);
-          callback(true); // Indicate that the node was added successfully
+          callback({status:true}); // Indicate that the node was added successfully
           return {
             ...prevData,
             nodes: [...prevData.nodes, newNode],

@@ -24,6 +24,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         buscarLlamadas911,
         searchHistorico,
         searchInspeccion,
+        searchInspeccionVehiculo,
         searchVehiculoInspeccion,
         searchRemisionesTelefono,
         searchVehiculoRemision,
@@ -41,30 +42,6 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         if (event.nodes.length > 0) {
             setContextMenu({ x: event.event.clientX, y: event.event.clientY, edgeId: null, nodeId: event.nodes[0] });
         } 
-    };
-
-    const handleAddData = () => {
-        console.log('le pique a una opcion de add data',contextMenu);
-        if (contextMenu.edgeId !== null) {
-            const newEdges = data.edges.map((edge: EdgeData) => {
-                if (edge.id === contextMenu.edgeId) {
-                    return { ...edge, data: { ...edge, newData: "Nuevo dato" } };
-                }
-                return edge;
-            });
-            setData({ ...data, edges: newEdges });
-        }
-        if (contextMenu.nodeId !== null) {
-            const newNodes = data.nodes.map(node => {
-                if (node.id === contextMenu.nodeId) {
-                    return { ...node, data: { ...node, newData: "Nuevo dato" } };
-                }
-                return node;
-            });
-            setData({ ...data, nodes: newNodes });
-            console.log(data);
-        }
-        setContextMenu({ x: 0, y: 0, edgeId: null, nodeId: null });
     };
 
     const handleSearchExtended = async(opcion:string) => {
@@ -142,10 +119,11 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         }
                     );
                     console.warn('NEW NODE TO EDGE:',newNode);
-                    addNode(newNode, (success: boolean) => {
-                        console.log('Node added:', success);
-                        if (!success) {
+                    addNode(newNode, (data: any) => {
+                        console.log('Node added:', data.status);
+                        if (!data.status) {
                             console.error('Error adding node');
+
                         }
                         else{
                             addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
@@ -279,52 +257,107 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     };
 
     const handleSearchInspeccion = async(node:NodeData) => {
-        const respuesta =await  searchInspeccion({ entidad: node.type || '', payload: { label: node.id } });
-        console.log('RESPUESTA:',respuesta.data.inspeccion);
-        if(respuesta.data.inspeccion.length > 0){
-            respuesta.data.inspeccion.map((item: any) => {
-                console.log('item:',item);
-                if(item.Telefono === '') return;
-                const newNode = createNodeData(
-                    `${item.Coordenada_X}, ${item.Coordenada_Y}`,
-                    `${item.Coordenada_X}, ${item.Coordenada_Y}`,
-                    `${item.Coordenada_X}, ${item.Coordenada_Y}`,
-                    "image",
-                    15,
-                    "blue",
-                    "inspeccion",
-                    'persona',
-                    item,
-                    {
-                        Alias: item.Alias,
-                        Fecha: new Date(item.Fecha_Hora_Inspeccion).toLocaleDateString(),
-                        Colonia: item.Colonia,
-                        Calle_1: item.Calle_1,
-                        Calle_2: item.Calle_2,
-                        No_Exterior: item.No_Ext,
-                        Coordenada_X: item.Coordenada_X,
-                        Coordenada_Y: item.Coordenada_Y,
-                        Id_Inspeccion: item.Id_Inspeccion,
-                    }
-                );
-
-
-                console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
-                        console.error('Error adding node');
-                        addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
-                            console.log('Edge added:', data);
-                        });
-                    }
-                    else{
-                        addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
-                            console.log('Edge added:', data);
-                        });
-                    }
+        let payload = {};
+        let respuesta:any;
+        if(node.entidad === 'vehiculo'){
+            payload = { placas: node.atributos.Placas, niv: node.atributos.NIV };
+            respuesta =await  searchVehiculoInspeccion({ entidad: node.type || '', payload: payload }); //BUSCA UNA PLACA O NIV EN INSPECCIONES
+            console.log('RESPUESTA:',respuesta.data.vehiculos);
+            if(respuesta.data.vehiculos.length > 0){
+                respuesta.data.vehiculos.map((item: any) => {
+                    console.log('item:',item);
+                    if(item.Telefono === '') return;
+                    const newNode = createNodeData(
+                        `${item.Coordenada_X}, ${item.Coordenada_Y}`,
+                        `${item.Coordenada_X}, ${item.Coordenada_Y}`,
+                        `${item.Coordenada_X}, ${item.Coordenada_Y}`,
+                        "image",
+                        15,
+                        "blue",
+                        "inspeccion",
+                        'persona',
+                        item,
+                        {
+                            Alias: item.Alias,
+                            Fecha: new Date(item.Fecha_Hora_Inspeccion).toLocaleDateString(),
+                            Colonia: item.Colonia,
+                            Calle_1: item.Calle_1,
+                            Calle_2: item.Calle_2,
+                            No_Exterior: item.No_Ext,
+                            Coordenada_X: item.Coordenada_X,
+                            Coordenada_Y: item.Coordenada_Y,
+                            Id_Inspeccion: item.Id_Inspeccion,
+                        }
+                    );
+    
+    
+                    console.warn('NEW NODE TO EDGE:',newNode);
+                    addNode(newNode, (data: any) => {
+                        console.log('Node added:', data);
+                        if (!data.status) {
+                            console.error('Error adding node');
+                            addEdge({ from: node.id, to: data.encontro.id, label: 'Inspeccion' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
+                        else{
+                            addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
+                    });
                 });
-            });
+            }
+        }
+        if(node.entidad === 'persona'){
+            payload =  { label: node.id };
+            respuesta =await  searchInspeccion({ entidad: node.type || '', payload: payload });
+            console.log('RESPUESTA:',respuesta.data.inspeccion);
+            if(respuesta.data.inspeccion.length > 0){
+                respuesta.data.inspeccion.map((item: any) => {
+                    console.log('item:',item);
+                    if(item.Telefono === '') return;
+                    const newNode = createNodeData(
+                        `${item.Coordenada_X}, ${item.Coordenada_Y}`,
+                        `${item.Coordenada_X}, ${item.Coordenada_Y}`,
+                        `${item.Coordenada_X}, ${item.Coordenada_Y}`,
+                        "image",
+                        15,
+                        "blue",
+                        "inspeccion",
+                        'persona',
+                        item,
+                        {
+                            Alias: item.Alias,
+                            Fecha: new Date(item.Fecha_Hora_Inspeccion).toLocaleDateString(),
+                            Colonia: item.Colonia,
+                            Calle_1: item.Calle_1,
+                            Calle_2: item.Calle_2,
+                            No_Exterior: item.No_Ext,
+                            Coordenada_X: item.Coordenada_X,
+                            Coordenada_Y: item.Coordenada_Y,
+                            Id_Inspeccion: item.Id_Inspeccion,
+                        }
+                    );
+    
+    
+                    console.warn('NEW NODE TO EDGE:',newNode);
+                    addNode(newNode, (data: any) => {
+                        console.log('Node added:', data.status);
+                        if (!data.status) {
+                            console.error('Error adding node');
+                            addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
+                        else{
+                            addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
+                    });
+                });
+            }
         }
     };
 
@@ -358,10 +391,13 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     }
                 );
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
+                addNode(newNode, (data: any) => {
+                    console.log('Node added:', data.status);
+                    if (!data.status) {
                         console.error('Error adding node');
+                        addEdge({ from: node.id, to: data.encontro.id, label: 'Vehiculo' }, (data: any) => {
+                            console.log('Edge added:', data);
+                        });
                     }
                     else{
                         addEdge({ from: node.id, to: newNode.id, label: 'Vehiculo' }, (data: any) => {
@@ -399,9 +435,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     }
                 );
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
+                addNode(newNode, (data: any) => {
+                    console.log('Node added:', data.status);
+                    if (!data.status) {
                         console.error('Error adding node');
                     }
                 });
@@ -437,9 +473,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     }
                 );
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
+                addNode(newNode, (data: any) => {
+                    console.log('Node added:', data.status);
+                    if (!data.status) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: newNode.id, label: 'Telefono dado por' }, (data: any) => {
                             console.log('Edge added:', data);
@@ -481,9 +517,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     }
                 );
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
+                addNode(newNode, (data: any) => {
+                    console.log('Node added:', data.status);
+                    if (!data.status) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: newNode.id, label: 'Telefono de Contacto' }, (data: any) => {
                             console.log('Edge added:', data);
@@ -510,6 +546,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     let nodoModificado = n;
                     console.log('NODO MODIFICADO:',nodoModificado);
                     nodoModificado.data.vehiculos = respuesta.data.vehiculos;
+                    let viejosAtributos = nodoModificado.atributos;
+
+                    if (viejosAtributos.detenciones && viejosAtributos.detenciones.sarai) {
+                        if (viejosAtributos.detenciones.sarai.find((element:any) => element.No_Remision === respuesta.data.vehiculos[0].No_Remision)) return n;
+                    }
+
                     nodoModificado.atributos = {
                         ...nodoModificado.atributos,
                         detenciones: {
@@ -527,18 +569,22 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                                 Nombre: item.Nombre,
                                 Ap_Paterno: item.Ap_Paterno,
                                 Ap_Materno: item.Ap_Materno,	
-                                Fecha_Remision: item.Fecha_Hora
+                                Fecha_Remision: item.Fecha_Hora,
+                                ID_VEHICULO: item.ID_VEHICULO
                             }))
                         }
                     };
+                    nodoModificado.image = `http://172.18.110.25/sarai/public/files/Vehiculos/${respuesta.data.vehiculos[0].ID_VEHICULO}/Fotos/costado_conductor.jpeg`
+                    nodoModificado.label = ``;
                     nodoModificado.label = `${nodoModificado.label} \n <b>Remisiones: (${respuesta.data.vehiculos.length})</b>`;
-                    let placasjoin, nivjoin, nombresjoin, fechasjoin;
+                    let placasjoin, nivjoin, nombresjoin, fechasjoin, remisionesjoin;
                     placasjoin = respuesta.data.vehiculos.map((item: any) => item.Placa_Vehiculo).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                     nivjoin = respuesta.data.vehiculos.map((item: any) => item.No_Serie).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                     nombresjoin = respuesta.data.vehiculos.map((item: any) => `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                     fechasjoin = respuesta.data.vehiculos.map((item: any) => new Date(item.Fecha_Hora).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                    remisionesjoin = respuesta.data.vehiculos.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
 
-                    nodoModificado.label = `${nodoModificado.label} \n <b>Nombre: </b>${nombresjoin}\n<b>Placas: </b>${placasjoin} \n<b>Niv: </b>${nivjoin} \n<b>No Remision: </b>${fechasjoin} `;
+                    nodoModificado.label = `${nodoModificado.label} \n <b>Nombre: </b>${nombresjoin}\n<b>Placas: </b>${placasjoin} \n<b>Niv: </b>${nivjoin} \n<b>No Remision: </b>${remisionesjoin} \n<b>Fecha:</b> ${fechasjoin}`;
 
                     return nodoModificado;
                 }
@@ -566,9 +612,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         }
                     );
                     console.warn('NEW NODE TO EDGE:',newNode);
-                    addNode(newNode, (success: boolean) => {
-                        console.log('Node added:', success);
-                        if (!success) {
+                    addNode(newNode, (data: any) => {
+                        console.log('Node added:', data.status);
+                        if (!data.status) {
                             console.error('Error adding node');
                         }
                         else{
@@ -604,9 +650,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 }
             );
             console.warn('NEW NODE TO EDGE:',newNode);
-            addNode(newNode, (success: boolean) => {
-                console.log('Node added:', success);
-                if (!success) {
+            addNode(newNode, (data: any) => {
+                console.log('Node added:', data.status);
+                if (!data.status) {
                     console.error('Error adding node');
                 }
             });
@@ -636,9 +682,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     }
                 );
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
+                addNode(newNode, (data: any) => {
+                    console.log('Node added:', data.status);
+                    if (!data.status) {
                         console.error('Error adding node');
                     }
                 });
@@ -676,9 +722,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     }
                 );
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (success: boolean) => {
-                    console.log('Node added:', success);
-                    if (!success) {
+                addNode(newNode, (data: any) => {
+                    console.log('Node added:', data.status);
+                    if (!data.status) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: newNode.id, label: 'Persona Inspeccionada' }, (data: any) => {
                             console.log('Edge added:', data);
@@ -710,7 +756,6 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     return {
         contextMenu,
         handleContextMenu,
-        handleAddData,
         handleSearchExtended,
         handleDetenidoConModal,    // Exporta esta función para usarla
         isModalFichasOpen,

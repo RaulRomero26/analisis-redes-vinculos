@@ -38,9 +38,9 @@ const ModalNombre: React.FC<ModalNombreProps> = ({ isModalOpen, toggleModal, set
         Ap_Materno: data.apMaterno,
       }
     };
-    addNode(nodeData, (success: boolean) => {
-      console.log('Node added:', success);
-      if (!success) {
+    addNode(nodeData, (data: any) => {
+      console.log('Node added:', data.status);
+      if (!data.status) {
         console.error('Error adding node');
       }
     });

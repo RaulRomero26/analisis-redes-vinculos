@@ -52,9 +52,9 @@ const ModalVehiculo: React.FC<ModalVehiculoProps> = ({ isModalOpen, toggleModal,
                 NIV: data.niv
             }
         };
-        addNode(nodeData, (success: boolean) => {
-            console.log('Node added:', success);
-            if (!success) {
+        addNode(nodeData, (data: any) => {
+            console.log('Node added:', data.status);
+            if (!data.status) {
                 console.error('Error adding node');
             }
         });
