@@ -9,6 +9,7 @@ interface NetworkGraphProps {
   onContext: (event: any) => void;
   onNodeHover: (event: any) => void;
   onEdgeHover: (event: any) => void;
+  onNodeBlur: (event: any) => void;
 }
 
 const NetworkGraph = forwardRef<any, NetworkGraphProps>(({ data, options, onClick, onNodeHover, onEdgeHover, onContext }, ref) => {

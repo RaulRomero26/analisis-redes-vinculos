@@ -59,6 +59,8 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setDat
                                 <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Telefono 911')}>BUSCAR EN 911</li>
                                 <li className="font-bold">INSPECCIONES</li>
                                 <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Consultas')} >CONSULTAR</li>
+                                <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Extraer Personas')} >EXTRAER PERSONAS</li>
+                                <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Extraer Vehiculos')} >EXTRAER VEHICULOS</li>
                                 <li className="font-bold">REMISIONES</li>
                                 <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Detenido Con')}>DETENIDO CON</li>
                                 <li className="cursor-pointer hover:bg-gray-200 p-1" onClick={() => onSearchExtended('Extraer Contactos')} >CONTACTOS REF</li>

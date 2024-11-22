@@ -23,6 +23,8 @@ const App: React.FC = () => {
 		edges: [] as EdgeData[],
 	});
 
+	//const [hoveredNode, setHoveredNode] = useState<string | number | null>(null); // Nodo en hover
+
 	const getData = () => data;
 
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,8 +49,54 @@ const App: React.FC = () => {
 	};
 
 	const handleNodeHover = (event: any) => {
+		
 		console.log("Node hovered:", event);
+		/*if (!event || !event.node) return; // Verifica que haya un nodo en hover
+		setHoveredNode(event.node);
+	
+		// Cambia dinámicamente el estilo del nodo al hacer hover
+		setData((prevData) => ({
+			...prevData,
+			nodes: prevData.nodes.map((node) =>
+				node.id === event.node
+					? {
+						  ...node,
+						  font: {
+							  size: 20, // Aumenta el tamaño de la etiqueta
+							  color: '#000000', // Color del texto
+							  background: 'rgba(255, 255, 255, 1)', // Fondo blanco sólido
+							  bold: true, // Texto en negrita
+							  multi: true, // Permite múltiples líneas
+						  },
+					  }
+					: node
+			),
+		}));*/
 	}
+
+	const handleNodeBlur = () => {
+		/*if (hoveredNode !== null) {
+		  // Restaura el estilo del nodo anterior
+		  setData((prevData) => ({
+			...prevData,
+			nodes: prevData.nodes.map((node) =>
+			  node.id === String(hoveredNode)
+				? {
+					...node,
+					font: {
+					  size: 14, // Tamaño original
+					  color: "#000", // Color original
+					  background: "rgba(255,255,255,0.7)", // Fondo original
+					  bold: false,
+					},
+				  }
+				: node
+			),
+		  }));
+		  setHoveredNode(null); // Limpia el nodo en hover
+		}
+		  */
+	};
 
 	const handleEdgeHover = (event: any) => {
 		console.log("Edge hovered:", event);
@@ -162,7 +210,7 @@ const App: React.FC = () => {
 				enabled: true,
 				direction: 'UD', // 'UD' for Up-Down
 				sortMethod: 'hubsize', // 'directed' or 'hubsize'
-				nodeSpacing: 300, // Aumentar el espaciado entre nodos
+				nodeSpacing: 400, // Aumentar el espaciado entre nodos
 				levelSeparation: 250, // Aumentar la separación entre niveles
 				shakeTowards: 'roots', // 'roots' or 'leaves'
 			},
@@ -172,6 +220,9 @@ const App: React.FC = () => {
 				enabled: true,
 				type: 'curvedCW',
 				roundness: 0.1
+			},
+			font: {
+				background: 'rgba(255, 255, 255, 1)'
 			}
 		},
 		physics: {
@@ -201,6 +252,7 @@ const App: React.FC = () => {
 					onNodeHover={handleNodeHover}
 					onEdgeHover={handleEdgeHover}
 					onContext={handleContextMenu}
+					onNodeBlur={handleNodeBlur} 
 				/>
 				{(contextMenu.edgeId || contextMenu.nodeId) && (
 					<ContextMenu

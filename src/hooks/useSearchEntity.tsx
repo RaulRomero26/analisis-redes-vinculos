@@ -206,6 +206,45 @@ const searchVehiculoRemision = async ({ entidad, payload }: { entidad: string; p
   }
 }
 
+const buscarLlamadas911 = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
+  
+    console.log('Buscando Llamadas 911', entidad, payload);
+    try {
+      const response = await fetch('http://172.18.110.90:8087/api/search/llamadas911', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      setData(data.data.llamadas);
+      console.log( 'RESPUESTA:',data.data.llamadas);
+      return data;
+    } catch (error) {
+      console.error(error);
+    }
+}
+
+const searchPersonaInspeccion = async ({ entidad, payload }: { entidad: string; payload: Payload }) => {
+
+  console.log('Buscando Persona Inspeccion', entidad, payload);
+  try {
+    const response = await fetch('http://172.18.110.90:8087/api/search/inspeccion-persona', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    setData(data.data.personas);
+    console.log( 'RESPUESTA:',data.data.personas);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
   return {
     searchData,
@@ -218,6 +257,8 @@ const searchVehiculoRemision = async ({ entidad, payload }: { entidad: string; p
     searchRemisionesTelefono,
     searchVehiculoRemision,
     buscarContactosPorTelefono,
+    buscarLlamadas911,
+    searchPersonaInspeccion,
     data,
   };
 };

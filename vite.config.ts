@@ -7,16 +7,6 @@ export default defineConfig({
   plugins: [
     react(),
   ],
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks: undefined, // Deshabilitar la división de código
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]',
-      },
-    },
-  },
   optimizeDeps: {
     esbuildOptions: {
       define: {
