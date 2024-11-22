@@ -1,7 +1,6 @@
 // useContextMenu.tsx
 import { useState } from 'react';
 import { GraphData } from '../interfaces/GraphData';
-import { EdgeData } from '../interfaces/EdgeData';
 import { useSearchEntity } from './useSearchEntity';
 import { useGraphFunctions } from './useGraphFunctions';
 import { createNodeData, NodeData } from '../interfaces/NodeData';
@@ -24,7 +23,6 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         buscarLlamadas911,
         searchHistorico,
         searchInspeccion,
-        searchInspeccionVehiculo,
         searchVehiculoInspeccion,
         searchRemisionesTelefono,
         searchVehiculoRemision,

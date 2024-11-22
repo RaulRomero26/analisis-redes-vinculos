@@ -37,7 +37,7 @@ const App: React.FC = () => {
 	// Pass getData correctly to useGraphFunctions
 	const { editNode, editEdge, addEdgeControl, addNode, deleteNode, deleteEdge } = useGraphFunctions(setData, getData);
 
-	const { contextMenu, handleContextMenu, handleAddData, closeContextMenu, handleSearchExtended,
+	const { contextMenu, handleContextMenu, closeContextMenu, handleSearchExtended,
 		isModalFichasOpen, selectedNode, setIsModalFichasOpen, isModalContactosOpen, setIsModalContactosOpen
 	} = useContextMenu(data, setData, getData);
 	const { searchData } = useSearchEntity();
@@ -261,7 +261,6 @@ const App: React.FC = () => {
 						nodeId={contextMenu.nodeId}
 						getData={getData}
 						setData={setData}
-						onAddData={handleAddData}
 						onSearchExtended={handleSearchExtended}
 						onClose={closeContextMenu}
 						onShowDetails={handleShowDetails}

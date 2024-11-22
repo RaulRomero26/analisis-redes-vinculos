@@ -9,7 +9,6 @@ interface ContextMenuProps {
     nodeId: string | null;
     getData: () => any;
     setData: React.Dispatch<React.SetStateAction<any>>;
-    onAddData: () => void;
     onClose: () => void;
     onShowDetails: (node: NodeData) => void;
     onSearchExtended: (query: string) => void;
