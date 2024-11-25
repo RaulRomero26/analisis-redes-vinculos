@@ -17,9 +17,9 @@ interface ContextMenuProps {
 const rules: { [key: string]: (node: NodeData) => boolean | any } = {
     'Buscar Maestro': (node: NodeData) => (node.type === 'persona' || node.type === 'entrada-persona' || node.type === 'entada-vehiculo' || node.type === 'vehiculo' || node.type === 'contacto') ,
     'Extraer Telefonos': (node: NodeData) => node.entidad === 'persona' && node.atributos.Telefono,
-    'Telefono Remisiones': (node: NodeData) => node.type === 'telefono' || node.type === 'entada-telefono',
-    'Telefono Contactos': (node: NodeData) => node.type === 'telefono' || node.type === 'entada-telefono',
-    'Telefono 911': (node: NodeData) => node.type === 'telefono' || node.type === 'entada-telefono',
+    'Telefono Remisiones': (node: NodeData) => node.type === 'telefono' || node.type === 'entrada-telefono',
+    'Telefono Contactos': (node: NodeData) => node.type === 'telefono' || node.type === 'entrada-telefono',
+    'Telefono 911': (node: NodeData) => node.type === 'telefono' || node.type === 'entrada-telefono',
     'Consultas': (node: NodeData) => (node.entidad === 'persona' || node.entidad === 'vehiculo')  && node.type != 'inspeccion',
     'Extraer Personas': (node: NodeData) => node.type === 'inspeccion',
     'Extraer Vehiculos': (node: NodeData) => node.type === 'inspeccion',
