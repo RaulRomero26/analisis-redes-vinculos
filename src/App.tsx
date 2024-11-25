@@ -197,7 +197,7 @@ const App: React.FC = () => {
 		}, // Permitir mover nodos
 		manipulation: {
 		  enabled: true,
-		  initiallyActive: true,
+		  initiallyActive: false,
 		  addNode: addNode,
 		  addEdge: addEdgeControl,
 		  editNode: editNode,

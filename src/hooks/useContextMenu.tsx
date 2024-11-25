@@ -133,10 +133,77 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             
             }
         }
-        if(node.type === 'entrada-persona' || node.type === 'persona'){
+        if(node.type === 'entrada-persona' || node.type === 'persona' || node.type === 'contacto'){
             respuesta = await searchData({ entidad: node.type || '', 
                 payload: { 
                     label: `${node.atributos.Nombre} ${node.atributos.Ap_Paterno} ${node.atributos.Ap_Materno}`, 
+                    tipo: node.type 
+                } 
+            });
+            console.log('RESPUESTA:',respuesta);
+            if (respuesta.data.remisiones.length > 0) {
+                const updatedNodes = data.nodes.map(n => {
+                if (n.id === node.id) {
+                    let nodoModificado = n;
+                    console.log('NODO MODIFICADO:',nodoModificado);
+                    nodoModificado.data.remisiones = respuesta.data.remisiones;
+                    nodoModificado.atributos.Telefono = respuesta.data.remisiones
+                        .map((item: any) => item.Telefono)
+                        .filter((telefono: string) => !["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"].includes(telefono))
+                        .join(', ');
+                    nodoModificado.image = `http://172.18.110.25/sarai/files/Remisiones/${respuesta.data.remisiones[0].Ficha}/FotosHuellas/${respuesta.data.remisiones[0].No_Remision}/rostro_frente.jpeg`
+                    let viejosAtributos = nodoModificado.atributos;
+                    nodoModificado.atributos = {
+                        ...nodoModificado.atributos,
+                        detenciones: {
+                            sarai: respuesta.data.remisiones.map((item: any) => {
+                                if (viejosAtributos.detenciones && viejosAtributos.detenciones.sarai) {
+                                    if (viejosAtributos.detenciones.sarai.find((element:any) => element.No_Remision === item.No_Remision)) return null;
+                                }
+                                return {
+                                    Ficha: item.Ficha,
+                                    No_Remision: item.No_Remision,
+                                    CURP: item.CURP,
+                                    Fec_Nac: item.Fecha_Nacimiento,
+                                    Correo_Electronico: item.Correo_Electronico,
+                                    Alias: item.Alias_Detenido,
+                                    Fecha_Detencion: item.Fecha_Registro_Detenido,
+                                    Genero: item.Genero,
+                                    Nombre: item.Nombre,
+                                    Ap_Paterno: item.Ap_Paterno,
+                                    Ap_Materno: item.Ap_Materno,
+                                    Telefono: item.Telefono,
+                                };
+                            })
+                        },
+                        
+                    };
+                        nodoModificado.label = ``;
+                        nodoModificado.label = `${nodoModificado.id} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
+                        let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin;
+                        
+                        aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        
+                        nodoModificado.label = `${nodoModificado.label} \n <b>Alias: </b>${aliasjoin} \n<b>Fecha Detencion: </b>${fechadetencionjoin} \n<b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} \n<b>Fecha Nacimiento: </b> ${fechanacimientojoin}
+                        `;
+                    
+                    
+                    return nodoModificado;
+                }
+                return n;
+                });
+                console.log('ANTES DEL SET:', data.edges);
+                setData({ ...data, nodes: updatedNodes, edges: data.edges });
+            }
+        }
+        if(node.type === 'llamada-911'){
+            respuesta = await searchData({ entidad: node.type || '', 
+                payload: { 
+                    label: `${node.label}`, 
                     tipo: node.type 
                 } 
             });
@@ -206,51 +273,105 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
 
 
     const handleSearchHistorico = async(node:NodeData) => {
-        const respuesta =await  searchHistorico({ entidad: node.type || '', payload: { label: node.id, tipo: node.type } });
-        console.log('RESPUESTA:',respuesta.data.historico);
-        if(respuesta.data.historico.length > 0){
 
-            const updatedNodes = data.nodes.map(n => {
-                if (n.id === node.id) {
-                    let nodoModificado = n;
-                    console.log('NODO MODIFICADO:',nodoModificado);
-                    nodoModificado.data.historico = respuesta.data.historico;
-                    let viejosAtributos = nodoModificado.atributos;
-                    nodoModificado.atributos = {
-                        ...nodoModificado.atributos,
-                        detenciones_historicas: {
-                            historico: respuesta.data.historico.map((item: any) => {
-                                if (viejosAtributos.detenciones_historicas && viejosAtributos.detenciones_historicas.historico) {
-                                    if (viejosAtributos.detenciones_historicas.historico.find((element: any) => element.Folio === item.Folio)) return null;
-                                }
-                                return {
-                                    Folio: item.Folio,
-                                    No_Remision: '',
-                                    CURP: '',
-                                    Fec_Nac: '',
-                                    Correo_Electronico: '',
-                                    Alias: '',
-                                    Fecha_Detencion: item.Fecha_Rem,
-                                    Genero: item.Sexo_d,
-                                    Nombre: item.Nombre_d,
-                                    Ap_Paterno: item.Ap_paterno_d,
-                                    Ap_Materno: item.Ap_materno_d,
-                                };
-                            })
-                        }
-                    };
-                    
-                    nodoModificado.label = `${nodoModificado.label} \n <b>Historico: (${respuesta.data.historico.length})</b>`;
-                    let foliojoin, fecharemjoin;
-                    foliojoin = respuesta.data.historico.map((item: any) => item.Folio).join(', ');
-                    fecharemjoin = respuesta.data.historico.map((item: any) => new Date(item.Fecha_Rem).toLocaleDateString()).join(', ');
-                    nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${foliojoin} \n<b>Fecha Remision: </b>${fecharemjoin}`;
-
-                    return nodoModificado;
-                }
-                return n;
-                });
-            setData({ ...data, nodes: updatedNodes, edges: data.edges });
+        let respuesta:any;
+        if(node.type === 'entrada-persona' || node.type === 'persona' || node.type === 'contacto'){
+         
+            respuesta =await  searchHistorico({ entidad: node.type || '', payload: { label: node.id, tipo: node.type } });
+            console.log('RESPUESTA:',respuesta.data.historico);
+            if(respuesta.data.historico.length > 0){
+    
+                const updatedNodes = data.nodes.map(n => {
+                    if (n.id === node.id) {
+                        let nodoModificado = n;
+                        console.log('NODO MODIFICADO:',nodoModificado);
+                        nodoModificado.data.historico = respuesta.data.historico;
+                        let viejosAtributos = nodoModificado.atributos;
+                        nodoModificado.atributos = {
+                            ...nodoModificado.atributos,
+                            detenciones_historicas: {
+                                historico: respuesta.data.historico.map((item: any) => {
+                                    if (viejosAtributos.detenciones_historicas && viejosAtributos.detenciones_historicas.historico) {
+                                        if (viejosAtributos.detenciones_historicas.historico.find((element: any) => element.Folio === item.Folio)) return null;
+                                    }
+                                    return {
+                                        Folio: item.Folio,
+                                        No_Remision: '',
+                                        CURP: '',
+                                        Fec_Nac: '',
+                                        Correo_Electronico: '',
+                                        Alias: '',
+                                        Fecha_Detencion: item.Fecha_Rem,
+                                        Genero: item.Sexo_d,
+                                        Nombre: item.Nombre_d,
+                                        Ap_Paterno: item.Ap_paterno_d,
+                                        Ap_Materno: item.Ap_materno_d,
+                                    };
+                                })
+                            }
+                        };
+                        
+                        nodoModificado.label = `${nodoModificado.label} \n <b>Historico: (${respuesta.data.historico.length})</b>`;
+                        let foliojoin, fecharemjoin;
+                        foliojoin = respuesta.data.historico.map((item: any) => item.Folio).join(', ');
+                        fecharemjoin = respuesta.data.historico.map((item: any) => new Date(item.Fecha_Rem).toLocaleDateString()).join(', ');
+                        nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${foliojoin} \n<b>Fecha Remision: </b>${fecharemjoin}`;
+    
+                        return nodoModificado;
+                    }
+                    return n;
+                    });
+                    setData({ ...data, nodes: updatedNodes, edges: data.edges });
+            }
+        }
+        if(node.type === 'llamada-911'){
+         
+            respuesta =await  searchHistorico({ entidad: node.type || '', payload: { label: node.id, tipo: node.type } });
+            console.log('RESPUESTA:',respuesta.data.historico);
+            if(respuesta.data.historico.length > 0){
+    
+                const updatedNodes = data.nodes.map(n => {
+                    if (n.id === node.id) {
+                        let nodoModificado = n;
+                        console.log('NODO MODIFICADO:',nodoModificado);
+                        nodoModificado.data.historico = respuesta.data.historico;
+                        let viejosAtributos = nodoModificado.atributos;
+                        nodoModificado.atributos = {
+                            ...nodoModificado.atributos,
+                            detenciones_historicas: {
+                                historico: respuesta.data.historico.map((item: any) => {
+                                    if (viejosAtributos.detenciones_historicas && viejosAtributos.detenciones_historicas.historico) {
+                                        if (viejosAtributos.detenciones_historicas.historico.find((element: any) => element.Folio === item.Folio)) return null;
+                                    }
+                                    return {
+                                        Folio: item.Folio,
+                                        No_Remision: '',
+                                        CURP: '',
+                                        Fec_Nac: '',
+                                        Correo_Electronico: '',
+                                        Alias: '',
+                                        Fecha_Detencion: item.Fecha_Rem,
+                                        Genero: item.Sexo_d,
+                                        Nombre: item.Nombre_d,
+                                        Ap_Paterno: item.Ap_paterno_d,
+                                        Ap_Materno: item.Ap_materno_d,
+                                    };
+                                })
+                            }
+                        };
+                        
+                        nodoModificado.label = `${nodoModificado.label} \n <b>Historico: (${respuesta.data.historico.length})</b>`;
+                        let foliojoin, fecharemjoin;
+                        foliojoin = respuesta.data.historico.map((item: any) => item.Folio).join(', ');
+                        fecharemjoin = respuesta.data.historico.map((item: any) => new Date(item.Fecha_Rem).toLocaleDateString()).join(', ');
+                        nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${foliojoin} \n<b>Fecha Remision: </b>${fecharemjoin}`;
+    
+                        return nodoModificado;
+                    }
+                    return n;
+                    });
+                    setData({ ...data, nodes: updatedNodes, edges: data.edges });
+            }
         }
     };
 
@@ -423,7 +544,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     "image", 
                     15, 
                     "blue", 
-                    "persona",
+                    "llamada-911",
                     'persona',
                     item,
                     {
