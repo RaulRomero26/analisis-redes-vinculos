@@ -20,7 +20,7 @@ const rules: { [key: string]: (node: NodeData) => boolean | any } = {
     'Telefono Remisiones': (node: NodeData) => node.type === 'telefono',
     'Telefono Contactos': (node: NodeData) => node.type === 'telefono',
     'Telefono 911': (node: NodeData) => node.type === 'telefono',
-    'Consultas': (node: NodeData) => node.entidad === 'persona' && node.type != 'inspeccion',
+    'Consultas': (node: NodeData) => (node.entidad === 'persona' || node.entidad === 'vehiculo')  && node.type != 'inspeccion',
     'Extraer Personas': (node: NodeData) => node.type === 'inspeccion',
     'Extraer Vehiculos': (node: NodeData) => node.type === 'inspeccion',
     'Detenido Con': (node: NodeData) => node.entidad === 'persona' && node.atributos.detenciones && node.atributos.detenciones.sarai,
