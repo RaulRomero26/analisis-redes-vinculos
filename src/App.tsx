@@ -108,67 +108,77 @@ useEffect(() => {
 	}
 }, [deleteMode, selectedNode]);
 
-  const options = {
-    locale: 'es',
-    interaction: {
-      selectable: true,
-      hover: true,
-      dragNodes: true,
-      zoomSpeed: 1,
-      zoomView: true,
-      navigationButtons: true,
-      keyboard: true,
-    }, // Permitir mover nodos
-    manipulation: {
-      enabled: false,
-      initiallyActive: false,
-      addNode: addNode,
-      addEdge: addEdgeControl,
-      editNode: editNode,
-      editEdge: editEdge,
-      deleteNode: deleteNode,
-      deleteEdge: deleteEdge,
-    },
-    layout: {
-      hierarchical: {
-        enabled: true,
-        direction: 'UD', // 'UD' for Up-Down
-        sortMethod: 'hubsize', // 'directed' or 'hubsize'
-        nodeSpacing: 400, // Aumentar el espaciado entre nodos
-        levelSeparation: 250, // Aumentar la separación entre niveles
-        shakeTowards: 'roots', // 'roots' or 'leaves'
-      },
-    },
-    edges: {
-      smooth: {
-        enabled: true,
-        type: 'curvedCW',
-        roundness: 0.1
-      },
-      font: {
-        background: 'rgba(255, 255, 255, 1)'
-      }
-    },
-    physics: {
-      enabled: true, // Habilitar la física para permitir el movimiento de nodos
-      solver: 'hierarchicalRepulsion',
-      hierarchicalRepulsion: {
-        centralGravity: 0.0,
-        springLength: 150, // Aumentar la longitud de los resortes para más espacio entre nodos
-        springConstant: 0,
-        nodeDistance: 150, // Aumentar la distancia entre nodos
-        damping: 1, // Aumentar el damping para reducir el rebote
-        avoidOverlap: 1, // Evitar la superposición de nodos
-      },
-    },
-  };
+const options = {
+	locale: 'es',
+	interaction: {
+		selectable: true,
+		hover: true,
+		dragNodes: true,
+		zoomSpeed: 1,
+		zoomView: true,
+		navigationButtons: true,
+		keyboard: true,
+	}, // Permitir mover nodos
+	manipulation: {
+		enabled: false,
+		initiallyActive: false,
+		addNode: addNode,
+		addEdge: addEdgeControl,
+		editNode: editNode,
+		editEdge: editEdge,
+		deleteNode: deleteNode,
+		deleteEdge: deleteEdge,
+	},
+	layout: {
+		hierarchical: {
+			enabled: true,
+			direction: 'UD', // 'UD' for Up-Down
+			sortMethod: 'hubsize', // 'directed' or 'hubsize'
+			nodeSpacing: 400, // Aumentar el espaciado entre nodos
+			levelSeparation: 250, // Aumentar la separación entre niveles
+			shakeTowards: 'roots', // 'roots' or 'leaves'
+		},
+	},
+	edges: {
+		smooth: {
+			enabled: true,
+			type: 'curvedCW',
+			roundness: 0.1
+		},
+		font: {
+			background: 'rgba(255, 255, 255, 1)'
+		}
+	},
+	nodes: {
+		font: {
+			size: 14,
+			color: '#000000',
+			face: 'arial',
+			background: 'rgba(255, 255, 255, 0.8)',
+			strokeWidth: 0,
+			zIndex: 1,
+		},
+	},
+	physics: {
+		enabled: true, // Habilitar la física para permitir el movimiento de nodos
+		solver: 'hierarchicalRepulsion',
+		hierarchicalRepulsion: {
+			centralGravity: 0.0,
+			springLength: 150, // Aumentar la longitud de los resortes para más espacio entre nodos
+			springConstant: 0,
+			nodeDistance: 150, // Aumentar la distancia entre nodos
+			damping: 1, // Aumentar el damping para reducir el rebote
+			avoidOverlap: 1, // Evitar la superposición de nodos
+		},
+	},
+};
 
   return (
     <div className="" onContextMenu={(e) => e.preventDefault()}>
       <div className="grid grid-cols-1 gap-4">
         <DropdownMenu data={data} setData={setData} handleMenuClick={handleMenuClick} addEdge={handleAddEdge} deleteElement={deleteElement}/>
       </div>
-      <div className="" style={{ height: '85vh' }}>
+      <div className="" style={{ height: '92vh' }}>
         <NetworkGraph
           data={data}
           options={options}
