@@ -1,5 +1,5 @@
 // src/App.tsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import NetworkGraph from "./components/NetworkGraph";
 
 import ContextMenu from "./components/ContextMenu";
@@ -12,294 +12,212 @@ import DropdownMenu from "./ui/DropDownMenu";
 import { useSearchEntity } from "./hooks/useSearchEntity";
 import { ModalSwitch, ModalFichas, ModalContactos } from "./components/Modals";
 import { NodeData } from "./interfaces/NodeData";
-import SaveNetwork from "./components/SaveNetwork";
 import { useShowDetails } from "./hooks/useShowDetails";
 
-//import { Options } from "./interfaces/Options";
+// import { Options } from "./interfaces/Options";
 
 const App: React.FC = () => {
-	const [data, setData] = useState<GraphData>({
-		nodes: [] as NodeData[],
-		edges: [] as EdgeData[],
-	});
+  const [data, setData] = useState<GraphData>({
+    nodes: [] as NodeData[],
+    edges: [] as EdgeData[],
+  });
 
-	//const [hoveredNode, setHoveredNode] = useState<string | number | null>(null); // Nodo en hover
+  // const [hoveredNode, setHoveredNode] = useState<string | number | null>(null); // Nodo en hover
 
-	const getData = () => data;
+  const getData = () => data;
 
-	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [entidad, setEntidad] = useState('');
-	//const {options} = Options();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [entidad, setEntidad] = useState('');
+  const [deleteMode, setDeleteMode] = useState(false);
 
-	useEffect(() => {	
-		console.log(options);
-	}, []);
-	// Pass getData correctly to useGraphFunctions
-	const { editNode, editEdge, addEdgeControl, addNode, deleteNode, deleteEdge } = useGraphFunctions(setData, getData);
+  // const {options} = Options();
+  const graphRef = useRef<any>(null);
 
-	const { contextMenu, handleContextMenu, closeContextMenu, handleSearchExtended,
-		isModalFichasOpen, selectedNode, setIsModalFichasOpen, isModalContactosOpen, setIsModalContactosOpen
-	} = useContextMenu(data, setData, getData);
-	const { searchData } = useSearchEntity();
-	const { showDetails } = useShowDetails();
+  useEffect(() => {
+    console.log(options);
+  }, []);
 
+  // Pass getData correctly to useGraphFunctions
+  const { editNode, editEdge, addEdgeControl, addNode, deleteNode, deleteEdge } = useGraphFunctions(setData, getData);
 
-	const handleNodeClick = (event: any) => {
-		console.log("Node clicked:", event);
-	};
+  const { contextMenu, handleContextMenu, closeContextMenu, handleSearchExtended,
+    isModalFichasOpen, selectedNode, setIsModalFichasOpen, isModalContactosOpen, setIsModalContactosOpen
+  } = useContextMenu(data, setData, getData);
+  const { searchData } = useSearchEntity();
+  const { showDetails } = useShowDetails();
+  const handleNodeHover = (_event: any) => { };
 
-	const handleNodeHover = (event: any) => {
-		
-		console.log("Node hovered:", event);
-		/*if (!event || !event.node) return; // Verifica que haya un nodo en hover
-		setHoveredNode(event.node);
-	
-		// Cambia dinámicamente el estilo del nodo al hacer hover
-		setData((prevData) => ({
-			...prevData,
-			nodes: prevData.nodes.map((node) =>
-				node.id === event.node
-					? {
-						  ...node,
-						  font: {
-							  size: 20, // Aumenta el tamaño de la etiqueta
-							  color: '#000000', // Color del texto
-							  background: 'rgba(255, 255, 255, 1)', // Fondo blanco sólido
-							  bold: true, // Texto en negrita
-							  multi: true, // Permite múltiples líneas
-						  },
-					  }
-					: node
-			),
-		}));*/
+  const handleEdgeHover = (_event: any) => { };
+
+  const handleAddEdge = () => {
+    if (graphRef.current) {
+      graphRef.current.addEdgeMode(); // Habilita el modo de agregar edges
+    } else {
+      console.warn("Graph reference is null.");
+    }
+  };
+
+  const handleNodeClick = (event: any) => {
+	if (deleteMode) {
+	  // Eliminar el nodo
+	  console.log('ELIMINAR ESTA EN TRUE:',event);
+	  deleteNode(event, ()=>{});
+	  setDeleteMode(false);
+	} else {
+	  // Otro tipo de manejo de clic
+	  console.log("Node clicked:", event);
 	}
+  };
 
-	const handleNodeBlur = () => {
-		/*if (hoveredNode !== null) {
-		  // Restaura el estilo del nodo anterior
-		  setData((prevData) => ({
-			...prevData,
-			nodes: prevData.nodes.map((node) =>
-			  node.id === String(hoveredNode)
-				? {
-					...node,
-					font: {
-					  size: 14, // Tamaño original
-					  color: "#000", // Color original
-					  background: "rgba(255,255,255,0.7)", // Fondo original
-					  bold: false,
-					},
-				  }
-				: node
-			),
-		  }));
-		  setHoveredNode(null); // Limpia el nodo en hover
-		}
-		  */
-	};
+  const toggleModal = (entidad?: string) => {
+    setIsModalOpen(!isModalOpen);
+    if (entidad) {
+      setEntidad(entidad);
+    }
+  };
 
-	const handleEdgeHover = (event: any) => {
-		console.log("Edge hovered:", event);
+  const handleMenuClick = (entidad: string) => {
+    console.warn("Entidad:", entidad);
+    toggleModal(entidad);
+    searchData({ entidad, payload: {} });
+  };
+
+  const handleShowDetails = (node: NodeData) => {
+    showDetails(node);
+  };
+
+  // Agregar una función para eliminar elementos
+const deleteElement = () => {
+	if (graphRef.current) {
+	  console.log("Delete element mode");
+	  setDeleteMode(true);
+	} else {
+	  console.warn("Graph reference is null.");
 	}
+  };
 
-	const toggleModal = (entidad?: string) => {
-		setIsModalOpen(!isModalOpen);
-		if (entidad) {
-			setEntidad(entidad);
-		}
-	};
+  useEffect(() => {
+    console.log("Data CAMBIO:", data);
+  }, [data]);
 
-	const handleMenuClick = (entidad: string) => {
-		console.warn("Entidad:", entidad);
-		toggleModal(entidad);
-		searchData({ entidad, payload: {} });
-	};
-
-	const handleShowDetails = (node: NodeData) => {
-		showDetails(node);
-	};
-
-	useEffect(() => {
-		console.log("Data CAMBIO:", data);
+useEffect(() => {
+	if (deleteMode && selectedNode) {
+		// Eliminar el nodo
+		console.log('ELIMINAR ESTA EN TRUE:', selectedNode);
+		deleteNode(selectedNode, () => {});
 	}
-		, [data]);
+}, [deleteMode, selectedNode]);
 
-	/*
-	const options = {
-	  locale: 'es',
-	  interaction: { 
-		selectable: true, 
-		hover: true, 
-		dragNodes: true,
-		zoomSpeed: 1,
-		zoomView: true ,
-		navigationButtons: true,
-		keyboard: true,
-	  }, // Permitir mover nodos
-	  manipulation: {
-		enabled: true,
-		initiallyActive: true,
-		addNode: addNode,
-		addEdge: addEdgeControl,
-		editNode: editNode,
-		editEdge: editEdge,
-		deleteNode: deleteNode,
-		deleteEdge: deleteEdge,
-	  },
-	//   edges: {
-	// 	smooth:{
-	// 	  enabled: true,
-	// 	  type: 'curvedCW',
-	// 	  roundness: 0.5
-	// 	}
-	//   },
-	  physics: {
-		enabled: true, // Habilitar la física para permitir el movimiento de nodos
-		solver: 'hierarchicalRepulsion',
-		hierarchicalRepulsion: {
-		  centralGravity: 0.0,
-		  springLength: 250, // Aumentar la longitud de los resortes para más espacio entre nodos
-		  springConstant: 0,
-		  nodeDistance: 450, // Aumentar la distancia entre nodos
-		  damping: 1, // Aumentar el damping para reducir el rebote
-		  avoidOverlap: 1, // Evitar la superposición de nodos
-		},
-		stabilization: {
-		  enabled: false,
-		  iterations: 1000,
-		  updateInterval: 25,
-		  onlyDynamicEdges: false,
-		},
-	  },
-	  layout: {
-		hierarchical: {
-		  enabled: true,
-		  direction: 'UD', // 'UD' for Up-Down
-		  sortMethod: 'directed', // 'directed' or 'hubsize'
-		  nodeSpacing: 800, // Aumentar el espaciado entre nodos
-		  levelSeparation: 250, // Aumentar la separación entre niveles
-		  shakeTowards: 'roots', // 'roots' or 'leaves'
-		},
-	  },
-	};
-	*/
+  const options = {
+    locale: 'es',
+    interaction: {
+      selectable: true,
+      hover: true,
+      dragNodes: true,
+      zoomSpeed: 1,
+      zoomView: true,
+      navigationButtons: true,
+      keyboard: true,
+    }, // Permitir mover nodos
+    manipulation: {
+      enabled: false,
+      initiallyActive: false,
+      addNode: addNode,
+      addEdge: addEdgeControl,
+      editNode: editNode,
+      editEdge: editEdge,
+      deleteNode: deleteNode,
+      deleteEdge: deleteEdge,
+    },
+    layout: {
+      hierarchical: {
+        enabled: true,
+        direction: 'UD', // 'UD' for Up-Down
+        sortMethod: 'hubsize', // 'directed' or 'hubsize'
+        nodeSpacing: 400, // Aumentar el espaciado entre nodos
+        levelSeparation: 250, // Aumentar la separación entre niveles
+        shakeTowards: 'roots', // 'roots' or 'leaves'
+      },
+    },
+    edges: {
+      smooth: {
+        enabled: true,
+        type: 'curvedCW',
+        roundness: 0.1
+      },
+      font: {
+        background: 'rgba(255, 255, 255, 1)'
+      }
+    },
+    physics: {
+      enabled: true, // Habilitar la física para permitir el movimiento de nodos
+      solver: 'hierarchicalRepulsion',
+      hierarchicalRepulsion: {
+        centralGravity: 0.0,
+        springLength: 150, // Aumentar la longitud de los resortes para más espacio entre nodos
+        springConstant: 0,
+        nodeDistance: 150, // Aumentar la distancia entre nodos
+        damping: 1, // Aumentar el damping para reducir el rebote
+        avoidOverlap: 1, // Evitar la superposición de nodos
+      },
+    },
+  };
 
-	const options = {
-		locale: 'es',
-		interaction: { 
-		  selectable: true, 
-		  hover: true, 
-		  dragNodes: true,
-		  zoomSpeed: 1,
-		  zoomView: true ,
-		  navigationButtons: true,
-		  keyboard: true,
-		}, // Permitir mover nodos
-		manipulation: {
-		  enabled: true,
-		  initiallyActive: false,
-		  addNode: addNode,
-		  addEdge: addEdgeControl,
-		  editNode: editNode,
-		  editEdge: editEdge,
-		  deleteNode: deleteNode,
-		  deleteEdge: deleteEdge,
-		},
-		layout: {
-			hierarchical: {
-				enabled: true,
-				direction: 'UD', // 'UD' for Up-Down
-				sortMethod: 'hubsize', // 'directed' or 'hubsize'
-				nodeSpacing: 400, // Aumentar el espaciado entre nodos
-				levelSeparation: 250, // Aumentar la separación entre niveles
-				shakeTowards: 'roots', // 'roots' or 'leaves'
-			},
-		},
-		edges: {
-			smooth: {
-				enabled: true,
-				type: 'curvedCW',
-				roundness: 0.1
-			},
-			font: {
-				background: 'rgba(255, 255, 255, 1)'
-			}
-		},
-		physics: {
-			enabled: true, // Habilitar la física para permitir el movimiento de nodos
-			solver: 'hierarchicalRepulsion',
-			hierarchicalRepulsion: {
-				centralGravity: 0.0,
-				springLength: 150, // Aumentar la longitud de los resortes para más espacio entre nodos
-				springConstant: 0,
-				nodeDistance: 150, // Aumentar la distancia entre nodos
-				damping: 1, // Aumentar el damping para reducir el rebote
-				avoidOverlap: 1, // Evitar la superposición de nodos
-			},
-		},
-	  };
+  return (
+    <div className="" onContextMenu={(e) => e.preventDefault()}>
+      <div className="grid grid-cols-1 gap-4">
+        <DropdownMenu data={data} setData={setData} handleMenuClick={handleMenuClick} addEdge={handleAddEdge} deleteElement={deleteElement}/>
+      </div>
+      <div className="" style={{ height: '85vh' }}>
+        <NetworkGraph
+          data={data}
+          options={options}
+          onClick={handleNodeClick}
+          onNodeHover={handleNodeHover}
+          onEdgeHover={handleEdgeHover}
+          onContext={handleContextMenu}
+          ref={graphRef} // Referencia añadida para poder acceder a los métodos del gráfico
+        />
+        {(contextMenu.edgeId || contextMenu.nodeId) && (
+          <ContextMenu
+            x={contextMenu.x}
+            y={contextMenu.y}
+            nodeId={contextMenu.nodeId}
+            getData={getData}
+            setData={setData}
+            onSearchExtended={handleSearchExtended}
+            onClose={closeContextMenu}
+            onShowDetails={handleShowDetails}
+          />
+        )}
 
-	return (
-		<div className="" onContextMenu={(e) => e.preventDefault()}>
-			<div className="grid grid-cols-1 gap-4">
-				<DropdownMenu handleMenuClick={handleMenuClick} />
-			</div>
-			<div className="" style={{ height: '85vh' }}>
-				<NetworkGraph
-					data={data}
-					options={options}
-					onClick={handleNodeClick}
-					onNodeHover={handleNodeHover}
-					onEdgeHover={handleEdgeHover}
-					onContext={handleContextMenu}
-					onNodeBlur={handleNodeBlur} 
-				/>
-				{(contextMenu.edgeId || contextMenu.nodeId) && (
-					<ContextMenu
-						x={contextMenu.x}
-						y={contextMenu.y}
-						nodeId={contextMenu.nodeId}
-						getData={getData}
-						setData={setData}
-						onSearchExtended={handleSearchExtended}
-						onClose={closeContextMenu}
-						onShowDetails={handleShowDetails}
-					/>
+        {/* Modal que se muestra cuando isModalOpen es true */}
+        {isModalFichasOpen && (
+          <ModalFichas
+            node={selectedNode}   // Pasa el nodo seleccionado al modal
+            isOpen={isModalOpen}  // Controla la visibilidad
+            onClose={() => setIsModalFichasOpen(false)}
+            data={data}
+            setData={setData}
+            getData={getData}
+          />
+        )}
 
-				)}
-
-				{/* Modal que se muestra cuando isModalOpen es true */}
-				{isModalFichasOpen && (
-					<ModalFichas
-						node={selectedNode}   // Pasa el nodo seleccionado al modal
-						isOpen={isModalOpen}  // Controla la visibilidad
-						onClose={() => setIsModalFichasOpen(false)}
-						data={data}
-						setData={setData}
-						getData={getData}
-					// Función para cerrar el modal
-					/>
-				)}
-
-				{/* Modal que se muestra cuando isModalOpen es true */}
-				{isModalContactosOpen && (
-					<ModalContactos
-						node={selectedNode}   // Pasa el nodo seleccionado al modal
-						isOpen={isModalOpen}  // Controla la visibilidad
-						onClose={() => setIsModalContactosOpen(false)}
-						data={data}
-						setData={setData}
-						getData={getData}
-					// Función para cerrar el modal
-					/>
-				)}
-			</div>
-			<ModalSwitch entidad={entidad} isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData} />
-			{/* <ModalNombre isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData} /> */}
-			<SaveNetwork data={data} setData={setData} />
-
-		</div>
-	);
+        {/* Modal que se muestra cuando isModalOpen es true */}
+        {isModalContactosOpen && (
+          <ModalContactos
+            node={selectedNode}   // Pasa el nodo seleccionado al modal
+            isOpen={isModalOpen}  // Controla la visibilidad
+            onClose={() => setIsModalContactosOpen(false)}
+            data={data}
+            setData={setData}
+            getData={getData}
+          />
+        )}
+      </div>
+      <ModalSwitch entidad={entidad} isModalOpen={isModalOpen} toggleModal={toggleModal} setData={setData} getData={getData} />
+    </div>
+  );
 };
 
 export default App;

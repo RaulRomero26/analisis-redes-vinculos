@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { GraphData } from '../interfaces/GraphData';
+import { MdOutlineSave, MdOutlineUploadFile  } from "react-icons/md";
 
 interface SaveNetworkProps {
   data: GraphData;
@@ -59,8 +60,9 @@ const SaveNetwork: React.FC<SaveNetworkProps> = ({ data, setData }) => {
         <div className="flex flex-row items-center space-x-4">
             <button
                 onClick={saveGraph}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 flex items-center space-x-2"
             >
+                <MdOutlineSave className="mr-2" />
                 Guardar Grafo
             </button>
             <input
@@ -72,9 +74,10 @@ const SaveNetwork: React.FC<SaveNetworkProps> = ({ data, setData }) => {
             />
             <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700"
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 flex items-center space-x-2"
             >
-                Cargar Grafo
+                <MdOutlineUploadFile />
+                <span>Cargar Grafo</span>
             </button>
         </div>
     );
