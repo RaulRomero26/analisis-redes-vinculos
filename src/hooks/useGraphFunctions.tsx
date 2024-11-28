@@ -141,7 +141,7 @@ export const useGraphFunctions = (
 
   const addEdge = (edgeData: any, callback: (data: any) => void) => {
     try {
-      setData!((prevData) => {
+      setData((prevData) => {
         // Check if edge with same id exists and filter it out
         console.log('DATA:', prevData);
         const filteredEdges = prevData.edges.filter(edge => edge.id !== edgeData.id);
@@ -156,13 +156,11 @@ export const useGraphFunctions = (
         };
         console.warn("New edge DESDE GRAPH FUNCRIONS:", newEdge);
         console.log([...filteredEdges, newEdge])
-        return {
-          ...prevData,
-          edges: [...filteredEdges, newEdge],
-        };
+        callback(true);
+        prevData.edges.push(newEdge);
+        return prevData;
       });
   
-      callback(true);
     } catch (error) {
       console.error("Error adding edge:", error);
       callback(false);

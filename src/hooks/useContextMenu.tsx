@@ -804,7 +804,8 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     console.error('Error adding node');
                 }
                 else{
-                    if(newNode && data.status==true){
+                    
+                    if(newNode && data.status==true ){
                         addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
                             console.log('Edge added:', data);
                         });
