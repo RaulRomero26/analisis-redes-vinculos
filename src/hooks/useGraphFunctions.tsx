@@ -34,7 +34,7 @@ export const useGraphFunctions = (
  
   const deleteNode = (nodeId: any, callback: (data: any) => void) => {
     console.log('Delete node:', nodeId);
-    if(nodeId.nodes.length > 0) {
+    if(nodeId.nodes && nodeId.nodes.length > 0) {
       setData(prevData => {
         const newData = {
           ...prevData,
@@ -45,7 +45,7 @@ export const useGraphFunctions = (
         return newData;
       });
     }
-    if(nodeId.edges.length > 0) {
+    if(nodeId.edges && nodeId.edges.length > 0) {
       setData(prevData => {
         const newData = {
           ...prevData,

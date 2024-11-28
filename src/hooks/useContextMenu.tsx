@@ -119,14 +119,17 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     console.warn('NEW NODE TO EDGE:',newNode);
                     addNode(newNode, (data: any) => {
                         console.log('Node added:', data.status);
-                        if (!data.status) {
+                        if (data.status == false) {
                             console.error('Error adding node');
 
                         }
                         else{
-                            addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
-                                console.log('Edge added:', data);
-                            });
+                            console.log('QUE ME ESTA HAYANDO:',data);
+                            if(newNode && data.status==true){
+                                addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
+                                    console.log('Edge added:', data);
+                                });
+                            }
                         }
                     });
                 });
@@ -173,6 +176,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                                     Ap_Paterno: item.Ap_Paterno,
                                     Ap_Materno: item.Ap_Materno,
                                     Telefono: item.Telefono,
+                                    Remitido_Por: item.Faltas_Delitos_Detenido,
+                                    Domicilio_Calle: item.Calle,
+                                    Domicilio_Colonia: item.Colonia,
+                                    Domicilio_Municipio: item.Municipio,
+                                    Domicilio_Tipo: item.Tipo,
+                                    Domicilio_No_Exterior: item.No_Exterior,
                                 };
                             })
                         },
@@ -180,15 +189,20 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     };
                         nodoModificado.label = ``;
                         nodoModificado.label = `${nodoModificado.id} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b>`;
-                        let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin;
+                        let aliasjoin, fechadetencionjoin, noremisionjoin, curpjoin, fechanacimientojoin,delitosjoin,domiclio_join;
                         
                         aliasjoin = respuesta.data.remisiones.map((item: any) => item.Alias_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                         noremisionjoin = respuesta.data.remisiones.map((item: any) => item.No_Remision).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                         curpjoin = respuesta.data.remisiones.map((item: any) => item.CURP).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                         fechanacimientojoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Nacimiento).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
                         fechadetencionjoin = respuesta.data.remisiones.map((item: any) => new Date(item.Fecha_Registro_Detenido).toLocaleDateString()).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', ');
+                        delitosjoin = respuesta.data.remisiones.map((item: any) => item.Faltas_Delitos_Detenido).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(', \n');    
                         
-                        nodoModificado.label = `${nodoModificado.label} \n <b>Alias: </b>${aliasjoin} \n<b>Fecha Detencion: </b>${fechadetencionjoin} \n<b>No Remision: </b>${noremisionjoin} \n<b>CRUP: </b>${curpjoin} \n<b>Fecha Nacimiento: </b> ${fechanacimientojoin}
+                        domiclio_join = respuesta.data.remisiones.map((item: any) => {
+                            return `${item.Tipo} ${item.Calle} ${item.No_Exterior}, ${item.Colonia}, ${item.Municipio}\n,`;
+                        }).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(' ');
+
+                        nodoModificado.label = `${nodoModificado.label} \n <b>Alias: </b>${aliasjoin} \n<b>Fecha Detencion: </b>${fechadetencionjoin} \n<b>No Remision: </b>${noremisionjoin}\n<b>Delitos: </b>${delitosjoin}\n<b>Domicilios:</b>${domiclio_join} \n<b>CRUP: </b>${curpjoin} \n<b>Fecha Nacimiento: </b> ${fechanacimientojoin}
                         `;
                     
                     
@@ -413,16 +427,19 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     console.warn('NEW NODE TO EDGE:',newNode);
                     addNode(newNode, (data: any) => {
                         console.log('Node added:', data);
-                        if (!data.status) {
+                        if (data.status == false) {
                             console.error('Error adding node');
                             addEdge({ from: node.id, to: data.encontro.id, label: 'Inspeccion' }, (data: any) => {
                                 console.log('Edge added:', data);
                             });
                         }
                         else{
-                            addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
-                                console.log('Edge added:', data);
-                            });
+                            console.log('QUE ME ESTA HAYANDO:',data);
+                            if(newNode && data.status==true){
+                                addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
+                                    console.log('Edge added:', data);
+                                });
+                            }
                         }
                     });
                 });
@@ -462,17 +479,19 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     
                     console.warn('NEW NODE TO EDGE:',newNode);
                     addNode(newNode, (data: any) => {
-                        console.log('Node added:', data.status);
-                        if (!data.status) {
+                        console.log('Node added:', data);
+                        if (data.status == false) {
                             console.error('Error adding node');
                             addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
                                 console.log('Edge added:', data);
                             });
                         }
                         else{
-                            addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
-                                console.log('Edge added:', data);
-                            });
+                            if(newNode && data.status==true){
+                                addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
+                                    console.log('Edge added:', data);
+                                });
+                            }
                         }
                     });
                 });
@@ -512,16 +531,18 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
                     console.log('Node added:', data.status);
-                    if (!data.status) {
+                    if (data.status == false) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: data.encontro.id, label: 'Vehiculo' }, (data: any) => {
                             console.log('Edge added:', data);
                         });
                     }
                     else{
-                        addEdge({ from: node.id, to: newNode.id, label: 'Vehiculo' }, (data: any) => {
-                            console.log('Edge added:', data);
-                        });
+                        if(newNode && data.status==true){
+                            addEdge({ from: node.id, to: newNode.id, label: 'Vehiculo' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
                     }
                 });
             });
@@ -556,13 +577,16 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
                     console.log('Node added:', data.status);
-                    if (!data.status) {
+                    if (data.status == false) {
                         console.error('Error adding node');
                     }
-                });
-
-                addEdge({ from: node.id, to: newNode.id, label:'Llamada al 911' }, (data: any) => {
-                    console.log('Edge added:', data);
+                    else{
+                        if(newNode && data.status==true){
+                            addEdge({ from: node.id, to: newNode.id, label: 'Llamada al 911' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
+                    }
                 });
             });
         }
@@ -594,16 +618,18 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
                     console.log('Node added:', data.status);
-                    if (!data.status) {
+                    if (data.status == false) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: newNode.id, label: 'Telefono dado por' }, (data: any) => {
                             console.log('Edge added:', data);
                         });
                     }
                     else{
-                        addEdge({ from: node.id, to: newNode.id, label: `Dio el Telefono ${item.Telefono}` }, (data: any) => {
-                            console.log('Edge added:', data);
-                        });
+                        if(newNode && data.status==true){
+                            addEdge({ from: node.id, to: newNode.id, label: `Dio el Telefono ${item.Telefono}` }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
                     }
                 });
             });
@@ -638,16 +664,17 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
                     console.log('Node added:', data.status);
-                    if (!data.status) {
+                    if (data.status == false) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: newNode.id, label: 'Telefono de Contacto' }, (data: any) => {
                             console.log('Edge added:', data);
                         });
                     }else{
-
-                        addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
-                            console.log('Edge added:', data);
-                        });
+                        if(newNode && data.status==true){
+                            addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
                     }
                 });
 
@@ -733,13 +760,15 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     console.warn('NEW NODE TO EDGE:',newNode);
                     addNode(newNode, (data: any) => {
                         console.log('Node added:', data.status);
-                        if (!data.status) {
+                        if (data.status == false) {
                             console.error('Error adding node');
                         }
                         else{
-                            addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
-                                console.log('Edge added:', data);
-                            });
+                            if(newNode && data.status==true){
+                                addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
+                                    console.log('Edge added:', data);
+                                });
+                            }
                         }
                     });
                 });
@@ -771,13 +800,16 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             console.warn('NEW NODE TO EDGE:',newNode);
             addNode(newNode, (data: any) => {
                 console.log('Node added:', data.status);
-                if (!data.status) {
+                if (data.status == false) {
                     console.error('Error adding node');
                 }
-            });
-
-            addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
-                console.log('Edge added:', data);
+                else{
+                    if(newNode && data.status==true){
+                        addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
+                            console.log('Edge added:', data);
+                        });
+                    }
+                }
             });
         }else {
 
@@ -803,13 +835,16 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
                     console.log('Node added:', data.status);
-                    if (!data.status) {
+                    if (data.status == false) {
                         console.error('Error adding node');
                     }
-                });
-    
-                addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
-                    console.log('Edge added:', data);
+                    else{
+                        if(newNode && data.status==true){
+                            addEdge({ from: node.id, to: newNode.id, label:'Telefono de Contacto' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
+                    }
                 });
             });
         }
@@ -843,16 +878,18 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
                     console.log('Node added:', data.status);
-                    if (!data.status) {
+                    if (data.status == false) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: newNode.id, label: 'Persona Inspeccionada' }, (data: any) => {
                             console.log('Edge added:', data);
                         });
                     }
                     else{
-                        addEdge({ from: node.id, to: newNode.id, label: 'Persona Inspeccionada' }, (data: any) => {
-                            console.log('Edge added:', data);
-                        });
+                        if(newNode && data.status==true){
+                            addEdge({ from: node.id, to: newNode.id, label: 'Persona Inspeccionada' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
                     }
                 });
             });

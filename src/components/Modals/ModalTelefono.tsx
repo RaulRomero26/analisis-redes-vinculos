@@ -36,7 +36,7 @@ const ModalTelefono: React.FC<ModalTelefonoProps> = ({ isModalOpen, toggleModal,
     };
     addNode(nodeData, (data: any) => {
       console.log('Node added:', data.status);
-      if (!data.status) {
+      if (data.status == false) {
         console.error('Error adding node');
       }
     });
