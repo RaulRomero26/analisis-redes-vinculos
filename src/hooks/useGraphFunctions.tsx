@@ -33,17 +33,29 @@ export const useGraphFunctions = (
 
  
   const deleteNode = (nodeId: any, callback: (data: any) => void) => {
-    console.log('Delete node:', nodeId.nodes[0], 'DATA:');
-    setData(prevData => {
-      const newData = {
-        ...prevData,
-        nodes: prevData.nodes.filter(n => n.id !== nodeId.nodes[0]),
-        edges: prevData.edges.filter(e => e.from !==  nodeId.nodes[0] && e.to !==  nodeId.nodes[0]),
-      };
-      callback(newData);
-      return newData;
-    });
+    console.log('Delete node:', nodeId);
+    if(nodeId.nodes.length > 0) {
+      setData(prevData => {
+        const newData = {
+          ...prevData,
+          nodes: prevData.nodes.filter(n => n.id !== nodeId.nodes[0]),
+          edges: prevData.edges.filter(e => e.from !== nodeId.nodes[0] && e.to !== nodeId.nodes[0]),
+        };
+        callback(newData);
+        return newData;
+      });
+    }
+    if(nodeId.edges.length > 0) {
+      setData(prevData => {
+        const newData = {
+          ...prevData,
+          edges: prevData.edges.filter(e => e.id !== nodeId.edges[0]),
+        };
+        callback(newData);
+        return newData;
+      });
   };
+};
 
   const deleteEdge = (edgeId: any, callback: (data: any) => void) => {
     console.log('Delete node:', edgeId.edges[0], 'DATA:');

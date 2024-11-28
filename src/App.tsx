@@ -156,7 +156,6 @@ const options = {
 			face: 'arial',
 			background: 'rgba(255, 255, 255, 0.8)',
 			strokeWidth: 0,
-			zIndex: 1,
 		},
 	},
 	physics: {
