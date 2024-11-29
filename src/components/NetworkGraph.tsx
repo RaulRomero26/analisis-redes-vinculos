@@ -29,19 +29,19 @@ const NetworkGraph = forwardRef<any, NetworkGraphProps>(
       },
       addEdgeMode: () => {
         if (graphRef.current) {
-          console.log("Add edge mode");
+          //console.log("Add edge mode");
           graphRef.current.addEdgeMode();
         }
       },
       deleteNodeMode: () => {
         if (graphRef.current) {
-          console.log("Delete node mode");  
+          //console.log("Delete node mode");  
         }
       },
     }));
 
     useEffect(() => {
-      console.log("Data changed:", data);
+      //console.log("Data changed:", data);
       if (graphRef.current) {
         graphRef.current.setData(data);
       }
@@ -59,7 +59,7 @@ const NetworkGraph = forwardRef<any, NetworkGraphProps>(
         }}
         getNetwork={(network: any) => {
           graphRef.current = network; // Capture the vis.js network instance
-          console.log("Network instance:", network);
+          //console.log("Network instance:", network);
         }}
       />
     );

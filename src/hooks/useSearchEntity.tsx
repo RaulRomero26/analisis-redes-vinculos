@@ -17,7 +17,7 @@ export const useSearchEntity = () => {
           });
           const data = await response.json();
           setData(data.data.remisiones);
-          console.log( 'RESPUESTA:',data.data.remisiones);
+          //console.log( 'RESPUESTA:',data.data.remisiones);
           return data;
         } catch (error) {
           console.error(error);
@@ -38,7 +38,7 @@ export const useSearchEntity = () => {
           });
           const data = await response.json();
           setData(data.data.telefono);
-          console.log( 'RESPUESTA:',data.data.telefono);
+          //console.log( 'RESPUESTA:',data.data.telefono);
           return data;
         } catch (error) {
           console.error(error);
@@ -58,7 +58,7 @@ export const useSearchEntity = () => {
       });
       const data = await response.json();
       setData(data.data.remisiones);
-      console.log( 'RESPUESTA:',data.data.remisiones);
+      //console.log( 'RESPUESTA:',data.data.remisiones);
       return data;
     } catch (error) {
       console.error(error);
@@ -80,7 +80,7 @@ const searchHistorico = async ({ entidad, payload }: { entidad: string; payload:
     });
     const data = await response.json();
     setData(data.data.historico);
-    console.log( 'RESPUESTA:',data.data.historico);
+    //console.log( 'RESPUESTA:',data.data.historico);
     return data;
   } catch (error) {
     console.error(error);
@@ -99,7 +99,7 @@ const searchInspeccion = async ({ entidad, payload }: { entidad: string; payload
     });
     const data = await response.json();
     setData(data.data.inspeccion);
-    console.log( 'RESPUESTA:',data.data.inspeccion);
+    //console.log( 'RESPUESTA:',data.data.inspeccion);
     return data;
   } catch (error) {
     console.error(error);
@@ -119,7 +119,7 @@ const searchDetenidoCon = async ({ entidad, payload }: { entidad: string; payloa
     });
     const data = await response.json();
     setData(data.data.detenidoCon);
-    console.log( 'RESPUESTA:',data.data.detenidoCon);
+    //console.log( 'RESPUESTA:',data.data.detenidoCon);
     return data;
   } catch (error) {
     console.error(error);
@@ -139,7 +139,7 @@ const searchVehiculoInspeccion = async ({ entidad, payload }: { entidad: string;
     });
     const data = await response.json();
     setData(data.data.vehiculos);
-    console.log( 'RESPUESTA:',data.data.vehiculos);
+    //console.log( 'RESPUESTA:',data.data.vehiculos);
     return data;
   } catch (error) {
     console.error(error);
@@ -159,7 +159,7 @@ const  searchRemisionesTelefono = async ({ entidad, payload }: { entidad: string
       });
       const data = await response.json();
       setData(data.data.remisiones);
-      console.log( 'RESPUESTA:',data.data.remisiones);
+      //console.log( 'RESPUESTA:',data.data.remisiones);
       return data;
     } catch (error) {
       console.error(error);
@@ -179,7 +179,7 @@ const buscarContactosPorTelefono = async ({ entidad, payload }: { entidad: strin
       });
       const data = await response.json();
       setData(data.data.contactos);
-      console.log( 'RESPUESTA:',data.data.contactos);
+      //console.log( 'RESPUESTA:',data.data.contactos);
       return data;
     } catch (error) {
       console.error(error);
@@ -199,7 +199,7 @@ const searchVehiculoRemision = async ({ entidad, payload }: { entidad: string; p
     });
     const data = await response.json();
     setData(data.data.vehiculos);
-    console.log( 'RESPUESTA:',data.data.vehiculos);
+    //console.log( 'RESPUESTA:',data.data.vehiculos);
     return data;
   } catch (error) {
     console.error(error);
@@ -219,7 +219,7 @@ const buscarLlamadas911 = async ({ entidad, payload }: { entidad: string; payloa
       });
       const data = await response.json();
       setData(data.data.llamadas);
-      console.log( 'RESPUESTA:',data.data.llamadas);
+      //console.log( 'RESPUESTA:',data.data.llamadas);
       return data;
     } catch (error) {
       console.error(error);
@@ -239,7 +239,7 @@ const searchPersonaInspeccion = async ({ entidad, payload }: { entidad: string; 
     });
     const data = await response.json();
     setData(data.data.personas);
-    console.log( 'RESPUESTA:',data.data.personas);
+    //console.log( 'RESPUESTA:',data.data.personas);
     return data;
   } catch (error) {
     console.error(error);
@@ -259,7 +259,7 @@ const searchInspeccionVehiculo = async ({ entidad, payload }: { entidad: string;
     });
     const data = await response.json();
     setData(data.data.vehiculos);
-    console.log( 'RESPUESTA:',data.data.vehiculos);
+    //console.log( 'RESPUESTA:',data.data.vehiculos);
     return data;
   } catch (error) {
     console.error(error);

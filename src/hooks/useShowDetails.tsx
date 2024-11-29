@@ -4,7 +4,7 @@ export const useShowDetails = () => {
 
 
     const showDetails = (node: any) => {
-        console.log('Mostrando detalles de la remisión:', node);
+        //console.log('Mostrando detalles de la remisión:', node);
 
         switch(node.type){
             case 'remision':

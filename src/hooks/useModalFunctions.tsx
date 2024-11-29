@@ -21,11 +21,11 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
         const respuesta =await searchDetenidoCon({ entidad: 'persona', payload: { ficha: ficha, remision_primaria: remision_primaria} });
         
 
-        console.log('RESPUESTA:',respuesta.data.remisiones);
+        //console.log('RESPUESTA:',respuesta.data.remisiones);
         if(respuesta.data.remisiones.length){
-            console.log('SI HAY DETENIDOS CON');
+            //console.log('SI HAY DETENIDOS CON');
             respuesta.data.remisiones.map((item: any) => {
-                console.log('item:',item);
+                //console.log('item:',item);
                 
                 const newNode = createNodeData(
                     `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
@@ -44,9 +44,9 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
                         "Telefono":item.Telefono
                     }
                 );
-                console.warn('NEW NODE TO EDGE:',newNode);
+                //console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
-                    console.log('Node added:', data.status);
+                    //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
                        //ACA tocaria agregar peso al enlace por que significa que ya existe o verificar si es la forma correcta en arbol
@@ -66,11 +66,11 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
     const handleSearchContactos = async(node:NodeData,ficha: any,remision_primaria: any) => {
         
         const respuesta = await searchContacts({ entidad: 'persona', payload: { ficha: ficha, remision_primaria: remision_primaria} });
-        console.log('RESPUESTA:',respuesta.data.contactos);
+        //console.log('RESPUESTA:',respuesta.data.contactos);
         if(respuesta.data.contactos.length){
-            console.log('SI HAY CONTACTOS');
+            //console.log('SI HAY CONTACTOS');
             respuesta.data.contactos.map((item: any) => {
-                console.log('item:',item);
+                //console.log('item:',item);
                 
                 const newNode = createNodeData(
                     `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`.toUpperCase(), 
@@ -89,9 +89,9 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
                         "Telefono":item.Telefono
                     }
                 );
-                console.warn('NEW NODE TO EDGE:',newNode);
+                //console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
-                    console.log('SE PUEDE AGREGAR? :', data.status);
+                    //console.log('SE PUEDE AGREGAR? :', data.status);
                     if (data.status == false){
                         console.error('Error adding node');
                        //ACA tocaria agregar peso al enlace por que significa que ya existe o verificar si es la forma correcta en arbol

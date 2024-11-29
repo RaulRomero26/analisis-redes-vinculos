@@ -64,7 +64,7 @@ export const EditNodeForm = ({ node, setData, getData, isOpen, onRequestClose }:
 const handleSave = () => {
     const data = getData();
     const index = data.nodes.findIndex((n: any) => n.id === node.id);
-    console.log('EDITABLES:', editables);
+    //console.log('EDITABLES:', editables);
     data.nodes[index] = {
         ...data.nodes[index],
         editables: editables,

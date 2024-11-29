@@ -33,7 +33,7 @@ const App: React.FC = () => {
   const graphRef = useRef<any>(null);
 
   useEffect(() => {
-    console.log(options);
+    //console.log(options);
   }, []);
 
   const { editNode, editEdge, addEdgeControl, addNode, deleteNode, deleteEdge } = useGraphFunctions(setData, getData);
@@ -51,19 +51,19 @@ const App: React.FC = () => {
     if (graphRef.current) {
       graphRef.current.addEdgeMode(); // Habilita el modo de agregar edges
     } else {
-      console.warn("Graph reference is null.");
+      //console.warn("Graph reference is null.");
     }
   };
 
   const handleNodeClick = (event: any) => {
     if (deleteMode) {
       // Eliminar el nodo
-      console.log('ELIMINAR ESTA EN TRUE:', event);
+      //console.log('ELIMINAR ESTA EN TRUE:', event);
       deleteNode(event, () => { });
       setDeleteMode(false);
     } else {
       // Otro tipo de manejo de clic
-      console.log("Node clicked:", event);
+      //console.log("Node clicked:", event);
     }
   };
 
@@ -75,7 +75,7 @@ const App: React.FC = () => {
   };
 
   const handleMenuClick = (entidad: string) => {
-    console.warn("Entidad:", entidad);
+    //console.warn("Entidad:", entidad);
     toggleModal(entidad);
     searchData({ entidad, payload: {} });
   };
@@ -85,7 +85,7 @@ const App: React.FC = () => {
   };
 
   const handleEditAttributes = (node: NodeData) => {
-    console.log("Edit attributes:", node);
+    //console.log("Edit attributes:", node);
     setSelectedNodeEdit(node);
     setIsEditModalOpen(true);
   };
@@ -97,21 +97,22 @@ const App: React.FC = () => {
 
   const deleteElement = () => {
     if (graphRef.current) {
-      console.log("Delete element mode");
+      //console.log("Delete element mode");
       setDeleteMode(true);
     } else {
-      console.warn("Graph reference is null.");
+      //console.warn("Graph reference is null.");
     }
   };
 
   useEffect(() => {
     console.log("Data CAMBIO:", data);
+    setData(data)
   }, [data]);
 
   useEffect(() => {
     if (deleteMode && selectedNode) {
       // Eliminar el nodo
-      console.log('ELIMINAR ESTA EN TRUE:', selectedNode);
+      //console.log('ELIMINAR ESTA EN TRUE:', selectedNode);
       deleteNode(selectedNode, () => { });
     }
   }, [deleteMode, selectedNode]);

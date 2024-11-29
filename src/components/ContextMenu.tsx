@@ -38,10 +38,10 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setDat
 
     useEffect(() => {
         if (nodeId) {
-            console.log('Node ID:', nodeId);
-            console.log(findNodeDetails(nodeId));
+            //console.log('Node ID:', nodeId);
+            //console.log(findNodeDetails(nodeId));
             const details = findNodeDetails(nodeId);
-            console.warn('Details:', details);
+            //console.warn('Details:', details);
             setNodeDetails(details);
         }
     }, [nodeId, findNodeDetails]);

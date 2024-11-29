@@ -30,7 +30,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         searchPersonaInspeccion,
     } = useSearchEntity();
 
-    const { addNode,addEdge,nodeExists,edgeExists } = useGraphFunctions(setData,getData);
+    const { addNode,addEdge } = useGraphFunctions(setData,getData);
 
     const handleContextMenu = (event: any) => {
         event.event.preventDefault();
@@ -43,12 +43,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     };
 
     const handleSearchExtended = async(opcion:string) => {
-        console.log('le pique a una opcion de search extended',contextMenu.nodeId,'opcion:',opcion);
+        //console.log('le pique a una opcion de search extended',contextMenu.nodeId,'opcion:',opcion);
 
         if (contextMenu.nodeId !== null) {
             const node = data.nodes.find(node => node.id === contextMenu.nodeId);
             if (node) {
-                console.warn('Buscando entidad', node);
+                //console.warn('Buscando entidad', node);
                
                 if(opcion === 'Buscar Maestro')handleSearchMaestroPersona(node); //Buscar Remisiones e inspecciones por Nombre
                 if(opcion === 'Buscar Remisiones')handleSearchRemisiones(node); //Buscar Remisiones por Nombre
@@ -66,20 +66,20 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
             }
                 
         } else {
-            console.log('Node not found');
+            //console.log('Node not found');
         }
         setContextMenu({ x: 0, y: 0, edgeId: null, nodeId: null });
     };
 
     /* FUNCIONES DE EXPANSION DE LA RED  */
     const handleContactosModal = (node: NodeData) => {
-        console.log('Disparando el modal con el nodo:', node);
+        //console.log('Disparando el modal con el nodo:', node);
         setSelectedNode(node);  // Guarda el nodo seleccionado
         setIsModalContactosOpen(true);    // Abre el modal
     };
 
     const handleDetenidoConModal = (node: NodeData) => {
-        console.log('Disparando el modal con el nodo:', node);
+        //console.log('Disparando el modal con el nodo:', node);
         setSelectedNode(node);  // Guarda el nodo seleccionado
         setIsModalFichasOpen(true);    // Abre el modal
     };
@@ -116,15 +116,15 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             "Telefono":item.Telefono
                         }
                     );
-                    console.warn('NEW NODE TO EDGE:',newNode);
+                    //console.warn('NEW NODE TO EDGE:',newNode);
                     addNode(newNode, (data: any) => {
-                        console.log('Node added:', data.status);
+                        //console.log('Node added:', data.status);
                         if (data.status == false) {
                             console.error('Error adding node');
 
                         }
                         else{
-                            console.log('QUE ME ESTA HAYANDO:',data);
+                            //console.log('QUE ME ESTA HAYANDO:',data);
                             if(newNode && data.status==true){
                                 addEdge({ from: node.id, to: newNode.id, label: 'Detenido Con' }, (data: any) => {
                                     console.log('Edge added:', data);
@@ -143,12 +143,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     tipo: node.type 
                 } 
             });
-            console.log('RESPUESTA:',respuesta);
+            //console.log('RESPUESTA:',respuesta);
             if (respuesta.data.remisiones.length > 0) {
                 const updatedNodes = data.nodes.map(n => {
                 if (n.id === node.id) {
                     let nodoModificado = n;
-                    console.log('NODO MODIFICADO:',nodoModificado);
+                    //console.log('NODO MODIFICADO:',nodoModificado);
                     nodoModificado.data.remisiones = respuesta.data.remisiones;
                     nodoModificado.atributos.Telefono = respuesta.data.remisiones
                         .map((item: any) => item.Telefono)
@@ -224,7 +224,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 }
                 return n;
                 });
-                console.log('ANTES DEL SET:', data.edges);
+                //console.log('ANTES DEL SET:', data.edges);
                 setData({ ...data, nodes: updatedNodes, edges: data.edges });
             }
         }
@@ -235,12 +235,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     tipo: node.type 
                 } 
             });
-            console.log('RESPUESTA:',respuesta);
+            //console.log('RESPUESTA:',respuesta);
             if (respuesta.data.remisiones.length > 0) {
                 const updatedNodes = data.nodes.map(n => {
                 if (n.id === node.id) {
                     let nodoModificado = n;
-                    console.log('NODO MODIFICADO:',nodoModificado);
+                    //console.log('NODO MODIFICADO:',nodoModificado);
                     nodoModificado.data.remisiones = respuesta.data.remisiones;
                     nodoModificado.atributos.Telefono = respuesta.data.remisiones
                         .map((item: any) => item.Telefono)
@@ -291,7 +291,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 }
                 return n;
                 });
-                console.log('ANTES DEL SET:', data.edges);
+                //console.log('ANTES DEL SET:', data.edges);
                 setData({ ...data, nodes: updatedNodes, edges: data.edges });
             }
         }
@@ -306,13 +306,13 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         if(node.type === 'entrada-persona' || node.type === 'persona' || node.type === 'contacto'){
          
             respuesta =await  searchHistorico({ entidad: node.type || '', payload: { label: node.id, tipo: node.type } });
-            console.log('RESPUESTA:',respuesta.data.historico);
+            //console.log('RESPUESTA:',respuesta.data.historico);
             if(respuesta.data.historico.length > 0){
     
                 const updatedNodes = data.nodes.map(n => {
                     if (n.id === node.id) {
                         let nodoModificado = n;
-                        console.log('NODO MODIFICADO:',nodoModificado);
+                        //console.log('NODO MODIFICADO:',nodoModificado);
                         nodoModificado.data.historico = respuesta.data.historico;
                         let viejosAtributos = nodoModificado.atributos;
                         nodoModificado.atributos = {
@@ -364,13 +364,13 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         if(node.type === 'llamada-911'){
          
             respuesta =await  searchHistorico({ entidad: node.type || '', payload: { label: node.id, tipo: node.type } });
-            console.log('RESPUESTA:',respuesta.data.historico);
+            //console.log('RESPUESTA:',respuesta.data.historico);
             if(respuesta.data.historico.length > 0){
     
                 const updatedNodes = data.nodes.map(n => {
                     if (n.id === node.id) {
                         let nodoModificado = n;
-                        console.log('NODO MODIFICADO:',nodoModificado);
+                        //console.log('NODO MODIFICADO:',nodoModificado);
                         nodoModificado.data.historico = respuesta.data.historico;
                         let viejosAtributos = nodoModificado.atributos;
                         nodoModificado.atributos = {
@@ -418,10 +418,10 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         if(node.entidad === 'vehiculo'){
             payload = { placas: node.atributos.Placas, niv: node.atributos.NIV };
             respuesta =await  searchVehiculoInspeccion({ entidad: node.type || '', payload: payload }); //BUSCA UNA PLACA O NIV EN INSPECCIONES
-            console.log('RESPUESTA:',respuesta.data.vehiculos);
+            //console.log('RESPUESTA:',respuesta.data.vehiculos);
             if(respuesta.data.vehiculos.length > 0){
                 respuesta.data.vehiculos.map((item: any) => {
-                    console.log('item:',item);
+                    //console.log('item:',item);
                     if(item.Telefono === '') return;
                     const newNode = createNodeData(
                         `${item.Coordenada_X}, ${item.Coordenada_Y}`,
@@ -447,9 +447,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     );
     
     
-                    console.warn('NEW NODE TO EDGE:',newNode);
+                    //console.warn('NEW NODE TO EDGE:',newNode);
                     addNode(newNode, (data: any) => {
-                        console.log('Node added:', data);
+                        //console.log('Node added:', data);
                         if (data.status == false) {
                             console.error('Error adding node');
                             addEdge({ from: node.id, to: data.encontro.id, label: 'Inspeccion' }, (data: any) => {
@@ -457,7 +457,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             });
                         }
                         else{
-                            console.log('QUE ME ESTA HAYANDO:',data);
+                            //console.log('QUE ME ESTA HAYANDO:',data);
                             if(newNode && data.status==true){
                                 addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
                                     console.log('Edge added:', data);
@@ -471,10 +471,10 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         if(node.entidad === 'persona'){
             payload =  { label: node.id };
             respuesta =await  searchInspeccion({ entidad: node.type || '', payload: payload });
-            console.log('RESPUESTA:',respuesta.data.inspeccion);
+            //console.log('RESPUESTA:',respuesta.data.inspeccion);
             if(respuesta.data.inspeccion.length > 0){
                 respuesta.data.inspeccion.map((item: any) => {
-                    console.log('item:',item);
+                    //console.log('item:',item);
                     if(item.Telefono === '') return;
                     const newNode = createNodeData(
                         `${item.Coordenada_X}, ${item.Coordenada_Y}`,
@@ -500,9 +500,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     );
     
     
-                    console.warn('NEW NODE TO EDGE:',newNode);
+                    //console.warn('NEW NODE TO EDGE:',newNode);
                     addNode(newNode, (data: any) => {
-                        console.log('Node added:', data);
+                        //console.log('Node added:', data);
                         if (data.status == false) {
                             console.error('Error adding node');
                             addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
@@ -525,10 +525,10 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     const handleSearchVehiculosInspeccion = async(node:NodeData) => {
     
         const respuesta =await  searchVehiculoInspeccion({ entidad: node.type || '', payload: { inspeccion: node.atributos.Id_Inspeccion, placas: node.atributos.Placas_Vehiculo, NIV: node.atributos.NIV } });
-        console.log('RESPUESTA:',respuesta.data.vehiculos);
+        //console.log('RESPUESTA:',respuesta.data.vehiculos);
         if(respuesta.data.vehiculos.length > 0){
             respuesta.data.vehiculos.map((item: any) => {
-                console.log('item:',item);
+                //console.log('item:',item);
                 if(item.Placas === '') return;
                 const newNode = createNodeData(
                     `${item.Placas_Vehiculo}/${item.NIV}`,
@@ -551,9 +551,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         Colocacion_Placas: item.Colocacion_Placa,
                     }
                 );
-                console.warn('NEW NODE TO EDGE:',newNode);
+                //console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
-                    console.log('Node added:', data.status);
+                    //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: data.encontro.id, label: 'Vehiculo' }, (data: any) => {
@@ -572,57 +572,73 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         }
     };
 
-    const handleSearchTelefono = async(node:NodeData) => {
-        const respuesta = await buscarLlamadas911({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
-        console.log('RESPUESTA:',respuesta.data.llamadas);
-        if(respuesta.data.llamadas.length){
-            console.log('SI HAY LLAMADAS');
-            for (const item of respuesta.data.llamadas) {
-                console.log('item:',item);
-                if(item.Telefono === '') continue;
-                const newNode = createNodeData(
-                    `${item['Nom completo']}`, 
-                    item['Nom completo'], 
-                    item['Nom completo'], 
-                    "image", 
-                    15, 
-                    "blue", 
-                    "llamada-911",
-                    'persona',
-                    item,
-                    {
-                        "Telefono":item.Telefono,
-                        "Comentarios":item.Comentarios,
-                        "Ubicacion":item.Ubicacion
-                    }
-                );
-                console.warn('NEW NODE TO EDGE:',newNode);
-                if(nodeExists(newNode.id) == false){
-                    await new Promise((resolve) => {
-                        addNode(newNode, (data: any) => {
-                            console.log('Node added:', data.status);
-                            if (data.status == false) {
-                                console.error('Error adding node');
-                            } else {
-                                if(newNode && data.status==true){
-                                    addEdge({ from: node.id, to: newNode.id, label: 'Llamada al 911' }, (data: any) => {
-                                        console.log('Edge added:', data);
-                                        resolve(null);
-                                    });
-                                } else {
-                                    resolve(null);
-                                }
-                            }
-                        });
-                    });
+    const handleSearchTelefono = async (node: NodeData) => {
+        try {
+          const respuesta = await buscarLlamadas911({ 
+            entidad: node.type || '', 
+            payload: { telefono: node.atributos.Telefono } 
+          });
+          
+          //console.log('RESPUESTA:', respuesta.data.llamadas);
+      
+          if (respuesta.data.llamadas.length) {
+            //console.log('SI HAY LLAMADAS');
+      
+            for await (const item of respuesta.data.llamadas) {
+              //console.log('item:', item);
+              // Crear el nodo a partir de los datos
+              const newNode = createNodeData(
+                `${item['Nom completo']}`.trim().toUpperCase(),
+                item['Nom completo'],
+                item['Nom completo'],
+                "image",
+                15,
+                "blue",
+                "llamada-911",
+                'persona',
+                item,
+                {
+                  "Telefono": item.Telefono,
+                  "Comentarios": item.Comentarios,
+                  "Ubicacion": item.Ubicacion
                 }
-            }
+              );
+      
+              //console.warn('NEW NODE TO EDGE:', newNode);
+      
+              // Validar si el nodo ya existe
+                // Agregar el nodo
+                addNode(newNode, (data: any) => {
+                    console.log('Node added:', data.status,'encontrado:',data.encontro);
+                        if (data.status == false) {
+                            console.error('Error adding node');
+                            addEdge({ from: node.id, to: data.encontro.id, label: 'Llamada al 911' }, (data: any) => {
+                                console.log('Edge added:', data);
+                            });
+                        }
+                        else{
+                            if(newNode && data.status==true){
+                                addEdge({ from: node.id, to: newNode.id, label: `Llamada al 911` }, (data: any) => {
+                                    console.log('Edge added:', data);
+                                });
+                            }
+                        }
+                    
+                    });
+                };
+      
+                
+              }
+          
+        } catch (error) {
+          console.error('Error in handleSearchTelefono:', error);
         }
-    };
+      };
+      
     const handleSearchRemisionesTelefono = async(node:NodeData) => { 
 
         const respuesta = await searchRemisionesTelefono({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
-        console.log('RESPUESTA:',respuesta.data.remisiones);
+        //console.log('RESPUESTA:',respuesta.data.remisiones);
         if (respuesta.data.remisiones.length > 0) {
             respuesta.data.remisiones.map((item: any) => {
                 const newNode = createNodeData(
@@ -642,9 +658,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         "Telefono":item.Telefono
                     }
                 );
-                console.warn('NEW NODE TO EDGE:',newNode);
+                //console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
-                    console.log('Node added:', data.status);
+                    //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: newNode.id, label: 'Telefono dado por' }, (data: any) => {
@@ -665,11 +681,11 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
 // Buscar Contactos referidos a partir del telefono
     const handleSearchContactosTelefono = async(node:NodeData) => {
         const respuesta = await buscarContactosPorTelefono({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
-        console.log('RESPUESTA:',respuesta.data.contactos);
+        //console.log('RESPUESTA:',respuesta.data.contactos);
         if(respuesta.data.contactos.length){
-            console.log('SI HAY TELEFONOS');
+            //console.log('SI HAY TELEFONOS');
             respuesta.data.contactos.map((item: any) => {
-                console.log('item:',item);
+                //console.log('item:',item);
                 if(item.Telefono === '') return;
                 const newNode = createNodeData(
                     `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`, 
@@ -688,9 +704,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         "Ap_Materno":item.Ap_Materno,
                     }
                 );
-                console.warn('NEW NODE TO EDGE:',newNode);
+                //console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
-                    console.log('Node added:', data.status);
+                    //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: newNode.id, label: 'Telefono de Contacto' }, (data: any) => {
@@ -711,13 +727,13 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
 
     const handleSearchVehiculoRemision = async(node:NodeData) => {
         const respuesta = await searchVehiculoRemision({ entidad: node.type || '', payload: { placa: node.atributos.Placas, niv: node.atributos.NIV } });
-        console.log('RESPUESTA:',respuesta.data.vehiculos);
+        //console.log('RESPUESTA:',respuesta.data.vehiculos);
         if(respuesta.data.vehiculos.length > 0){
-            console.warn('SI HAY VEHICULOS');
+            //console.warn('SI HAY VEHICULOS');
             const updatedNodes = data.nodes.map(n => {
                 if (n.id === node.id) {
                     let nodoModificado = n;
-                    console.log('NODO MODIFICADO:',nodoModificado);
+                    //console.log('NODO MODIFICADO:',nodoModificado);
                     nodoModificado.data.vehiculos = respuesta.data.vehiculos;
                     let viejosAtributos = nodoModificado.atributos;
 
@@ -763,7 +779,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 }
                 return n;
                 });
-                console.log('ANTES DEL SET:', data.edges);
+                //console.log('ANTES DEL SET:', data.edges);
                 setData({ ...data, nodes: updatedNodes, edges: data.edges });
                 //Agregamos a las personas de los vehiculos
                 respuesta.data.vehiculos.map((item: any) => {
@@ -784,9 +800,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             "Telefono":item.Telefono
                         }
                     );
-                    console.warn('NEW NODE TO EDGE:',newNode);
+                    //console.warn('NEW NODE TO EDGE:',newNode);
                     addNode(newNode, (data: any) => {
-                        console.log('Node added:', data.status);
+                        //console.log('Node added:', data.status);
                         if (data.status == false) {
                             console.error('Error adding node');
                         }
@@ -806,7 +822,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     const handleExtraerTelefonos = async(node:NodeData) => { 
 
         if(node.type === 'contacto'){
-            console.log('ES UN CONTACTO');
+            //console.log('ES UN CONTACTO');
             if(node.atributos.Telefono === '') return;
             let invalidPhones = ["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"];
             if(invalidPhones.find(valor => valor === node.atributos.Telefono) ) return;
@@ -824,9 +840,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     "Telefono":node.atributos.Telefono
                 }
             );
-            console.warn('NEW NODE TO EDGE:',newNode);
+            //console.warn('NEW NODE TO EDGE:',newNode);
             addNode(newNode, (data: any) => {
-                console.log('Node added:', data.status);
+                //console.log('Node added:', data.status);
                 if (data.status == false) {
                     console.error('Error adding node');
                 }
@@ -843,7 +859,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
 
             const respuesta = node.data.remisiones;
             respuesta.map((item: any) => {
-                console.log('item:',item);
+                //console.log('item:',item);
                 let invalidPhones = ["0", "000", "00", "0000", "00000", "000000", "sd", "s/d", "SD", "S/D"];
                 if(invalidPhones.find(valor => valor === item.Telefono) ) return;
                 const newNode = createNodeData(
@@ -860,9 +876,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         "Telefono":item.Telefono
                     }
                 );
-                console.warn('NEW NODE TO EDGE:',newNode);
+                //console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
-                    console.log('Node added:', data.status);
+                    //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
                     }
@@ -882,10 +898,10 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     const handleSearchPersonasInspeccion = async(node:NodeData) => {
 
         const respuesta =await  searchPersonaInspeccion({ entidad: node.type || '', payload: { inspeccion: node.atributos.Id_Inspeccion } });
-        console.log('RESPUESTA:',respuesta.data.personas);
+        //console.log('RESPUESTA:',respuesta.data.personas);
         if(respuesta.data.personas.length > 0){
             respuesta.data.personas.map((item: any) => {
-                console.log('item:',item);
+                //console.log('item:',item);
                 if(item.Placas === '') return;
                 const newNode = createNodeData(
                     `${item.Nombre} ${item.Ap_Paterno} ${item.Ap_Materno}`,
@@ -903,9 +919,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         Ap_Materno: item.Ap_Materno,
                     }
                 );
-                console.warn('NEW NODE TO EDGE:',newNode);
+                //console.warn('NEW NODE TO EDGE:',newNode);
                 addNode(newNode, (data: any) => {
-                    console.log('Node added:', data.status);
+                    //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
                         addEdge({ from: node.id, to: newNode.id, label: 'Persona Inspeccionada' }, (data: any) => {
