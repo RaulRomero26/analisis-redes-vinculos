@@ -178,6 +178,17 @@ export const useGraphFunctions = (
     }
   }
 
+
+  const nodeExists = (nodeId: string): boolean => {
+    const currentData = getData();
+    console.info('EXISTENCIA: ',currentData.nodes.some(node => node.id === nodeId))
+    return currentData.nodes.some(node => node.id === nodeId);
+  };
+
+  const edgeExists = (edgeId: string): boolean => {
+    const currentData = getData();
+    return currentData.edges.some(edge => edge.id === edgeId);
+  }
   return {
     editNode,
     editEdge,
@@ -186,6 +197,8 @@ export const useGraphFunctions = (
     addEdgeControl,
     deleteNode,
     deleteEdge,
-    findNodeDetails
+    findNodeDetails,
+    nodeExists,
+    edgeExists
   };
 };

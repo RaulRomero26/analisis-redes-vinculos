@@ -30,7 +30,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         searchPersonaInspeccion,
     } = useSearchEntity();
 
-    const { addNode,addEdge } = useGraphFunctions(setData,getData);
+    const { addNode,addEdge,nodeExists,edgeExists } = useGraphFunctions(setData,getData);
 
     const handleContextMenu = (event: any) => {
         event.event.preventDefault();
@@ -573,14 +573,13 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
     };
 
     const handleSearchTelefono = async(node:NodeData) => {
-        
         const respuesta = await buscarLlamadas911({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
         console.log('RESPUESTA:',respuesta.data.llamadas);
         if(respuesta.data.llamadas.length){
             console.log('SI HAY LLAMADAS');
-            respuesta.data.llamadas.map((item: any) => {
+            for (const item of respuesta.data.llamadas) {
                 console.log('item:',item);
-                if(item.Telefono === '') return;
+                if(item.Telefono === '') continue;
                 const newNode = createNodeData(
                     `${item['Nom completo']}`, 
                     item['Nom completo'], 
@@ -598,23 +597,28 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     }
                 );
                 console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (data: any) => {
-                    console.log('Node added:', data.status);
-                    if (data.status == false) {
-                        console.error('Error adding node');
-                    }
-                    else{
-                        if(newNode && data.status==true){
-                            addEdge({ from: node.id, to: newNode.id, label: 'Llamada al 911' }, (data: any) => {
-                                console.log('Edge added:', data);
-                            });
-                        }
-                    }
-                });
-            });
+                if(nodeExists(newNode.id) == false){
+                    await new Promise((resolve) => {
+                        addNode(newNode, (data: any) => {
+                            console.log('Node added:', data.status);
+                            if (data.status == false) {
+                                console.error('Error adding node');
+                            } else {
+                                if(newNode && data.status==true){
+                                    addEdge({ from: node.id, to: newNode.id, label: 'Llamada al 911' }, (data: any) => {
+                                        console.log('Edge added:', data);
+                                        resolve(null);
+                                    });
+                                } else {
+                                    resolve(null);
+                                }
+                            }
+                        });
+                    });
+                }
+            }
         }
     };
-    
     const handleSearchRemisionesTelefono = async(node:NodeData) => { 
 
         const respuesta = await searchRemisionesTelefono({ entidad: node.type || '', payload: { telefono: node.atributos.Telefono } });
