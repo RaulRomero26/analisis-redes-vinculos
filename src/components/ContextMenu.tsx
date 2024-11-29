@@ -12,6 +12,7 @@ interface ContextMenuProps {
     onClose: () => void;
     onShowDetails: (node: NodeData) => void;
     onSearchExtended: (query: string) => void;
+    onEditAttributes: (node: NodeData) => void;
 }
 
 const rules: { [key: string]: (node: NodeData) => boolean | any } = {
@@ -29,7 +30,7 @@ const rules: { [key: string]: (node: NodeData) => boolean | any } = {
   };
 
 
-const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setData, onSearchExtended, onClose }) => {
+const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setData, onSearchExtended, onClose, onEditAttributes }) => {
 
     const [_nodeDetails, setNodeDetails] = useState<any>(null);
 
@@ -87,6 +88,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, nodeId, getData, setDat
                             </ul>
                         </div>
                     </li>
+                    <li className={`cursor-pointer hover:bg-gray-200 p-1 px-4`} onClick={() => onEditAttributes(_nodeDetails)}>EDITAR ATRIBUTOS</li>
                     <li  className="cursor-pointer hover:bg-gray-200 p-1 px-4"onClick={onClose}>CERRAR</li>
                 </ul>
             </div>

@@ -160,8 +160,9 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         ...nodoModificado.atributos,
                         detenciones: {
                             sarai: respuesta.data.remisiones.map((item: any) => {
+
                                 if (viejosAtributos.detenciones && viejosAtributos.detenciones.sarai) {
-                                    if (viejosAtributos.detenciones.sarai.find((element:any) => element.No_Remision === item.No_Remision)) return null;
+                                    if (viejosAtributos.detenciones.sarai.find((element:any) => element?.No_Remision === item.No_Remision)) return null;
                                 }
                                 return {
                                     Ficha: item.Ficha,
@@ -201,8 +202,21 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         domiclio_join = respuesta.data.remisiones.map((item: any) => {
                             return `${item.Tipo} ${item.Calle} ${item.No_Exterior}, ${item.Colonia}, ${item.Municipio}\n,`;
                         }).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index).join(' ');
+                       
+                        nodoModificado.editables ={
+                            label: nodoModificado.id,
+                            remisiones_label: `Remisiones: (${respuesta.data.remisiones.length})`,
+                            alias: aliasjoin,
+                            fecha_detencion: fechadetencionjoin,
+                            no_remision: noremisionjoin,
+                            curp: curpjoin,
+                            fecha_nacimiento: fechanacimientojoin,
+                            delitos: delitosjoin,
+                            domicilio: domiclio_join
+                        }
 
-                        nodoModificado.label = `${nodoModificado.label} \n <b>Alias: </b>${aliasjoin} \n<b>Fecha Detencion: </b>${fechadetencionjoin} \n<b>No Remision: </b>${noremisionjoin}\n<b>Delitos: </b>${delitosjoin}\n<b>Domicilios:</b>${domiclio_join} \n<b>CRUP: </b>${curpjoin} \n<b>Fecha Nacimiento: </b> ${fechanacimientojoin}
+
+                        nodoModificado.label = `${nodoModificado.editables.label} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b> \n <b>Alias: </b>${nodoModificado.editables.alias} \n<b>Fecha Detencion: </b>${nodoModificado.editables.fecha_detencion} \n<b>No Remision: </b>${nodoModificado.editables.no_remision}\n<b>Delitos: </b>${nodoModificado.editables.delitos}\n<b>Domicilios:</b>${nodoModificado.editables.domicilio} \n<b>CURP: </b>${nodoModificado.editables.curp} \n<b>Fecha Nacimiento: </b> ${nodoModificado.editables.fecha_nacimiento}
                         `;
                     
                     
@@ -306,7 +320,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             detenciones_historicas: {
                                 historico: respuesta.data.historico.map((item: any) => {
                                     if (viejosAtributos.detenciones_historicas && viejosAtributos.detenciones_historicas.historico) {
-                                        if (viejosAtributos.detenciones_historicas.historico.find((element: any) => element.Folio === item.Folio)) return null;
+                                        if (viejosAtributos.detenciones_historicas.historico.find((element: any) => element?.Folio === item.Folio)) return null;
                                     }
                                     return {
                                         Folio: item.Folio,
@@ -324,13 +338,22 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                                 })
                             }
                         };
-                        
                         nodoModificado.label = `${nodoModificado.label} \n <b>Historico: (${respuesta.data.historico.length})</b>`;
+
+                        
                         let foliojoin, fecharemjoin;
                         foliojoin = respuesta.data.historico.map((item: any) => item.Folio).join(', ');
                         fecharemjoin = respuesta.data.historico.map((item: any) => new Date(item.Fecha_Rem).toLocaleDateString()).join(', ');
-                        nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${foliojoin} \n<b>Fecha Remision: </b>${fecharemjoin}`;
-    
+                        
+                        nodoModificado.editables ={
+                            ...nodoModificado.editables,
+                            historico_label: `Historico: (${respuesta.data.historico.length})`,
+                            historico_folios: foliojoin,
+                            historico_fechas: fecharemjoin
+                            
+                            
+                        }
+                        nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${nodoModificado.editables?.historico_folios} \n<b>Fecha Remision: </b>${nodoModificado.editables?.historico_fechas}`;
                         return nodoModificado;
                     }
                     return n;

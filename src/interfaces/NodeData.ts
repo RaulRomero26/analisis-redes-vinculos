@@ -25,6 +25,7 @@ export interface NodeData {
   //opcionales para mi programa 
   atributos?: any;
   font?: any;
+  editables?: any;
 }
 
 export function getImageForType(type?: string): string {
