@@ -167,6 +167,15 @@ export const useGraphFunctions = (
     }
   }
 
+  const findEdgeDetails = (edgeId: string) => {
+    if(typeof getData === 'function'){
+      const currentData = getData();
+      return currentData.edges.find(edge => edge.id === edgeId);
+    } else {
+      console.error("getData is not a function or is undefined");
+      return null;
+    }
+  }
 
   const nodeExists = (node: any): boolean => {
     const currentData = getData();
@@ -194,6 +203,7 @@ export const useGraphFunctions = (
     deleteNode,
     deleteEdge,
     findNodeDetails,
+    findEdgeDetails,
     nodeExists,
     edgeExists
   };

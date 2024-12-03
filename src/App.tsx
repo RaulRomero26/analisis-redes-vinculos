@@ -29,6 +29,7 @@ const App: React.FC = () => {
   const [deleteMode, setDeleteMode] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedNodeEdit, setSelectedNodeEdit] = useState<NodeData | null>(null);
+  const [selectedEdgeEdit, setSelectedEdgeEdit] = useState<EdgeData | null>(null);
 
   const graphRef = useRef<any>(null);
 
@@ -84,15 +85,17 @@ const App: React.FC = () => {
     showDetails(node);
   };
 
-  const handleEditAttributes = (node: NodeData) => {
+  const handleEditAttributes = (node?: NodeData, edge?: EdgeData ) => {
     //console.log("Edit attributes:", node);
-    setSelectedNodeEdit(node);
+    setSelectedNodeEdit(node || null);
+    setSelectedEdgeEdit(edge || null);
     setIsEditModalOpen(true);
   };
 
   const closeEditModal = () => {
     setIsEditModalOpen(false);
     setSelectedNodeEdit(null);
+    setSelectedEdgeEdit(null)
   };
 
   const deleteElement = () => {
@@ -181,6 +184,20 @@ const App: React.FC = () => {
     },
   };
 
+  
+  const customStyles = {
+    content: {
+      width: '400px',
+      height: 'auto',
+      margin: 'auto',
+      padding: '20px',
+      borderRadius: '8px',
+    },
+    overlay: {
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+  };
+
   return (
     <div className="" onContextMenu={(e) => e.preventDefault()}>
       <div className="grid grid-cols-1 gap-4">
@@ -202,6 +219,7 @@ const App: React.FC = () => {
               x={contextMenu.x}
               y={contextMenu.y}
               nodeId={contextMenu.nodeId}
+              edgeId={contextMenu.edgeId}
               getData={getData}
               setData={setData}
               onSearchExtended={handleSearchExtended}
@@ -242,17 +260,18 @@ const App: React.FC = () => {
       <Modal
         isOpen={isEditModalOpen}
         onRequestClose={closeEditModal}
-        contentLabel="Edit Node"
+        contentLabel="Edit Node or Edge"
+        style={customStyles}
       >
-        {selectedNodeEdit && (
+        {selectedNodeEdit || selectedEdgeEdit ? (
           <EditNodeForm
             node={selectedNodeEdit}
+            edge={selectedEdgeEdit}
             setData={setData}
             getData={getData}
-            isOpen={isEditModalOpen}
             onRequestClose={closeEditModal}
           />
-        )}
+        ) : null}
       </Modal>
     </div>
   );
