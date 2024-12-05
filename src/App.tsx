@@ -31,6 +31,7 @@ const App: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedNodeEdit, setSelectedNodeEdit] = useState<NodeData | null>(null);
   const [selectedEdgeEdit, setSelectedEdgeEdit] = useState<EdgeData | null>(null);
+  const [nodeIDClicked, setNodeIDClicked] = useState<string | null>(null);
   const [fisicas, setFisicas] = useState(true);
 
   const graphRef = useRef<any>(null);
@@ -59,6 +60,9 @@ const App: React.FC = () => {
   };
 
   const handleNodeClick = (event: any) => {
+    console.log(event);
+    setNodeIDClicked(event.nodes[0]);
+    console.log(nodeIDClicked);
     if (deleteMode) {
       // Eliminar el nodo
       //console.log('ELIMINAR ESTA EN TRUE:', event);
@@ -69,6 +73,7 @@ const App: React.FC = () => {
       //console.log("Node clicked:", event);
     }
   };
+
 
   const toggleModal = (entidad?: string) => {
     setIsModalOpen(!isModalOpen);
@@ -125,6 +130,66 @@ const App: React.FC = () => {
       deleteNode(selectedNode, () => { });
     }
   }, [deleteMode, selectedNode]);
+
+
+  useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      const items = event.clipboardData?.items;
+      console.log('efecto paste')
+      if (items) {
+        console.log(items)
+        for (const item of items) {
+          console.log(item)
+          if (item.kind === 'file' && item.type.startsWith('image/')) {
+            const file = item.getAsFile();
+            if (file) {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                const imageUrl = e.target?.result as string;
+                console.log('node clickeado', nodeIDClicked)
+                if (nodeIDClicked) {
+                  // Si hay un nodo seleccionado, buscar el nodo por ID y asignar la imagen a ese nodo
+                  const nodeToUpdate = data.nodes.find((node) => node.id === nodeIDClicked);
+                  console.log('UPDATE POR CLCK', nodeToUpdate)
+                  if (nodeToUpdate) {
+                    nodeToUpdate.image = imageUrl;
+                    setData((prevData) => ({
+                      ...prevData,
+                      nodes: prevData.nodes.map((node) =>
+                        node.id === nodeIDClicked ? nodeToUpdate : node
+                      ),
+                    }));
+                  }
+                } else {
+                  // Si no hay un nodo seleccionado, buscar el nodo por nombre
+                  console.log(file.name.split('.')[0])
+                  const nodeName = file.name.split('.')[0];
+                  const nodeToUpdate = data.nodes.find((node) => node.name === nodeName);
+                  console.log('encontro?', nodeToUpdate)
+                  if (nodeToUpdate) {
+                    nodeToUpdate.image = imageUrl;
+                    setData((prevData) => ({
+                      ...prevData,
+                      nodes: prevData.nodes.map((node) =>
+                        node.id === nodeToUpdate.id ? nodeToUpdate : node
+                      ),
+                    }));
+                  }
+                }
+              };
+              reader.readAsDataURL(file);
+            }
+          }
+        }
+      }
+    };
+
+    document.addEventListener('paste', handlePaste);
+    return () => {
+      document.removeEventListener('paste', handlePaste);
+    };
+  }, [data, nodeIDClicked]);
+
 
   const options = {
     locale: 'es',
