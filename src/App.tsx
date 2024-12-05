@@ -13,6 +13,7 @@ import { NodeData } from "./interfaces/NodeData";
 import { useShowDetails } from "./hooks/useShowDetails";
 import { EditNodeForm } from "./components/EditNodeForm";
 import Modal from 'react-modal';
+import FisicasCheck from "./components/FisicasCheck";
 
 Modal.setAppElement('#root');
 
@@ -30,12 +31,13 @@ const App: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedNodeEdit, setSelectedNodeEdit] = useState<NodeData | null>(null);
   const [selectedEdgeEdit, setSelectedEdgeEdit] = useState<EdgeData | null>(null);
+  const [fisicas, setFisicas] = useState(true);
 
   const graphRef = useRef<any>(null);
 
   useEffect(() => {
     //console.log(options);
-  }, []);
+  }, [fisicas]);
 
   const { editNode, editEdge, addEdgeControl, addNode, deleteNode, deleteEdge } = useGraphFunctions(setData, getData);
 
@@ -184,6 +186,56 @@ const App: React.FC = () => {
     },
   };
 
+
+const noPhisicOptions = {
+  locale: 'es',
+  interaction: {
+    selectable: true, // Permite seleccionar nodos y aristas
+    hover: true,      // Resalta elementos al pasar el cursor
+    dragNodes: true,  // Permite arrastrar nodos
+    dragView: true,   // Permite mover la vista general del grafo
+    zoomSpeed: 1,
+    zoomView: true,
+    navigationButtons: true,
+    keyboard: true,
+  },
+  manipulation: {
+    enabled: false,
+    initiallyActive: false,
+    addNode: addNode,
+    addEdge: addEdgeControl,
+    editNode: editNode,
+    editEdge: editEdge,
+    deleteNode: deleteNode,
+    deleteEdge: deleteEdge,
+  },
+  layout: {
+    hierarchical: {
+      enabled: false, // Cambiamos a un diseño no jerárquico para más libertad
+    },
+  },
+  edges: {
+    smooth: false, // Desactiva el suavizado para que los edges sean totalmente manipulables
+    arrows: {
+      to: { enabled: true, scaleFactor: 1 }, // Flechas opcionales en los edges
+    },
+    font: {
+      background: 'rgba(255, 255, 255, 1)',
+    },
+  },
+  nodes: {
+    font: {
+      size: 14,
+      color: '#000000',
+      face: 'arial',
+      background: 'rgba(255, 255, 255, 0.8)',
+      strokeWidth: 0,
+    },
+  },
+  physics: {
+    enabled: false, // Desactivamos la física para permitir libertad total de movimiento
+  },
+};
   
   const customStyles = {
     content: {
@@ -202,16 +254,18 @@ const App: React.FC = () => {
     <div className="" onContextMenu={(e) => e.preventDefault()}>
       <div className="grid grid-cols-1 gap-4">
         <DropdownMenu data={data} setData={setData} handleMenuClick={handleMenuClick} addEdge={handleAddEdge} deleteElement={deleteElement} />
+        <FisicasCheck fisicas={fisicas} setFisicas={setFisicas}/>
       </div>
       <div className="" style={{ height: '92vh' }}>
         <NetworkGraph
           data={data}
-          options={options}
+          options={fisicas ? options : noPhisicOptions}
           onClick={handleNodeClick}
           onNodeHover={handleNodeHover}
           onEdgeHover={handleEdgeHover}
           onContext={handleContextMenu}
           ref={graphRef}
+          key={fisicas ? 'withPhysics' : 'withoutPhysics'}
         />
         {(contextMenu.edgeId || contextMenu.nodeId) && (
           <>

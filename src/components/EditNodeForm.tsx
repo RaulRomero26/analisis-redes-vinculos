@@ -139,7 +139,7 @@ export const EditNodeForm = ({ node, setData, getData, onRequestClose }: EditNod
         )}
         {showAddAttribute ? (
           <>
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="font-bold">Clave</label>
               <input
                 type="text"
@@ -147,6 +147,24 @@ export const EditNodeForm = ({ node, setData, getData, onRequestClose }: EditNod
                 onChange={(e) => setNewKey(e.target.value)}
                 className="ml-2 p-1 border border-gray-300"
               />
+            </div> */}
+            <div className="mb-4">
+              <label className="font-bold">Clave</label>
+              <select
+              value={newKey}
+              onChange={(e) => setNewKey(e.target.value)}
+              className="ml-2 p-1 border border-gray-300"
+              >
+              <option value="">Seleccione una clave</option>
+              <option value="alias">Alias</option>
+              <option value="fecha_detencion">Fecha de Detencion</option>
+              <option value="no_remision">Remisiones</option>
+              <option value="curp">CURP</option>
+              <option value="fecha_nacimiento">Fecha de Nacimiento</option>
+              <option value="delitos">Delitos</option>
+              <option value="domicilio">Domiclio</option>
+              <option value="otra">Otra</option>
+              </select>
             </div>
             <div className="mb-4">
               <label className="font-bold">Valor</label>
