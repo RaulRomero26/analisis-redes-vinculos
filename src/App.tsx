@@ -87,6 +87,10 @@ const App: React.FC = () => {
     showDetails(node);
   };
 
+  const handleDragEnd = ( event: any ) => {
+    console.log(event)
+  }
+
   const handleEditAttributes = (node?: NodeData, edge?: EdgeData ) => {
     //console.log("Edit attributes:", node);
     setSelectedNodeEdit(node || null);
@@ -253,17 +257,25 @@ const noPhisicOptions = {
   return (
     <div className="" onContextMenu={(e) => e.preventDefault()}>
       <div className="grid grid-cols-1 gap-4">
-        <DropdownMenu data={data} setData={setData} handleMenuClick={handleMenuClick} addEdge={handleAddEdge} deleteElement={deleteElement} />
+        <DropdownMenu 
+            data={data} 
+            setData={setData} 
+            handleMenuClick={handleMenuClick} 
+            addEdge={handleAddEdge} 
+            deleteElement={deleteElement}  
+        />
         <FisicasCheck fisicas={fisicas} setFisicas={setFisicas}/>
       </div>
       <div className="" style={{ height: '92vh' }}>
         <NetworkGraph
           data={data}
+          setData={setData}
           options={fisicas ? options : noPhisicOptions}
           onClick={handleNodeClick}
           onNodeHover={handleNodeHover}
           onEdgeHover={handleEdgeHover}
           onContext={handleContextMenu}
+          onDragEnd={handleDragEnd}
           ref={graphRef}
           key={fisicas ? 'withPhysics' : 'withoutPhysics'}
         />
