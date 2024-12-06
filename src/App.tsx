@@ -191,6 +191,7 @@ const App: React.FC = () => {
   }, [data, nodeIDClicked]);
 
 
+
   const options = {
     locale: 'es',
     interaction: {
@@ -303,6 +304,10 @@ const noPhisicOptions = {
   },
   physics: {
     enabled: false, // Desactivamos la física para permitir libertad total de movimiento
+    stabilization: {
+      enabled: false, // Deshabilita la estabilización automática
+      fit: false, // Deshabilita el ajuste automático de la vista
+    },
   },
 };
   

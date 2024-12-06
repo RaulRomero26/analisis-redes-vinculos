@@ -341,19 +341,23 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         nodoModificado.label = `${nodoModificado.label} \n <b>Historico: (${respuesta.data.historico.length})</b>`;
 
                         
-                        let foliojoin, fecharemjoin;
+                        let foliojoin, fecharemjoin,motivojoin,domiciliojoin;
                         foliojoin = respuesta.data.historico.map((item: any) => item.Folio).join(', ');
                         fecharemjoin = respuesta.data.historico.map((item: any) => new Date(item.Fecha_Rem).toLocaleDateString()).join(', ');
-                        
+                        motivojoin = respuesta.data.historico.map((item: any) => item.Descripcion).join(', ');
+                        domiciliojoin = respuesta.data.historico.map((item: any) => `${item.Col_d}, ${item.Dom_d}`).join(', ');
+
                         nodoModificado.editables ={
                             ...nodoModificado.editables,
                             historico_label: `Historico: (${respuesta.data.historico.length})`,
                             historico_folios: foliojoin,
-                            historico_fechas: fecharemjoin
+                            historico_fechas: fecharemjoin,
+                            historico_motivo: motivojoin,
+                            historico_domicilio: domiciliojoin
                             
                             
                         }
-                        nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${nodoModificado.editables?.historico_folios} \n<b>Fecha Remision: </b>${nodoModificado.editables?.historico_fechas}`;
+                        nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${nodoModificado.editables?.historico_folios} \n<b>Fecha Remision: </b>${nodoModificado.editables?.historico_fechas}\n<b>Motivo: </b>${nodoModificado.editables?.historico_motivo}\n<b>Domicilio: </b>${nodoModificado.editables?.historico_domicilio}`;
                         return nodoModificado;
                     }
                     return n;

@@ -21,7 +21,7 @@ const recreateLabel = (node: any) => {
 
   switch (node.type) {
     case 'persona':
-      newLabel = `${node.editables?.label || ''}
+      newLabel = `${node.editables?.label || node.id  || ''}
                   ${node.editables?.remisiones_label || ''}
                   <b>Alias:</b> ${node.editables?.alias || ''}
                   <b>Fecha Detencion: </b>${node.editables?.fecha_detencion || ''}
@@ -32,10 +32,11 @@ const recreateLabel = (node: any) => {
                   <b>Domicilios: </b>${node.editables?.domicilio || ''}
                   ${node.editables?.historico_label || ''}
                   <b>Folio: </b> ${node.editables?.historico_folios || ''}
-                  <b>Fecha Remision: </b> ${node.editables?.historico_fechas || ''}`;
+                  <b>Fecha Remision: </b> ${node.editables?.historico_fechas || ''}
+                   <b>Motivo: </b> ${node.editables?.historico_motivo || ''}`;
       break;
     case 'entrada-persona':
-      newLabel = `${node.editables?.label || ''}
+      newLabel = `${node.editables?.label || node.id  || ''}
                   ${node.editables?.remisiones_label || ''}
                   <b>Alias:</b> ${node.editables?.alias || ''}
                   <b>Fecha Detencion: </b>${node.editables?.fecha_detencion || ''}
@@ -46,7 +47,8 @@ const recreateLabel = (node: any) => {
                   <b>Domicilios: </b>${node.editables?.domicilio || ''}
                   ${node.editables?.historico_label || ''}
                   <b>Folio: </b> ${node.editables?.historico_folios || ''}
-                  <b>Fecha Remision: </b> ${node.editables?.historico_fechas || ''}`;
+                  <b>Fecha Remision: </b> ${node.editables?.historico_fechas || ''}
+                  <b>Motivo: </b> ${node.editables?.historico_motivo || ''}`;
       break;
     default:
       newLabel = node.label
