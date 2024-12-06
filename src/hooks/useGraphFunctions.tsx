@@ -1,4 +1,4 @@
-import Swal from 'sweetalert2';
+
 import { GraphData } from '../interfaces/GraphData';
 import { NodeData, createNodeData } from '../interfaces/NodeData';
 import { v4 as uuidv4 } from 'uuid';

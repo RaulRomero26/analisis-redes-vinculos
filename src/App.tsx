@@ -14,7 +14,7 @@ import { useShowDetails } from "./hooks/useShowDetails";
 import { EditNodeForm } from "./components/EditNodeForm";
 import Modal from 'react-modal';
 import FisicasCheck from "./components/FisicasCheck";
-import Toast, { Toaster } from 'react-hot-toast';
+import { Toaster } from 'react-hot-toast';
 
 Modal.setAppElement('#root');
 
@@ -93,9 +93,6 @@ const App: React.FC = () => {
     showDetails(node);
   };
 
-  const handleDragEnd = ( event: any ) => {
-    console.log(event)
-  }
 
   const handleEditAttributes = (node?: NodeData, edge?: EdgeData ) => {
     //console.log("Edit attributes:", node);
@@ -339,10 +336,18 @@ const App: React.FC = () => {
   return (
     <div className="" onContextMenu={(e) => e.preventDefault()}>
       <div> 
-        <Toaster
-          position="bottom-center"
-          reverseOrder={false}
-        />
+     
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          style: {
+            fontSize: '20px', // Tamaño de la fuente
+            padding: '22px', // Relleno para hacer el toast más grande
+            background: '#333', // Color de fondo
+            color: '#fff', // Color del texto
+          }
+        }}
+      />
       </div>
       <div className="grid grid-cols-1 gap-4">
         <DropdownMenu 
@@ -363,7 +368,6 @@ const App: React.FC = () => {
           onNodeHover={handleNodeHover}
           onEdgeHover={handleEdgeHover}
           onContext={handleContextMenu}
-          onDragEnd={handleDragEnd}
           ref={graphRef}
           key={fisicas ? 'withPhysics' : 'withoutPhysics'}
         />

@@ -10,11 +10,10 @@ interface NetworkGraphProps {
   onContext: (event: any) => void;
   onNodeHover: (event: any) => void;
   onEdgeHover: (event: any) => void;
-  onDragEnd: (event: any) => void;  // Custom onDragEnd event handler
 }
 
 const NetworkGraph = forwardRef<any, NetworkGraphProps>(
-  ({ data, setData,options, onClick, onNodeHover, onEdgeHover, onContext, onDragEnd }, ref) => {
+  ({ data, setData,options, onClick, onNodeHover, onEdgeHover, onContext }, ref) => {
     const graphRef = useRef<any>(null); // Reference to the network container
 
     useImperativeHandle(ref, () => ({
@@ -66,7 +65,7 @@ const NetworkGraph = forwardRef<any, NetworkGraphProps>(
       };
 
       // Update positions initially
-      updateNodePositions();
+      updateNodePositions({ nodes: data.nodes.map(node => node.id) });
 
       // Add event listeners for dragEnd and stabilization
       network.on('dragEnd', updateNodePositions);
