@@ -29,7 +29,7 @@ const ModalContactos: React.FC<ModalContactosProps> = ({ node, isOpen, onClose,d
                 </div>
                 {node && (
                     <div>
-                        {node.atributos.detenciones.sarai.map((remision:any, index:any) => (
+                        {node.data.remisiones.map((remision:any, index:any) => (
                             <div key={index}>
                                 <p>{remision.No_Remision}</p>
                                 <button 

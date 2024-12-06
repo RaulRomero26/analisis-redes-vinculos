@@ -47,40 +47,38 @@ const NetworkGraph = forwardRef<any, NetworkGraphProps>(
         graphRef.current.setData(data);
       }
     }, [data]);
+   
 
     useEffect(() => {
-      // Add custom dragEnd event listener using vis.js network API
       if (graphRef.current) {
-        const network = graphRef.current;
-
-        // Listener for the 'dragEnd' event
-        network.on('dragEnd', function(event :any) {
-          const nodeId = event.nodes[0];  // Si se mueve un solo nodo, capturamos su ID
-          const newPosition = event.pointer.canvas;  // Usamos las coordenadas canvas
-          console.log("Nuevo posicion del nodo:", nodeId, newPosition);
-        
-          setData({
-            nodes: data.nodes.map((node) => {
-              if (node.id === nodeId) {
-                return { ...node, x: newPosition.x, y: newPosition.y };
-              }
-              return node;
-            }),
-            edges: data.edges,  // Mantenemos las aristas sin cambios
-          })
-          
-        });
-        
-      }
-
-      // Cleanup the event listener when the component unmounts or re-renders
-      return () => {
-        if (graphRef.current) {
-          const network = graphRef.current;
-          network.off('dragEnd');  // Remove the event listener
+      const network = graphRef.current;
+      const updateNodePositions = (event: any) => {
+        console.log('event',event);
+        if (event && event.nodes.length > 0) { // Only update positions if nodes are being dragged
+          const positions = network.getPositions();
+          const updatedNodes = data.nodes.map(node => ({
+            ...node,
+            x: positions[node.id].x,
+            y: positions[node.id].y,
+          }));
+          setData({ ...data, nodes: updatedNodes });
         }
       };
-    }, [onDragEnd]);
+
+      // Update positions initially
+      updateNodePositions();
+
+      // Add event listeners for dragEnd and stabilization
+      network.on('dragEnd', updateNodePositions);
+      network.on('stabilizationIterationsDone', updateNodePositions);
+
+      // Cleanup event listeners on unmount
+      return () => {
+        network.off('dragEnd', updateNodePositions);
+        network.off('stabilizationIterationsDone', updateNodePositions);
+      };
+      }
+    }, [data, setData]);
 
 
     return (

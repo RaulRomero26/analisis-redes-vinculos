@@ -29,7 +29,7 @@ const ModalFichas: React.FC<ModalFichasProps> = ({ node, isOpen, onClose,data,se
                 </div>
                 {node && (
                     <div>
-                        {node.atributos.detenciones.sarai.map((remision:any, index:any) => (
+                        {node.data.remisiones.map((remision:any, index:any) => (
                             <div key={index}>
                                 <p>{remision.Ficha}</p>
                                 <button 

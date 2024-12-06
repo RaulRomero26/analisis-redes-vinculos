@@ -21,34 +21,40 @@ const recreateLabel = (node: any) => {
 
   switch (node.type) {
     case 'persona':
-      newLabel = `${node.editables?.label || node.id  || ''}
-                  ${node.editables?.remisiones_label || ''}
-                  <b>Alias:</b> ${node.editables?.alias || ''}
-                  <b>Fecha Detencion: </b>${node.editables?.fecha_detencion || ''}
-                  <b>No Remision: </b>${node.editables?.no_remision || ''}
-                  <b>CURP: </b>${node.editables?.curp || ''}
-                  <b>Fecha Nacimiento:</b> ${node.editables?.fecha_nacimiento || ''}
-                  <b>Delitos: </b>${node.editables?.delitos || ''}
-                  <b>Domicilios: </b>${node.editables?.domicilio || ''}
-                  ${node.editables?.historico_label || ''}
-                  <b>Folio: </b> ${node.editables?.historico_folios || ''}
-                  <b>Fecha Remision: </b> ${node.editables?.historico_fechas || ''}
-                   <b>Motivo: </b> ${node.editables?.historico_motivo || ''}`;
+      newLabel = [
+        node.editables?.label || node.id || '',
+        node.editables?.remisiones_label || '',
+        node.editables?.alias ? `<b>Alias:</b> ${node.editables.alias}` : '',
+        node.editables?.fecha_detencion ? `<b>Fecha Detencion: </b>${node.editables.fecha_detencion}` : '',
+        node.editables?.no_remision ? `<b>No Remision: </b>${node.editables.no_remision}` : '',
+        node.editables?.curp ? `<b>CURP: </b>${node.editables.curp}` : '',
+        node.editables?.fecha_nacimiento ? `<b>Fecha Nacimiento:</b> ${node.editables.fecha_nacimiento}` : '',
+        node.editables?.delitos ? `<b>Delitos: </b>${node.editables.delitos}` : '',
+        node.editables?.domicilio ? `<b>Domicilios: </b>${node.editables.domicilio}` : '',
+        node.editables?.historico_label || '',
+        node.editables?.historico_folios ? `<b>Folio: </b> ${node.editables.historico_folios}` : '',
+        node.editables?.historico_fechas ? `<b>Fecha Remision: </b> ${node.editables.historico_fechas}` : '',
+        node.editables?.historico_motivo ? `<b>Motivo: </b> ${node.editables.historico_motivo}` : '',
+        node.editables?.historico_domicilio ? `<b>Domicilio: </b> ${node.editables.historico_domicilio}` : ''
+      ].filter(Boolean).join('\n');
       break;
     case 'entrada-persona':
-      newLabel = `${node.editables?.label || node.id  || ''}
-                  ${node.editables?.remisiones_label || ''}
-                  <b>Alias:</b> ${node.editables?.alias || ''}
-                  <b>Fecha Detencion: </b>${node.editables?.fecha_detencion || ''}
-                  <b>No Remision: </b>${node.editables?.no_remision || ''}
-                  <b>CURP: </b>${node.editables?.curp || ''}
-                  <b>Fecha Nacimiento:</b> ${node.editables?.fecha_nacimiento || ''}
-                  <b>Delitos: </b>${node.editables?.delitos || ''}
-                  <b>Domicilios: </b>${node.editables?.domicilio || ''}
-                  ${node.editables?.historico_label || ''}
-                  <b>Folio: </b> ${node.editables?.historico_folios || ''}
-                  <b>Fecha Remision: </b> ${node.editables?.historico_fechas || ''}
-                  <b>Motivo: </b> ${node.editables?.historico_motivo || ''}`;
+      newLabel = [
+        node.editables?.label || node.id || '',
+        node.editables?.remisiones_label || '',
+        node.editables?.alias ? `<b>Alias:</b> ${node.editables.alias}` : '',
+        node.editables?.fecha_detencion ? `<b>Fecha Detencion: </b>${node.editables.fecha_detencion}` : '',
+        node.editables?.no_remision ? `<b>No Remision: </b>${node.editables.no_remision}` : '',
+        node.editables?.curp ? `<b>CURP: </b>${node.editables.curp}` : '',
+        node.editables?.fecha_nacimiento ? `<b>Fecha Nacimiento:</b> ${node.editables.fecha_nacimiento}` : '',
+        node.editables?.delitos ? `<b>Delitos: </b>${node.editables.delitos}` : '',
+        node.editables?.domicilio ? `<b>Domicilios: </b>${node.editables.domicilio}` : '',
+        node.editables?.historico_label || '',
+        node.editables?.historico_folios ? `<b>Folio: </b> ${node.editables.historico_folios}` : '',
+        node.editables?.historico_fechas ? `<b>Fecha Remision: </b> ${node.editables.historico_fechas}` : '',
+        node.editables?.historico_motivo ? `<b>Motivo: </b> ${node.editables.historico_motivo}` : '',
+        node.editables?.historico_domicilio ? `<b>Domicilio: </b> ${node.editables.historico_domicilio}` : ''
+      ].filter(Boolean).join('\n');
       break;
     default:
       newLabel = node.label

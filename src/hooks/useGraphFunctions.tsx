@@ -2,6 +2,7 @@ import Swal from 'sweetalert2';
 import { GraphData } from '../interfaces/GraphData';
 import { NodeData, createNodeData } from '../interfaces/NodeData';
 import { v4 as uuidv4 } from 'uuid';
+import { toast } from 'react-hot-toast';
 
 export const useGraphFunctions = (
   setData: React.Dispatch<React.SetStateAction<GraphData>>,
@@ -76,12 +77,14 @@ export const useGraphFunctions = (
         let alreadyExist = nodeExists(nodeData);
         console.warn(alreadyExist);
         if (alreadyExist) {
-            Swal.fire({
-                title: 'Error',
-                text: `Ya existe una entidad identificada ${nodeData.label}`,
-                icon: 'error',
-                confirmButtonText: 'Ok'
-            });
+
+          toast.error(`Ya existe una entidad identificada ${nodeData.label}`)
+            // Swal.fire({
+            //     title: 'Error',
+            //     text: `Ya existe una entidad identificada ${nodeData.label}`,
+            //     icon: 'error',
+            //     confirmButtonText: 'Ok'
+            // });
             setData({...prevData})
             callback({ status: false, encontro: nodeData });
             return prevData;

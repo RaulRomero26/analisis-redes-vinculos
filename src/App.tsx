@@ -14,6 +14,7 @@ import { useShowDetails } from "./hooks/useShowDetails";
 import { EditNodeForm } from "./components/EditNodeForm";
 import Modal from 'react-modal';
 import FisicasCheck from "./components/FisicasCheck";
+import Toast, { Toaster } from 'react-hot-toast';
 
 Modal.setAppElement('#root');
 
@@ -133,6 +134,10 @@ const App: React.FC = () => {
 
 
   useEffect(() => {
+    console.log('selectedNodeEdit', selectedNodeEdit);
+  }, [selectedEdgeEdit]);
+
+  useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
       const items = event.clipboardData?.items;
       console.log('efecto paste')
@@ -189,8 +194,6 @@ const App: React.FC = () => {
       document.removeEventListener('paste', handlePaste);
     };
   }, [data, nodeIDClicked]);
-
-
 
   const options = {
     locale: 'es',
@@ -253,64 +256,73 @@ const App: React.FC = () => {
         damping: 1,
         avoidOverlap: 1,
       },
+      stabilization: {
+        enabled: true,
+        fit: false, // Ajusta la vista automáticamente
+      },
     },
+    autoResize: false,
+    height: '100%',
+    width: '100%',
+  };
+  
+  const noPhisicOptions = {
+    locale: 'es',
+    interaction: {
+      selectable: true,
+      hover: true,
+      dragNodes: true,
+      dragView: true,
+      zoomSpeed: 1,
+      zoomView: true,
+      navigationButtons: true,
+      keyboard: true,
+    },
+    manipulation: {
+      enabled: false,
+      initiallyActive: false,
+      addNode: addNode,
+      addEdge: addEdgeControl,
+      editNode: editNode,
+      editEdge: editEdge,
+      deleteNode: deleteNode,
+      deleteEdge: deleteEdge,
+    },
+    layout: {
+      hierarchical: {
+        enabled: false,
+      },
+    },
+    edges: {
+      smooth: false,
+      arrows: {
+        to: { enabled: true, scaleFactor: 1 },
+      },
+      font: {
+        background: 'rgba(255, 255, 255, 1)',
+      },
+    },
+    nodes: {
+      font: {
+        size: 14,
+        color: '#000000',
+        face: 'arial',
+        background: 'rgba(255, 255, 255, 0.8)',
+        strokeWidth: 0,
+      },
+    },
+    physics: {
+      enabled: false,
+      stabilization: {
+        enabled: true,
+        fit: false, // Desactiva el ajuste automático de la vista
+      },
+    },
+    autoResize: false,
+    height: '100%',
+    width: '100%',
   };
 
-
-const noPhisicOptions = {
-  locale: 'es',
-  interaction: {
-    selectable: true, // Permite seleccionar nodos y aristas
-    hover: true,      // Resalta elementos al pasar el cursor
-    dragNodes: true,  // Permite arrastrar nodos
-    dragView: true,   // Permite mover la vista general del grafo
-    zoomSpeed: 1,
-    zoomView: true,
-    navigationButtons: true,
-    keyboard: true,
-  },
-  manipulation: {
-    enabled: false,
-    initiallyActive: false,
-    addNode: addNode,
-    addEdge: addEdgeControl,
-    editNode: editNode,
-    editEdge: editEdge,
-    deleteNode: deleteNode,
-    deleteEdge: deleteEdge,
-  },
-  layout: {
-    hierarchical: {
-      enabled: false, // Cambiamos a un diseño no jerárquico para más libertad
-    },
-  },
-  edges: {
-    smooth: false, // Desactiva el suavizado para que los edges sean totalmente manipulables
-    arrows: {
-      to: { enabled: true, scaleFactor: 1 }, // Flechas opcionales en los edges
-    },
-    font: {
-      background: 'rgba(255, 255, 255, 1)',
-    },
-  },
-  nodes: {
-    font: {
-      size: 14,
-      color: '#000000',
-      face: 'arial',
-      background: 'rgba(255, 255, 255, 0.8)',
-      strokeWidth: 0,
-    },
-  },
-  physics: {
-    enabled: false, // Desactivamos la física para permitir libertad total de movimiento
-    stabilization: {
-      enabled: false, // Deshabilita la estabilización automática
-      fit: false, // Deshabilita el ajuste automático de la vista
-    },
-  },
-};
-  
   const customStyles = {
     content: {
       width: '400px',
@@ -326,6 +338,12 @@ const noPhisicOptions = {
 
   return (
     <div className="" onContextMenu={(e) => e.preventDefault()}>
+      <div> 
+        <Toaster
+          position="bottom-center"
+          reverseOrder={false}
+        />
+      </div>
       <div className="grid grid-cols-1 gap-4">
         <DropdownMenu 
             data={data} 
@@ -372,7 +390,7 @@ const noPhisicOptions = {
 
         {isModalFichasOpen && (
           <ModalFichas
-            node={selectedNodeEdit}
+            node={selectedNode}
             isOpen={isModalOpen}
             onClose={() => setIsModalFichasOpen(false)}
             data={data}
