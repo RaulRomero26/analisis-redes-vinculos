@@ -79,12 +79,6 @@ export const useGraphFunctions = (
         if (alreadyExist) {
 
           toast.error(`Ya existe una entidad identificada ${nodeData.label}`)
-            // Swal.fire({
-            //     title: 'Error',
-            //     text: `Ya existe una entidad identificada ${nodeData.label}`,
-            //     icon: 'error',
-            //     confirmButtonText: 'Ok'
-            // });
             setData({...prevData})
             callback({ status: false, encontro: nodeData });
             return prevData;

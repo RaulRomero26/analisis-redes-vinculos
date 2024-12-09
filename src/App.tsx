@@ -322,7 +322,7 @@ const App: React.FC = () => {
 
   const customStyles = {
     content: {
-      width: '400px',
+      width: '430px',
       height: 'auto',
       margin: 'auto',
       padding: '20px',

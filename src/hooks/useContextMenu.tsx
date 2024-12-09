@@ -215,6 +215,18 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             domicilio: domiclio_join
                         }
 
+                        nodoModificado.visibles = {
+                            label: true,
+                            remisiones_label: true,
+                            alias: true,
+                            fecha_detencion: true,
+                            no_remision: true,
+                            curp: true,
+                            fecha_nacimiento: true,
+                            delitos: true,
+                            domicilio: true
+                        }
+
 
                         nodoModificado.label = `${nodoModificado.editables.label} \n <b>Remisiones: (${respuesta.data.remisiones.length})</b> \n <b>Alias: </b>${nodoModificado.editables.alias} \n<b>Fecha Detencion: </b>${nodoModificado.editables.fecha_detencion} \n<b>No Remision: </b>${nodoModificado.editables.no_remision}\n<b>Delitos: </b>${nodoModificado.editables.delitos}\n<b>Domicilios:</b>${nodoModificado.editables.domicilio} \n<b>CURP: </b>${nodoModificado.editables.curp} \n<b>Fecha Nacimiento: </b> ${nodoModificado.editables.fecha_nacimiento}
                         `;
@@ -353,10 +365,19 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             historico_folios: foliojoin,
                             historico_fechas: fecharemjoin,
                             historico_motivo: motivojoin,
-                            historico_domicilio: domiciliojoin
-                            
-                            
+                            historico_domicilio: domiciliojoin   
                         }
+
+                        nodoModificado.visibles = {
+                            ...nodoModificado.visibles,
+                            historico_label: true,
+                            historico_folios: true,
+                            historico_fechas: true,
+                            historico_motivo: true,
+                            historico_domicilio: true
+                        }
+                        
+
                         nodoModificado.label = `${nodoModificado.label} \n <b>Folio: </b>${nodoModificado.editables?.historico_folios} \n<b>Fecha Remision: </b>${nodoModificado.editables?.historico_fechas}\n<b>Motivo: </b>${nodoModificado.editables?.historico_motivo}\n<b>Domicilio: </b>${nodoModificado.editables?.historico_domicilio}`;
                         return nodoModificado;
                     }
