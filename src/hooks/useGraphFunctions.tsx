@@ -3,11 +3,15 @@ import { GraphData } from '../interfaces/GraphData';
 import { NodeData, createNodeData } from '../interfaces/NodeData';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-hot-toast';
+import { useNetwork } from '../context/NetworkContext';
 
 export const useGraphFunctions = (
   setData: React.Dispatch<React.SetStateAction<GraphData>>,
   getData: () => GraphData
 ) => {
+
+
+  const {network} = useNetwork();
 
   const editNode = (data: any, callback: (data: any) => void) => {
     //console.log("Edit node:", data);
@@ -31,7 +35,6 @@ export const useGraphFunctions = (
       return newData;
     });
   };
-
  
   const deleteNode = (nodeId: any, callback: (data: any) => void) => {
     //console.log('Delete node:', nodeId);
@@ -56,7 +59,7 @@ export const useGraphFunctions = (
         return newData;
       });
   };
-};
+  };
 
   const deleteEdge = (edgeId: any, callback: (data: any) => void) => {
     //console.log('Delete node:', edgeId.edges[0], 'DATA:');
@@ -71,48 +74,54 @@ export const useGraphFunctions = (
   };
 
   const addNode = (nodeData: any, callback: (data: any) => void) => {
-    console.warn('ENTRE A AGREGAR NODO');
+    console.log('node data:', nodeData);
+    console.log('network:', network);
+    const {newNode, parentPosition} = nodeData;
     let prevData = getData();
     try {
-        let alreadyExist = nodeExists(nodeData);
+        let alreadyExist = nodeExists(newNode);
         console.warn(alreadyExist);
         if (alreadyExist) {
 
-          toast.error(`Ya existe una entidad identificada ${nodeData.label}`)
+          toast.error(`Ya existe una entidad identificada ${newNode.label}`)
             setData({...prevData})
-            callback({ status: false, encontro: nodeData });
+            callback({ status: false, encontro: newNode });
             return prevData;
         } 
 
-            const newNode: NodeData = createNodeData(
-                nodeData.id.toString().toUpperCase(), // Generate a unique ID
-                nodeData.label.toString().toUpperCase() || "Nuevo Nodo",
-                nodeData.name || "Nuevo Nodo",
-                "image", // nodeData.shape is always "image"
-                nodeData.size || 15,
-                nodeData.color || "blue",
-                nodeData.type || "persona",
-                nodeData.entidad, // No default value needed
-                nodeData.data || {},
-                nodeData.atributos || {}
+            let addNode: NodeData = createNodeData(
+              newNode.id.toString().toUpperCase(), // Generate a unique ID
+              newNode.label.toString().toUpperCase() || "Nuevo Nodo",
+              newNode.name || "Nuevo Nodo",
+              "image", // newNode.shape is always "image"
+              newNode.size || 15,
+              newNode.color || "blue",
+              newNode.type || "persona",
+              newNode.entidad, // No default value needed
+              newNode.data || {},
+              newNode.atributos || {},
+              newNode.x || parentPosition.x + Math.floor(Math.random() * (350 - 270 + 1)) + 270,
+              newNode.y || parentPosition.y + Math.floor(Math.random() * (350 - 270 + 1)) + 270,
+            
             );
-            newNode.font = { multi: 'html', size: 12 };
+            addNode.font = { multi: 'html', size: 12 };
 
             // Validaciones especiales de acuerdo al type diferente a entidad
+            console.log('NEW NODE:', newNode.type);
             if (newNode.type === 'contacto') {
-                newNode.label = `${newNode.label} \n <b>Telefono: </b> ${newNode.atributos.Telefono}`;
+                addNode.label = `${addNode.label} \n <b>Telefono: </b> ${addNode.atributos.Telefono}`;
             }
 
-            if (newNode.type === 'inspeccion') {
-                newNode.label = `${newNode.label} \n <b>Fecha: </b> ${newNode.atributos.Fecha} \n <b>Ubicación: </b> ${newNode.atributos.Colonia}, ${newNode.atributos.Calle_1},\n ${newNode.atributos.Calle_2}, ${newNode.atributos.No_Ext}`;
+            if (newNode.type === 'inspeccion') {"inspeccion"
+               addNode.label = `${addNode.label} \n <b>Fecha: </b> ${addNode.atributos.Fecha} \n <b>Ubicación: </b> ${addNode.atributos.Colonia}, ${addNode.atributos.Calle_1},\n ${addNode.atributos.Calle_2}, ${addNode.atributos.No_Ext}`;
             }
 
             if (newNode.type === 'vehiculo') {
-                newNode.label = `<b>Placas: </b> ${newNode.atributos.Placas} <b>NIV: </b> ${newNode.atributos.NIV} \n <b>Marca: </b> ${newNode.atributos.Marca} \n <b>Modelo: </b> ${newNode.atributos.Modelo} \n <b>Color: </b> ${newNode.atributos.Color}`;
+               addNode.label = `<b>Placas: </b> ${addNode.atributos.Placas} <b>NIV: </b> ${addNode.atributos.NIV} \n <b>Marca: </b> ${addNode.atributos.Marca} \n <b>Modelo: </b> ${addNode.atributos.Modelo} \n <b>Color: </b> ${addNode.atributos.Color}`;
             }
-
-            prevData.nodes.push(newNode)
-            console.log('NEW DATA:', prevData);
+            
+            prevData.nodes.push(addNode)
+            console.log('NEW DATA:', addNode);
             setData({...prevData})
             callback({ status: true }); // Indicate that the node was added successfully
             return prevData;
@@ -120,17 +129,16 @@ export const useGraphFunctions = (
     } catch (error) {
         console.log('ERROR DESDE EL ADD:', error);
     }
-};
+  };
   
     //callback(newNode);
 
   const addEdge = (edgeData: any, callback: (data: any) => void) => {
+    console.log('disparo el addEdge')
     try {
+      console.log('edge data:', edgeData);
+      console.warn(hasMoreThanOneEdgeFromTheSameNode(edgeData.from));
       setData((prevData) => {
-        // Check if edge with same id exists and filter it out
-        //console.log('DATA:', prevData);
-        // const filteredEdges = prevData.edges.filter(edge => edge.id !== edgeData.id);
-        //console.log('Me esta llegando:', edgeData);
         const newEdge = {
           id: uuidv4(), // Generate a unique ID
           from: edgeData.from,
@@ -139,8 +147,7 @@ export const useGraphFunctions = (
           color: edgeData.color || "black",
           width: edgeData.width || 1,
         };
-        //console.warn("New edge DESDE GRAPH FUNCRIONS:", newEdge);
-        //console.log([...filteredEdges, newEdge])
+        
         callback(true);
         prevData.edges.push(newEdge);
         setData({...prevData})
@@ -172,6 +179,14 @@ export const useGraphFunctions = (
       console.error("getData is not a function or is undefined");
       return null;
     }
+  }
+
+  const hasMoreThanOneEdgeFromTheSameNode = (nodeId: string): boolean => {
+    const currentData = getData();
+    const edgesFromSameNode = currentData.edges.filter(edge => 
+      (edge.from === nodeId || edge.to === nodeId)
+    );
+    return edgesFromSameNode.length > 1;
   }
 
   const nodeExists = (node: any): boolean => {

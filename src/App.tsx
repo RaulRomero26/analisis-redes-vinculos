@@ -7,7 +7,6 @@ import { useGraphFunctions } from "./hooks/useGraphFunctions";
 import useContextMenu from "./hooks/useContextMenu";
 import { EdgeData } from "./interfaces/EdgeData";
 import DropdownMenu from "./ui/DropDownMenu";
-import { useSearchEntity } from "./hooks/useSearchEntity";
 import { ModalSwitch, ModalFichas, ModalContactos } from "./components/Modals";
 import { NodeData } from "./interfaces/NodeData";
 import { useShowDetails } from "./hooks/useShowDetails";
@@ -15,6 +14,7 @@ import { EditNodeForm } from "./components/EditNodeForm";
 import Modal from 'react-modal';
 import FisicasCheck from "./components/FisicasCheck";
 import { Toaster } from 'react-hot-toast';
+import SearchNode from "./components/SearchNode";
 
 Modal.setAppElement('#root');
 
@@ -33,7 +33,7 @@ const App: React.FC = () => {
   const [selectedNodeEdit, setSelectedNodeEdit] = useState<NodeData | null>(null);
   const [selectedEdgeEdit, setSelectedEdgeEdit] = useState<EdgeData | null>(null);
   const [nodeIDClicked, setNodeIDClicked] = useState<string | null>(null);
-  const [fisicas, setFisicas] = useState(true);
+  const [fisicas, setFisicas] = useState(false);
 
   const graphRef = useRef<any>(null);
 
@@ -46,7 +46,6 @@ const App: React.FC = () => {
   const { contextMenu, handleContextMenu, closeContextMenu, handleSearchExtended,
     isModalFichasOpen, selectedNode, setIsModalFichasOpen, isModalContactosOpen, setIsModalContactosOpen
   } = useContextMenu(data, setData, getData);
-  const { searchData } = useSearchEntity();
   const { showDetails } = useShowDetails();
   const handleNodeHover = (_event: any) => { };
 
@@ -63,7 +62,6 @@ const App: React.FC = () => {
   const handleNodeClick = (event: any) => {
     console.log(event);
     setNodeIDClicked(event.nodes[0]);
-    console.log(nodeIDClicked);
     if (deleteMode) {
       // Eliminar el nodo
       //console.log('ELIMINAR ESTA EN TRUE:', event);
@@ -86,7 +84,7 @@ const App: React.FC = () => {
   const handleMenuClick = (entidad: string) => {
     //console.warn("Entidad:", entidad);
     toggleModal(entidad);
-    searchData({ entidad, payload: {} });
+    //searchData({ entidad, payload: {} });
   };
 
   const handleShowDetails = (node: NodeData) => {
@@ -118,7 +116,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     console.log("Data CAMBIO:", data);
-    setData(data)
+    setData(data);
   }, [data]);
 
   useEffect(() => {
@@ -195,7 +193,7 @@ const App: React.FC = () => {
   const options = {
     locale: 'es',
     interaction: {
-      selectable: true,
+      multiselect: true,
       hover: true,
       dragNodes: true,
       zoomSpeed: 1,
@@ -254,19 +252,16 @@ const App: React.FC = () => {
         avoidOverlap: 1,
       },
       stabilization: {
-        enabled: true,
+        enabled: false,
         fit: false, // Ajusta la vista automáticamente
       },
     },
-    autoResize: false,
-    height: '100%',
-    width: '100%',
   };
   
   const noPhisicOptions = {
     locale: 'es',
     interaction: {
-      selectable: true,
+      multiselect: true,
       hover: true,
       dragNodes: true,
       dragView: true,
@@ -311,13 +306,10 @@ const App: React.FC = () => {
     physics: {
       enabled: false,
       stabilization: {
-        enabled: true,
+        enabled: false,
         fit: false, // Desactiva el ajuste automático de la vista
       },
     },
-    autoResize: false,
-    height: '100%',
-    width: '100%',
   };
 
   const customStyles = {
@@ -351,13 +343,16 @@ const App: React.FC = () => {
       </div>
       <div className="grid grid-cols-1 gap-4">
         <DropdownMenu 
-            data={data} 
-            setData={setData} 
-            handleMenuClick={handleMenuClick} 
-            addEdge={handleAddEdge} 
-            deleteElement={deleteElement}  
+        data={data} 
+        setData={setData} 
+        handleMenuClick={handleMenuClick} 
+        addEdge={handleAddEdge} 
+        deleteElement={deleteElement}  
         />
-        <FisicasCheck fisicas={fisicas} setFisicas={setFisicas}/>
+        <div className="flex space-x-4">
+          <FisicasCheck fisicas={fisicas} setFisicas={setFisicas}/>
+          <SearchNode getData={getData} />
+        </div>
       </div>
       <div className="" style={{ height: '92vh' }}>
         <NetworkGraph

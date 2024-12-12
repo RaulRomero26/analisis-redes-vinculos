@@ -4,6 +4,7 @@ import { GraphData } from '../interfaces/GraphData';
 import { useSearchEntity } from './useSearchEntity';
 import { useGraphFunctions } from './useGraphFunctions';
 import { createNodeData, NodeData } from '../interfaces/NodeData';
+import { useNetwork } from '../context/NetworkContext';
 
 interface ContextMenuState {
     x: number;
@@ -13,6 +14,9 @@ interface ContextMenuState {
 }
 
 const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateAction<GraphData>>, getData: () => GraphData) => {
+    
+    const {network} = useNetwork();
+
     const [contextMenu, setContextMenu] = useState<ContextMenuState>({ x: 0, y: 0, edgeId: null, nodeId: null });
     const [isModalFichasOpen, setIsModalFichasOpen] = useState(false);  // Añade estado para el modal
     const [selectedNode, setSelectedNode] = useState<NodeData | null>(null);
@@ -114,10 +118,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             "Ap_Paterno":item.Ap_Paterno,
                             "Ap_Materno":item.Ap_Materno,
                             "Telefono":item.Telefono
-                        }
+                        },
+                        0,
+                        0   
                     );
                     //console.warn('NEW NODE TO EDGE:',newNode);
-                    addNode(newNode, (data: any) => {
+                    addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                         //console.log('Node added:', data.status);
                         if (data.status == false) {
                             console.error('Error adding node');
@@ -317,7 +323,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         let respuesta:any;
         if(node.type === 'entrada-persona' || node.type === 'persona' || node.type === 'contacto'){
          
-            respuesta =await  searchHistorico({ entidad: node.type || '', payload: { label: node.id, tipo: node.type } });
+            respuesta =await  searchHistorico({ entidad: node.type || '', payload: { label: `${node.atributos.Nombre} ${node.atributos.Ap_Paterno} ${node.atributos.Ap_Materno}`, tipo: node.type } });
             //console.log('RESPUESTA:',respuesta.data.historico);
             if(respuesta.data.historico.length > 0){
     
@@ -468,12 +474,14 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             Coordenada_X: item.Coordenada_X,
                             Coordenada_Y: item.Coordenada_Y,
                             Id_Inspeccion: item.Id_Inspeccion,
-                        }
+                        },
+                        0,
+                        0
                     );
     
     
                     //console.warn('NEW NODE TO EDGE:',newNode);
-                    addNode(newNode, (data: any) => {
+                    addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                         //console.log('Node added:', data);
                         if (data.status == false) {
                             console.error('Error adding node');
@@ -493,8 +501,8 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 });
             }
         }
-        if(node.entidad === 'persona'){
-            payload =  { label: node.id };
+        if(node.entidad === 'persona' || node.entidad === 'contacto' || node.entidad === 'entrada-persona'){
+            payload =  { label: `${node.atributos.Nombre} ${node.atributos.Ap_Paterno} ${node.atributos.Ap_Materno}` };
             respuesta =await  searchInspeccion({ entidad: node.type || '', payload: payload });
             //console.log('RESPUESTA:',respuesta.data.inspeccion);
             if(respuesta.data.inspeccion.length > 0){
@@ -521,23 +529,27 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             Coordenada_X: item.Coordenada_X,
                             Coordenada_Y: item.Coordenada_Y,
                             Id_Inspeccion: item.Id_Inspeccion,
-                        }
+                        },
+                        0,
+                        0
                     );
     
     
                     //console.warn('NEW NODE TO EDGE:',newNode);
-                    addNode(newNode, (data: any) => {
+                    addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                         //console.log('Node added:', data);
                         if (data.status == false) {
                             console.error('Error adding node');
                             addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
                                 console.log('Edge added:', data);
+                                network.focus(newNode.id);
                             });
                         }
                         else{
                             if(newNode && data.status==true){
                                 addEdge({ from: node.id, to: newNode.id, label: 'Inspeccion' }, (data: any) => {
                                     console.log('Edge added:', data);
+                                    network.focus(newNode.id);
                                 });
                             }
                         }
@@ -574,10 +586,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         NIV: item.NIV,
                         Submarca: item.Submarca,
                         Colocacion_Placas: item.Colocacion_Placa,
-                    }
+                    },
+                    0,
+                    0
                 );
                 //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (data: any) => {
+                addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                     //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
@@ -626,14 +640,16 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                   "Telefono": item.Telefono,
                   "Comentarios": item.Comentarios,
                   "Ubicacion": item.Ubicacion
-                }
+                },
+                0,
+                0
               );
       
               //console.warn('NEW NODE TO EDGE:', newNode);
       
               // Validar si el nodo ya existe
                 // Agregar el nodo
-                addNode(newNode, (data: any) => {
+                addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                     console.log('Node added:', data.status,'encontrado:',data.encontro);
                         if (data.status == false) {
                             console.error('Error adding node');
@@ -658,7 +674,7 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
         } catch (error) {
           console.error('Error in handleSearchTelefono:', error);
         }
-      };
+    };
       
     const handleSearchRemisionesTelefono = async(node:NodeData) => { 
 
@@ -681,10 +697,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         "Ap_Paterno":item.Ap_Paterno,
                         "Ap_Materno":item.Ap_Materno,
                         "Telefono":item.Telefono
-                    }
+                    },
+                    0,
+                    0
                 );
                 //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (data: any) => {
+                addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                     //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
@@ -727,10 +745,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         "Nombre":item.Nombre,
                         "Ap_Paterno":item.Ap_Paterno,
                         "Ap_Materno":item.Ap_Materno,
-                    }
+                    },
+                    0,
+                    0
                 );
                 //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (data: any) => {
+                addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                     //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
@@ -823,10 +843,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                             "Ap_Paterno":item.Ap_Paterno,
                             "Ap_Materno":item.Ap_Materno,
                             "Telefono":item.Telefono
-                        }
+                        },
+                        0,
+                        0
                     );
                     //console.warn('NEW NODE TO EDGE:',newNode);
-                    addNode(newNode, (data: any) => {
+                    addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                         //console.log('Node added:', data.status);
                         if (data.status == false) {
                             console.error('Error adding node');
@@ -863,10 +885,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                 node.atributos,
                 {
                     "Telefono":node.atributos.Telefono
-                }
+                },
+                0,
+                0
             );
             //console.warn('NEW NODE TO EDGE:',newNode);
-            addNode(newNode, (data: any) => {
+            addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                 //console.log('Node added:', data.status);
                 if (data.status == false) {
                     console.error('Error adding node');
@@ -899,10 +923,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                     item,
                     {
                         "Telefono":item.Telefono
-                    }
+                    },
+                    0,
+                    0
                 );
                 //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (data: any) => {
+                addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                     //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
@@ -942,10 +968,12 @@ const useContextMenu = (data: GraphData, setData: React.Dispatch<React.SetStateA
                         Nombre: item.Nombre,
                         Ap_Paterno: item.Ap_Paterno,
                         Ap_Materno: item.Ap_Materno,
-                    }
+                    },
+                    0,
+                    0
                 );
                 //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (data: any) => {
+                addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                     //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');

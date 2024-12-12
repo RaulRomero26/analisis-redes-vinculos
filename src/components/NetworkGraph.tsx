@@ -1,6 +1,7 @@
 import { useEffect, useRef, forwardRef, useImperativeHandle } from "react";
 import Network from "react-vis-network-graph";
 import { GraphData } from "../interfaces/GraphData";
+import { useNetwork } from '../context/NetworkContext';
 
 interface NetworkGraphProps {
   data: GraphData;
@@ -13,8 +14,9 @@ interface NetworkGraphProps {
 }
 
 const NetworkGraph = forwardRef<any, NetworkGraphProps>(
-  ({ data, setData,options, onClick, onNodeHover, onEdgeHover, onContext }, ref) => {
+  ({ data, setData, options, onClick, onNodeHover, onEdgeHover, onContext }, ref) => {
     const graphRef = useRef<any>(null); // Reference to the network container
+    const { setNetwork } = useNetwork();
 
     useImperativeHandle(ref, () => ({
       setOptions: (options: any) => {
@@ -46,39 +48,28 @@ const NetworkGraph = forwardRef<any, NetworkGraphProps>(
         graphRef.current.setData(data);
       }
     }, [data]);
-   
+
+    const updateNodePositions = (event: any) => {
+      if (event && event.nodes.length > 0) {
+      };
+   }
+
+   useEffect(() => {
+      if (graphRef.current) {
+        graphRef.current.on('setData', (event: any) => {
+          console.warn('se reseto la data desde el graph',event);
+        });
+      }
+   }, [data, setData]);
 
     useEffect(() => {
-      if (graphRef.current) {
-      const network = graphRef.current;
-      const updateNodePositions = (event: any) => {
-        console.log('event',event);
-        if (event && event.nodes.length > 0) { // Only update positions if nodes are being dragged
-          const positions = network.getPositions();
-          const updatedNodes = data.nodes.map(node => ({
-            ...node,
-            x: positions[node.id].x,
-            y: positions[node.id].y,
-          }));
-          setData({ ...data, nodes: updatedNodes });
-        }
-      };
-
-      // Update positions initially
       updateNodePositions({ nodes: data.nodes.map(node => node.id) });
-
-      // Add event listeners for dragEnd and stabilization
+      const network = graphRef.current;
       network.on('dragEnd', updateNodePositions);
-      network.on('stabilizationIterationsDone', updateNodePositions);
-
-      // Cleanup event listeners on unmount
       return () => {
         network.off('dragEnd', updateNodePositions);
-        network.off('stabilizationIterationsDone', updateNodePositions);
       };
-      }
     }, [data, setData]);
-
 
     return (
       <Network
@@ -92,10 +83,12 @@ const NetworkGraph = forwardRef<any, NetworkGraphProps>(
         }}
         getNetwork={(network: any) => {
           graphRef.current = network; // Capture the vis.js network instance
+          setNetwork(network); // Set the network instance in the context
         }}
       />
     );
   }
 );
+
 
 export default NetworkGraph;

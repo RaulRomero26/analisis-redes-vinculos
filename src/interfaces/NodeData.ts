@@ -24,6 +24,8 @@ export interface NodeData {
   data: any;
   //opcionales para mi programa 
   atributos?: any;
+  x?: number;
+  y?: number;
   font?: any;
   editables?: any;
   visibles?: any;
@@ -52,7 +54,7 @@ export function getImageForType(type?: string): string {
   }
 }
 
-export function createNodeData(id: string, label: string, name: string, shape: string, size: number, color: string, type: string, entidad: string, data:any , atributos: any): NodeData {
+export function createNodeData(id: string, label: string, name: string, shape: string, size: number, color: string, type: string, entidad: string, data:any , atributos: any, x: number, y: number): NodeData {
   return {
     id,
     label,
@@ -64,6 +66,8 @@ export function createNodeData(id: string, label: string, name: string, shape: s
     type,
     entidad,
     data,
-    atributos
+    atributos,
+    x,
+    y,
   };
 }

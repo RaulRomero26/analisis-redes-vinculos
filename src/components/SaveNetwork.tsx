@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import { GraphData } from '../interfaces/GraphData';
 import { MdOutlineSave, MdOutlineUploadFile  } from "react-icons/md";
+import { useNetwork } from '../context/NetworkContext';
 
 interface SaveNetworkProps {
   data: GraphData;
@@ -10,8 +11,19 @@ interface SaveNetworkProps {
 const SaveNetwork: React.FC<SaveNetworkProps> = ({ data, setData }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    const { network } = useNetwork();
+
     // Función para guardar el grafo en un archivo JSON
     const saveGraph = () => {
+        let positions = network.getPositions();
+        let updatedNodes = data.nodes.map((node) => {
+            return {
+                ...node,
+                x: positions[node.id].x,
+                y: positions[node.id].y,
+            };
+        });
+        data.nodes = updatedNodes;
         const json = JSON.stringify(data, null, 2);
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);

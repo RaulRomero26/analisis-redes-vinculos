@@ -20,7 +20,6 @@ interface FormInputs {
 const ModalNombre: React.FC<ModalNombreProps> = ({ isModalOpen, toggleModal, setData, getData }) => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormInputs>();
   const { addNode } = useGraphFunctions(setData, getData);
-
   const onSubmit: SubmitHandler<FormInputs> = (data) => {
     const nodeData = {
       id: `${data.nombre} ${data.apPaterno} ${data.apMaterno}`,
@@ -38,7 +37,7 @@ const ModalNombre: React.FC<ModalNombreProps> = ({ isModalOpen, toggleModal, set
         Ap_Materno: data.apMaterno,
       }
     };
-    addNode(nodeData, (data: any) => {
+    addNode({newNode: nodeData, parentPosition: { x: 0, y:0 }}, (data: any) => {
       //console.log('Node added:', data.status);
       if (data.status == false) {
         console.error('Error adding node');

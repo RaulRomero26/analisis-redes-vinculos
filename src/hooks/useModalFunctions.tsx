@@ -2,6 +2,7 @@ import React from 'react'
 import { useSearchEntity } from './useSearchEntity';
 import { createNodeData, NodeData } from '../interfaces/NodeData';
 import { useGraphFunctions } from './useGraphFunctions';
+import { useNetwork } from '../context/NetworkContext';
 
 interface ModalFunctionsProps {
     data?: any;
@@ -14,6 +15,7 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
 
     const { searchDetenidoCon, searchContacts } = useSearchEntity();
     const { addNode,addEdge } = useGraphFunctions(setData,getData);
+    const { network } = useNetwork();
 
 
     const handleSearchDetenidoCon = async(node:NodeData,ficha: any,remision_primaria: any) => {
@@ -45,7 +47,7 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
                     }
                 );
                 //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (data: any) => {
+                addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
                     //console.log('Node added:', data.status);
                     if (data.status == false) {
                         console.error('Error adding node');
@@ -90,7 +92,7 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
                     }
                 );
                 //console.warn('NEW NODE TO EDGE:',newNode);
-                addNode(newNode, (data: any) => {
+                addNode({newNode: newNode, parentPosition: network.getPosition(node.id) }, (data: any) => {
                     //console.log('SE PUEDE AGREGAR? :', data.status);
                     if (data.status == false){
                         console.error('Error adding node');

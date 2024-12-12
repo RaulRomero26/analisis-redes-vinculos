@@ -23,8 +23,9 @@ const recreateLabel = (node: any) => {
   switch (node.type) {
     case 'persona':
     case 'entrada-persona':
+    case 'contacto':
       newLabel = [
-        node.visibles?.label && node.editables?.label || node.id || '',
+        node.label && `${node.atributos.Nombre} ${node.atributos.Ap_Paterno} ${node.atributos.Ap_Materno}`.trim(),
         node.visibles?.remisiones_label && node.editables?.remisiones_label || '',
         node.visibles?.alias && node.editables?.alias ? `<b>Alias:</b> ${node.editables.alias}` : '',
         node.visibles?.fecha_detencion && node.editables?.fecha_detencion ? `<b>Fecha Detencion:</b> ${node.editables.fecha_detencion}` : '',
@@ -44,12 +45,14 @@ const recreateLabel = (node: any) => {
       newLabel = node.label;
       break;
   }
+  console.log('newLabel', newLabel);
   return newLabel;
 };
 
 export const EditNodeForm = ({ node, setData, getData, onRequestClose }: EditNodeFormProps) => {
   const [editables, setEditables] = useState(node?.editables || {});
   const [visibles, setVisibles] = useState(node?.visibles || {});
+  const [atributos, setAtributos] = useState(node?.atributos || {});
   const [label, setLabel] = useState(node?.label || '');
   const [newKey, setNewKey] = useState('');
   const [newValue, setNewValue] = useState('');
@@ -58,6 +61,13 @@ export const EditNodeForm = ({ node, setData, getData, onRequestClose }: EditNod
   const handleChange = (key: string, value: string) => {
     setEditables((prevEditables: any) => ({
       ...prevEditables,
+      [key]: value
+    }));
+  };
+
+  const handleChangeAtt = (key: string, value: string) => {
+    setAtributos((prevAtributos: any) => ({
+      ...prevAtributos,
       [key]: value
     }));
   };
@@ -71,7 +81,7 @@ export const EditNodeForm = ({ node, setData, getData, onRequestClose }: EditNod
 
   const handleAddAttribute = () => {
     if (newKey && newValue) {
-      setEditables((prevEditables:any) => ({
+      setEditables((prevEditables: any) => ({
         ...prevEditables,
         [newKey]: newValue
       }));
@@ -84,12 +94,13 @@ export const EditNodeForm = ({ node, setData, getData, onRequestClose }: EditNod
   useEffect(() => {
     setEditables(node?.editables || {});
     setVisibles(node?.visibles || {});
+    setAtributos(node?.atributos || {});
     setLabel(node?.label || '');
   }, [node]);
 
   useEffect(() => {
-    setLabel(recreateLabel({ ...node, editables, visibles }));
-  }, [editables, visibles, node]);
+    setLabel(recreateLabel({ ...node, editables, visibles, atributos }));
+  }, [editables, visibles, atributos, node]);
 
   const handleSave = () => {
     const data = getData();
@@ -111,7 +122,8 @@ export const EditNodeForm = ({ node, setData, getData, onRequestClose }: EditNod
           ...data.nodes[index],
           editables,
           visibles,
-          label: recreateLabel({ ...data.nodes[index], editables, visibles })
+          atributos,
+          label: recreateLabel({ ...data.nodes[index], editables, visibles, atributos })
         };
       }
     }
@@ -119,8 +131,13 @@ export const EditNodeForm = ({ node, setData, getData, onRequestClose }: EditNod
     onRequestClose();
   };
 
+  useEffect(() => {
+    console.log(node);
+  }, [node]);
+
   return (
     <div>
+      <h2 className="text-xl font-bold mb-4">Editar Nodo (Visuales)</h2>
       {Object.keys(editables).map(key => (
         <div key={key} className="mb-4 flex items-center">
           <label className="font-bold">{key}</label>
@@ -138,6 +155,21 @@ export const EditNodeForm = ({ node, setData, getData, onRequestClose }: EditNod
             {visibles[key] ? <FaEye /> : <FaEyeSlash />}
           </label>
         </div>
+      ))}
+
+      <h2 className="text-xl font-bold mb-4">Editar Nodo (Atributos)</h2>
+      {Object.keys(atributos).map(key => (
+        typeof atributos[key] !== 'object' && (
+          <div key={key} className="mb-4 flex items-center">
+            <label className="font-bold">{key}</label>
+            <input
+              type="text"
+              value={atributos[key]}
+              onChange={e => handleChangeAtt(key, e.target.value)}
+              className="ml-2 p-1 border border-gray-300 flex-grow"
+            />
+          </div>
+        )
       ))}
 
       {showAddAttribute ? (
