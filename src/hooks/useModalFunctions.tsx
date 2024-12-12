@@ -44,7 +44,9 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
                         "Ap_Paterno":item.Ap_Paterno,
                         "Ap_Materno":item.Ap_Materno,
                         "Telefono":item.Telefono
-                    }
+                    },
+                    0,
+                    0
                 );
                 //console.warn('NEW NODE TO EDGE:',newNode);
                 addNode({newNode: newNode, parentPosition: network.getPosition(node.id)}, (data: any) => {
@@ -89,7 +91,9 @@ export const useModalFunctions = ({setData,getData}:ModalFunctionsProps) => {
                         "Ap_Paterno":item.Ap_Paterno,
                         "Ap_Materno":item.Ap_Materno,
                         "Telefono":item.Telefono
-                    }
+                    },
+                    0,
+                    0,
                 );
                 //console.warn('NEW NODE TO EDGE:',newNode);
                 addNode({newNode: newNode, parentPosition: network.getPosition(node.id) }, (data: any) => {

@@ -1,10 +1,10 @@
-// src/context/NetworkContext.tsx
 import React, { createContext, useContext, useState } from 'react';
-import { Network } from 'vis-network';
+// Importar vis-network como any para evitar errores de tipo
+
 
 interface NetworkContextProps {
-  network: Network | null;
-  setNetwork: (network: Network) => void;
+  network: any | null;
+  setNetwork: (network: any) => void;
 }
 
 const NetworkContext = createContext<NetworkContextProps>({
@@ -15,7 +15,7 @@ const NetworkContext = createContext<NetworkContextProps>({
 export const useNetwork = () => useContext(NetworkContext);
 
 export const NetworkProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [network, setNetwork] = useState<Network | null>(null);
+  const [network, setNetwork] = useState<any | null>(null);
 
   return (
     <NetworkContext.Provider value={{ network, setNetwork }}>
